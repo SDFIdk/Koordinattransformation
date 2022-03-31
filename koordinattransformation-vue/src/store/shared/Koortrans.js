@@ -2,9 +2,9 @@ import { environmentAPIDomains } from '@/store/shared/Paths'
 
 const tokens = {
   get: {
-    production: process.env.TOKEN,
-    development: process.env.TOKEN,
-    staging: process.env.TOKEN
+    production: process.env.VUE_APP_TOKEN,
+    development: process.env.VUE_APP_TOKEN,
+    staging: process.env.VUE_APP_TOKEN
   }
 }
 
@@ -22,7 +22,7 @@ export class Koortrans {
       get ({ commit, dispatch }, crsParameter) {
         return new Promise((resolve, reject) => {
           commit('request')
-          fetch('https://' + environmentAPIDomains[process.env.NODE_ENV] + path + crsParameter + '?token=' + tokens.get[process.env.NODE_ENV])
+          fetch('https://' + environmentAPIDomains[process.env.VUE_APP_NODE_ENV] + path + crsParameter + '?token=' + tokens.get[process.env.VUE_APP_NODE_ENV])
             .then(resp => {
               resp.json().then(data => {
                 commit('success', data)

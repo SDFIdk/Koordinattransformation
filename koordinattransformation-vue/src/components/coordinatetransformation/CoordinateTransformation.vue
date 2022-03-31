@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue'
+import { defineAsyncComponent, ref, isMobile, inject } from 'vue'
 
 export default {
   name: 'CoordinateTransformation',

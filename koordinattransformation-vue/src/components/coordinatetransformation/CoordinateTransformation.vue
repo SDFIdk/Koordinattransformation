@@ -6,7 +6,8 @@
 </template>
 
 <script>
-import { defineAsyncComponent, ref, isMobile, inject } from 'vue'
+import { defineAsyncComponent, ref, inject } from 'vue'
+import { isMobile } from 'mobile-device-detect'
 
 export default {
   name: 'CoordinateTransformation',

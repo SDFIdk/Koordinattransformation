@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     inputChanged () {
-      console.log('input changed')
+      //console.log('input changed')
     }
   },
   props: {

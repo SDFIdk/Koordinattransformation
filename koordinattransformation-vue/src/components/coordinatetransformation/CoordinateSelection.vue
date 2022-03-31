@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     EPSGCodeChanged (code) {
-      console.log('EPSG code changed')
+      // console.log('EPSG code changed')
       this.$emit('epsg-code-changed', code)
     }
   },

@@ -94,14 +94,14 @@ export default {
   },
   methods: {
     selectOutput () {
-      console.log('outputSelected', this.outputSelected)
+      // console.log('outputSelected', this.outputSelected)
     },
     transform () {
-      console.log('transform called')
+      // console.log('transform called')
       if (this.outputSelected) {
-        console.log('transfoorm')
+        // console.log('transfoorm')
       } else {
-        console.log('no transfoorm')
+        // console.log('no transfoorm')
       }
     }
   },

@@ -24,10 +24,9 @@
             @click="
               chosenInput = CRS.title;
               inputActive = false;
-              //console.log('item clicked');
-              //if (!isInput) { $emit('outputSelected') };
-              //$emit('inputOutputChanged');
-              EPSGCodeChanged(chosenInput);
+              if (!isInput)
+                outputSelected(CRS);
+              epsgChanged(CRS);
             "
           >
             {{ CRS.title }}
@@ -42,6 +41,7 @@
 import { onMounted, ref, inject } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
+// import { compose } from 'ol/transform'
 
 export default {
   name: 'CoordinateSelectionComponent',
@@ -55,9 +55,13 @@ export default {
     }
   },
   methods: {
-    EPSGCodeChanged (code) {
-      // console.log('EPSG code changed')
-      this.$emit('epsg-code-changed', code)
+    outputSelected (code) {
+      console.log('outputSelected')
+      this.$emit('output-selected', code)
+    },
+    epsgChanged (code) {
+      console.log('epsgChanged')
+      this.$emit('epsg-changed', code)
     }
   },
   setup (props) {

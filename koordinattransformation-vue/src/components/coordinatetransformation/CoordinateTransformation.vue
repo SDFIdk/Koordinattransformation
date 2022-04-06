@@ -1,7 +1,7 @@
 <template>
   <article class="coordinate-transformation-box">
-    <InputCoordinates class="input" @epsg-code-changed="inputChanged"/>
-    <OutputCoordinates class="output"/>
+    <InputCoordinates class="input" @input-changed="inputChanged"/>
+    <OutputCoordinates class="output" :inputEPSG=this.inputEPSG />
   </article>
 </template>
 
@@ -16,26 +16,20 @@ export default {
     OutputCoordinates: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCoordinates'))
   },
   methods: {
-    inputChanged () {
-      // console.log('input changed')
-    }
-  },
-  props: {
-    // Check if the selection is input or output selection
-    transformRes: {
-      type: Object,
-      default () {
-        return {}
-      }
+    inputChanged (code) {
+      this.inputEPSG = code
     }
   },
   setup () {
     const inputCoords = ref('')
     const colors = inject('themeColors')
+    // const inputEPSG = ref('')
+    const inputEPSG = ref(Object)
     return {
       inputCoords,
       colors,
-      isMobile
+      isMobile,
+      inputEPSG
     }
   }
 }

@@ -1,6 +1,5 @@
 <template>
   <section class="input-coordinate">
-    <!-- <span> -->
     <div class="title-bar">
       <h3>Input</h3>
       <Icon v-show="!isMobile"
@@ -11,8 +10,7 @@
         class="info-icon"
       />
     </div>
-    <!-- </span> -->
-    <InputSelection />
+    <CoordinateSelection @epsg-changed="inputChanged"/>
     <article class="chosen-coordinates">
       <span>
         <Icon
@@ -57,7 +55,12 @@ import { defineAsyncComponent, ref, inject } from 'vue'
 export default {
   name: 'InputCoordinates',
   components: {
-    InputSelection: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateSelection'))
+    CoordinateSelection: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateSelection'))
+  },
+  methods: {
+    inputChanged (code) {
+      this.$emit('input-changed', code)
+    }
   },
   setup () {
     const inputCoords = ref('')
@@ -78,7 +81,6 @@ export default {
 }
 .title-bar {
   display: inline-flex;
-  /* justify-self: center; */
   align-self: center;
 }
 input:focus {
@@ -103,17 +105,12 @@ ul {
 }
 span {
   display: inline-flex;
-  /* align-items: center; */
   align-items: flex-end;
-  /* margin-bottom: 0.5rem; */
 }
 .chosen-coordinates {
-  /* padding-top: 1rem; */
-  /* margin-bottom: 0.5rem; */
   display: flex;
   flex-flow: row wrap;
   align-self: center;
-  /* justify-content: space-between; */
 }
 .chosen-coordinates span {
   border-bottom: var(--action) solid 1px;

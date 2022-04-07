@@ -3,28 +3,50 @@
     <section
       @click="inputActive = !inputActive"
       class="selected-input"
-      :class="[{ inputActive: inputActive }, { isInput: isInput }]"
+      :class="[{ inputActive: inputActive }, { isOutput: isOutput }, { outputNotSelected: outputNotSelected }]"
     >
       <span class="input-crs">
-        {{ chosenInput }}
+        <Icon v-if="isOutput && outputNotSelected"
+          icon="HashtagIcon"
+          :width="2"
+          :height="2"
+          :color="colors.white"
+        />
+        <Icon v-else
+          icon="HashtagIcon"
+          :width="2"
+          :height="2"
+          :color="colors.turquoise"
+        />
+        <div class="epsg-code">
+          {{ chosenInput }}
+        </div>
       </span>
-      <Icon
+      <Icon v-if="isOutput && outputNotSelected"
         icon="ExpandIcon"
-        :width="2"
-        :height="2"
+        :width="2.5"
+        :height="2.5"
+        :color="colors.white"
+        :stroke-width="0.75"
+        class="expand-icon"
+      />
+      <Icon v-else
+        icon="ExpandIcon"
+        :width="2.5"
+        :height="2.5"
         :color="colors.turquoise"
-        :strokeWidth="0.75"
-        class="arrow-icon"
+        :stroke-width="0.75"
+        class="expand-icon"
       />
     </section>
     <section v-show="inputActive" class="crs-selection">
-      <article class="selection-list">
+      <article class="selection-list" :class="{ isOutput: isOutput }">
         <ul v-for="CRS in filteredCRS" :key="CRS">
           <li
             @click="
               chosenInput = CRS.title;
               inputActive = false;
-              if (!isInput)
+              if (isOutput)
                 outputSelected(CRS);
               epsgChanged(CRS);
             "
@@ -47,20 +69,19 @@ export default {
   name: 'CoordinateSelectionComponent',
   props: {
     // Check if the selection is input or output selection
-    isInput: {
+    isOutput: {
       type: Boolean,
       default () {
-        return true
+        return false
       }
     }
   },
   methods: {
     outputSelected (code) {
-      console.log('outputSelected')
+      this.outputNotSelected = false
       this.$emit('output-selected', code)
     },
     epsgChanged (code) {
-      console.log('epsgChanged')
       this.$emit('epsg-changed', code)
     }
   },
@@ -72,6 +93,7 @@ export default {
     const chosenInput = ref('')
     const filteredCRS = ref([])
     const inputActive = ref(false)
+    const outputNotSelected = ref(true)
     onMounted(() => {
       store.dispatch('CRS/clear')
       store.dispatch('CRS/get', '').then(() => {
@@ -97,9 +119,9 @@ export default {
             })
         }
         filteredCRS.value = tempCRS
-        chosenInput.value = props.isInput
-          ? filteredCRS.value[0].title
-          : 'Vælg koordinatsystem'
+        chosenInput.value = props.isOutput
+          ? 'Vælg koordinatsystem'
+          : filteredCRS.value[0].title
       } else if (route.name === 'Greenland') {
         for (let i = 0, iEnd = crs.value.DK.length; i < iEnd; ++i) {
           await store
@@ -116,35 +138,36 @@ export default {
             })
         }
         filteredCRS.value = tempCRS
-        chosenInput.value = props.isInput
-          ? filteredCRS.value[0].title
-          : 'Vælg koordinatsystem'
+        chosenInput.value = props.isOutput
+          ? 'Vælg koordinatsystem'
+          : filteredCRS.value[0].title
       }
     }
     return {
       colors,
       filteredCRS,
       chosenInput,
-      inputActive
+      inputActive,
+      outputNotSelected
     }
   }
 }
 </script>
 
 <style scoped>
+.epsg-code {
+  display: inline-flex;
+  padding-left: 0.25rem;
+}
 .coordinate-selection {
   overflow: visible;
   width: 100%;
-  align-self: center;
 }
 .selected-input {
   width: 100%;
-  padding: 0 0.5rem;
   display: inline-flex;
   border: var(--darkSteel) solid 1px;
   border-radius: 25px;
-  background: var(--action);
-  color: var(--white);
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -152,25 +175,26 @@ export default {
   -ms-user-select: none;
   user-select: none;
 }
-.selected-input.isInput {
+.selected-input.isOutput {
   background: var(--white);
-  color: var(--black);
+}
+.selected-input.isOutput.outputNotSelected {
+  background: var(--action);
+  color: var(--white);
 }
 .selected-input.inputActive {
-  border-radius: 18px 18px 0 0;
+  border-radius: 25px 25px 0 0;
   border-bottom: none;
-  background: var(--white);
-  color: var(--black);
   width: 100%;
 }
 .input-crs {
-  width: 100%;
   padding: 0.5rem 0 0 0.5rem;
-  align-items: center;
-  display: inline-flex;
   margin-bottom: 0.5rem;
+  display: inline-flex;
+  align-items: center;
 }
-.arrow-icon {
+.expand-icon {
+  align-self: center;
   margin: 0 0 0 auto;
   transform: rotate(90deg);
 }
@@ -185,6 +209,9 @@ export default {
   border-radius: 0 0 25px 25px;
   z-index: 4;
   background: var(--white);
+}
+.selection-list.isOutput {
+  background: var(--lightSteel);
 }
 li {
   list-style-type: none;

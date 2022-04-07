@@ -10,18 +10,22 @@
         class="info-icon"
       />
     </div>
-    <CoordinateSelection @epsg-changed="inputChanged"/>
+    <section class="coordinate-selection-wrapper">
+      <CoordinateSelection :isOutput="false" @epsg-changed="inputEPSGChanged"/>
+    </section>
     <article class="chosen-coordinates">
       <span>
         <Icon
-          icon="ExpandIcon"
+          icon="ArrowIcon"
           :width="2"
           :height="2"
-          :color="colors.black"
+          :color="colors.turquoise"
+          :stroke-width="0"
+          class="arrow-icon-x-coordinate"
         />
         <input
           class="input-coordinates"
-          v-model="inputCoords[0]"
+          v-model=inputCoords[0]
           type="number"
           step="any"
         />
@@ -29,15 +33,15 @@
       </span>
       <span>
         <Icon
-          icon="ExpandIcon"
+          icon="ArrowIcon"
           :width="2"
           :height="2"
-          :color="colors.black"
-          class="arrow-icon-y-coordinate"
+          :stroke-width="0"
+          :color="colors.turquoise"
         />
         <input
           class="input-coordinates"
-          v-model="inputCoords[1]"
+          v-model=inputCoords[1]
           type="number"
           step="any"
         />
@@ -50,7 +54,7 @@
 <script>
 
 import { isMobile } from 'mobile-device-detect'
-import { defineAsyncComponent, ref, inject } from 'vue'
+import { defineAsyncComponent, ref, inject, onUpdated } from 'vue'
 
 export default {
   name: 'InputCoordinates',
@@ -58,13 +62,16 @@ export default {
     CoordinateSelection: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateSelection'))
   },
   methods: {
-    inputChanged (code) {
-      this.$emit('input-changed', code)
+    inputEPSGChanged (code) {
+      this.$emit('input-epsg-changed', code)
     }
   },
-  setup () {
-    const inputCoords = ref('')
+  setup (props, context) {
+    const inputCoords = ref([0, 0])
     const colors = inject('themeColors')
+    onUpdated(() => {
+      context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1]])
+    })
     return {
       inputCoords,
       colors,
@@ -78,6 +85,10 @@ export default {
 * {
   padding: 0;
   margin: 0;
+}
+.coordinate-selection-wrapper {
+  display: flex;
+  align-items: center;
 }
 .title-bar {
   display: inline-flex;
@@ -103,10 +114,6 @@ li:hover {
 ul {
   list-style-type: none;
 }
-span {
-  display: inline-flex;
-  align-items: flex-end;
-}
 .chosen-coordinates {
   display: flex;
   flex-flow: row wrap;
@@ -117,9 +124,8 @@ span {
   margin: 0 1rem 0 0;
   flex-grow: 1;
   justify-content: space-between;
-}
-.input-coordinates {
-  border: none;
+  display: inline-flex;
+  align-items: flex-end;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -128,11 +134,15 @@ input::-webkit-inner-spin-button {
 }
 input[type=number] {
   -moz-appearance: textfield;
+  border: none;
+  width: 90%;
+  align-self: center;
 }
-.arrow-icon-y-coordinate {
-  transform: rotate(-90deg);
+.arrow-icon-x-coordinate {
+  transform: rotate(90deg);
 }
 .degrees {
-  padding-right: 1rem;
+  padding: 0 1.5rem 0.5rem 0;
+  font-size: 1.25rem;
 }
 </style>

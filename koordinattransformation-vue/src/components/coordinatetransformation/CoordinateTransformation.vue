@@ -1,7 +1,7 @@
 <template>
   <article class="coordinate-transformation-box">
-    <InputCoordinates class="input" @input-changed="inputChanged"/>
-    <OutputCoordinates class="output" :inputEPSG=this.inputEPSG />
+    <InputCoordinates class="input" @input-epsg-changed="inputEPSGChanged"  @input-coords-changed="inputCoordsChanged"/>
+    <OutputCoordinates class="output" :inputEPSG=this.inputEPSG :inputCoords=this.inputCoords />
   </article>
 </template>
 
@@ -16,14 +16,17 @@ export default {
     OutputCoordinates: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCoordinates'))
   },
   methods: {
-    inputChanged (code) {
+    inputEPSGChanged (code) {
       this.inputEPSG = code
+    },
+    inputCoordsChanged (coords) {
+      console.log('CoordinateTransformation, inputCoordsChanged: ', coords)
+      this.inputCoords = coords
     }
   },
   setup () {
-    const inputCoords = ref('')
+    const inputCoords = ref([0, 0])
     const colors = inject('themeColors')
-    // const inputEPSG = ref('')
     const inputEPSG = ref(Object)
     return {
       inputCoords,

@@ -1,10 +1,23 @@
 <template>
   <section class="output-coordinate">
-    <span>
+    <span class="title-bar">
       <h3>Output</h3>
     </span>
-    <CoordinateSelection :isInput="false" @output-selected="outputSelectedMethod"/>
-    <input type="text" class="transformed-coordinates" v-model="outputCoords">
+    <CoordinateSelection :isOutput="true" :outputNotSelected="outputNotSelected" @output-selected="outputSelectedMethod"/>
+    <!-- <input v-if="!loading"
+      type="text"
+      class="transformed-coordinates"
+      :class="{ hasTransformed: hasTransformed}"
+      v-model="outputCoords"
+    > -->
+    <div class="transformed-coordinates" :class="{ hasTransformed: hasTransformed}">
+      <span v-if="loading">
+        <Loader size="1.5" :isLoading="true"></Loader>
+      </span>
+      <span v-else>
+        {{ outputCoords }}
+      </span>
+    </div>
     <article class="footer">
       <div class="radiogroup">
         <label class="radio" @click="firstChecked = true; secondChecked = false; thirdChecked = false">
@@ -85,7 +98,7 @@
 
 <script>
 import { isMobile } from 'mobile-device-detect'
-import { defineAsyncComponent, inject, onUpdated, ref } from 'vue'
+import { defineAsyncComponent, inject, ref } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
@@ -96,16 +109,35 @@ export default {
       default () {
         return null
       }
+    },
+    inputCoords: {
+      type: Array,
+      default () {
+        return [0, 0]
+      }
     }
   },
   components: {
-    CoordinateSelection: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateSelection'))
+    CoordinateSelection: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateSelection')),
+    Loader: defineAsyncComponent(() => import('@/components/shared/Loader'))
   },
   methods: {
     outputSelectedMethod (code) {
-      this.outputSelected = true
+      this.outputNotSelected = false
       this.outputEPSG = code
       this.transform()
+    }
+  },
+  watch: {
+    inputEPSG () {
+      if (!this.outputNotSelected) {
+        this.transform()
+      }
+    },
+    inputCoords () {
+      if (!this.outputNotSelected) {
+        this.transform()
+      }
     }
   },
   setup (props) {
@@ -114,23 +146,27 @@ export default {
     const firstChecked = ref(true)
     const secondChecked = ref(false)
     const thirdChecked = ref(false)
-    const outputSelected = ref(false)
+    const outputNotSelected = ref(true)
     const outputCoords = ref('')
-    // const outputEPSG = ref('')
     const outputEPSG = ref(Object)
-    onUpdated(() => {
-      transform()
-    })
+    const hasTransformed = ref(false)
     const transform = async () => {
       const token = '?token=82153d2e2105603af96321adfdff1ba3'
       const transURL = 'https://api.dataforsyningen.dk/rest/webproj/v1.0/trans/'
+      // const transURL = 'http://load201.kmsext.dk/rest/webproj/v1.1/trans/'
       console.log('Input', props.inputEPSG.srid)
       console.log('Output', outputEPSG.value.srid)
-      const sridIn = props.inputEPSG.srid
+      const sridIn = props.inputEPSG.srid === 'undefined' ? props.inputEPSG.srid : 'EPSG:25832'
       const sridOut = outputEPSG.value.srid
-      const response = await fetch(transURL + sridIn + '/' + sridOut + '/' + 0 + ',' + 0 + token)
+      console.log('props: ', props)
+      const v1 = props.inputCoords[0]
+      const v2 = props.inputCoords[1]
+      console.log('OutputCoordinates transform, v1: ', v1, ' v2: ', v2)
+      const response = await fetch(transURL + sridIn + '/' + sridOut + '/' + v1 + ',' + v2 + token)
       const data = await response.json()
       console.log(data)
+      outputCoords.value = '\t' + data.v1 + ' °N,\t' + data.v2 + ' °E'
+      hasTransformed.value = true
     }
     return {
       store,
@@ -139,10 +175,11 @@ export default {
       secondChecked,
       thirdChecked,
       isMobile,
-      outputSelected,
+      outputNotSelected,
       outputCoords,
       outputEPSG,
-      transform
+      transform,
+      hasTransformed
     }
   }
 }
@@ -162,22 +199,29 @@ export default {
 label {
   display: inline-flex;
 }
-span {
-  display: inline-flex;
-  align-items: flex-end;
-  margin-bottom: 0.5rem;
-}
 .output-coordinate {
   padding: 1rem 3rem 1rem 3rem;
   background-color: var(--lightSteel);
 }
 .transformed-coordinates {
   margin-top: 1rem;
+  width: 100%;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  padding-left: 1rem;
   background-color: var(--white);
   border: var(--darkSteel) solid 1px;
 }
-input:focus {
-  outline: none;
+.transformed-coordinates.hasTransformed {
+  background-color: var(--action);
+  color: var(--white);
+}
+.transformed-coordinates::selection {
+  background: var(--highlight2);
+}
+.title-bar {
+  margin-bottom: 1rem;
 }
 .copy-btn {
   background-color: var(--lightSteel);

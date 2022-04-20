@@ -1,8 +1,11 @@
 <template>
-  <article class="coordinate-transformation-box">
-    <InputCoordinates class="input" @input-epsg-changed="inputEPSGChanged"  @input-coords-changed="inputCoordsChanged"/>
-    <OutputCoordinates class="output" :inputEPSG=this.inputEPSG :inputCoords=this.inputCoords />
-  </article>
+  <section class="container">
+    <article class="coordinate-transformation-box" ref="mother">
+      <InputCoordinates class="input" @input-epsg-changed="inputEPSGChanged"  @input-coords-changed="inputCoordsChanged"/>
+      <OutputCoordinates class="output" :inputEPSG=inputEPSG :inputCoords=inputCoords @coordinates-copied="coordinatesCopied"/>
+    </article>
+  <div v-if="popupVisible" class="message">Koordinater kopieret</div>
+  </section>
 </template>
 
 <script>
@@ -17,28 +20,37 @@ export default {
   },
   methods: {
     inputEPSGChanged (code) {
+      console.log('code: ', code)
       this.inputEPSG = code
     },
     inputCoordsChanged (coords) {
-      console.log('CoordinateTransformation, inputCoordsChanged: ', coords)
       this.inputCoords = coords
+    },
+    coordinatesCopied (state) {
+      this.popupVisible = state
     }
   },
   setup () {
     const inputCoords = ref([0, 0])
     const colors = inject('themeColors')
     const inputEPSG = ref(Object)
+    const popupVisible = ref(false)
     return {
       inputCoords,
       colors,
       isMobile,
-      inputEPSG
+      inputEPSG,
+      popupVisible
     }
   }
 }
 </script>
 
 <style scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+}
 .coordinate-transformation-box {
   display: grid;
   width: 100%;
@@ -47,6 +59,14 @@ export default {
   border-radius: 25px;
   overflow: visible;
   z-index: 1;
+}
+.message {
+  align-self: center;
+  text-align: center;
+  margin: 1rem 0 0 0;
+  padding: 1rem;
+  background: var(--lightSteel);
+  border-radius: 18px;
 }
 .input {
   border-radius: 25px 25px 0 0;

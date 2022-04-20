@@ -5,7 +5,7 @@
       :width="size"
       :height="size"
       stroke-width="1"
-      :color="$themeColors.turquoise"
+      :color="$themeColors.white"
     />
   </div>
 </template>

@@ -70,7 +70,9 @@ export default {
     const inputCoords = ref([0, 0])
     const colors = inject('themeColors')
     onUpdated(() => {
-      context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1]])
+      if (inputCoords.value[0] !== '' && inputCoords.value[1] !== '') {
+        context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1]])
+      }
     })
     return {
       inputCoords,

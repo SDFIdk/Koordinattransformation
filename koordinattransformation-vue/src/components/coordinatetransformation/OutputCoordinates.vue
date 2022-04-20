@@ -1,20 +1,15 @@
 <template>
   <section class="output-coordinate">
-    <span class="title-bar">
-      <h3>Output</h3>
-    </span>
-    <CoordinateSelection :isOutput="true" :outputNotSelected="outputNotSelected" @output-selected="outputSelectedMethod"/>
-    <!-- <input v-if="!loading"
-      type="text"
-      class="transformed-coordinates"
-      :class="{ hasTransformed: hasTransformed}"
-      v-model="outputCoords"
-    > -->
+    <h3 class="title">Output</h3>
+    <CoordinateSelection
+      :isOutput="true"
+      :outputNotSelected="outputNotSelected"
+      @output-selected="outputSelectedMethod"/>
     <div class="transformed-coordinates" :class="{ hasTransformed: hasTransformed}">
-      <span v-if="loading">
-        <Loader size="1.5" :isLoading="true"></Loader>
+      <span v-if="isLoading">
+        <Loader size="1.5" :isLoading=isLoading></Loader>
       </span>
-      <span v-else>
+      <span v-else >
         {{ outputCoords }}
       </span>
     </div>
@@ -82,16 +77,25 @@
           class="info-icon"
         />
       </div>
-      <article class="copy-btn">
+      <button class="copy-btn" @click="copyCoordinates" :class="{hasTransformed: hasTransformed}">
         Kopiér
-        <Icon
+        <Icon v-show="!hasTransformed"
           icon="CopyIcon"
           :width="1.5"
           :height="1.5"
-          :color="colors.black"
+          :color="colors.darkSteel"
+          :strokeWidth="1"
           class="copy-icon"
         />
-      </article>
+        <Icon v-show="hasTransformed"
+          icon="CopyIcon"
+          :width="1.5"
+          :height="1.5"
+          :color="colors.white"
+          :strokeWidth="1"
+          class="copy-icon"
+        />
+      </button>
     </article>
   </section>
 </template>
@@ -126,6 +130,15 @@ export default {
       this.outputNotSelected = false
       this.outputEPSG = code
       this.transform()
+    },
+    copyCoordinates () {
+      if (!this.outputNotSelected) {
+        navigator.clipboard.writeText(this.outputCoords)
+        this.$emit('coordinates-copied', true)
+        window.setTimeout(() => {
+          this.$emit('coordinates-copied', false)
+        }, 3000)
+      }
     }
   },
   watch: {
@@ -150,23 +163,21 @@ export default {
     const outputCoords = ref('')
     const outputEPSG = ref(Object)
     const hasTransformed = ref(false)
+    const isLoading = ref(false)
     const transform = async () => {
-      const token = '?token=82153d2e2105603af96321adfdff1ba3'
-      const transURL = 'https://api.dataforsyningen.dk/rest/webproj/v1.0/trans/'
-      // const transURL = 'http://load201.kmsext.dk/rest/webproj/v1.1/trans/'
-      console.log('Input', props.inputEPSG.srid)
-      console.log('Output', outputEPSG.value.srid)
-      const sridIn = props.inputEPSG.srid === 'undefined' ? props.inputEPSG.srid : 'EPSG:25832'
-      const sridOut = outputEPSG.value.srid
-      console.log('props: ', props)
-      const v1 = props.inputCoords[0]
-      const v2 = props.inputCoords[1]
-      console.log('OutputCoordinates transform, v1: ', v1, ' v2: ', v2)
-      const response = await fetch(transURL + sridIn + '/' + sridOut + '/' + v1 + ',' + v2 + token)
-      const data = await response.json()
-      console.log(data)
-      outputCoords.value = '\t' + data.v1 + ' °N,\t' + data.v2 + ' °E'
+      isLoading.value = true
       hasTransformed.value = true
+      setTimeout(() => {
+        isLoading.value = false
+        const sridIn = props.inputEPSG.srid === 'undefined' ? props.inputEPSG.srid : 'EPSG:25832'
+        const sridOut = outputEPSG.value.srid
+        const v1 = props.inputCoords[0] ?? 0
+        const v2 = props.inputCoords[1] ?? 0
+        store.dispatch('trans/get', sridIn + '/' + sridOut + '/' + v1 + ',' + v2).then(() => {
+          const output = store.state.trans.data
+          outputCoords.value = '\t' + output.v1 + ' °N,\t' + output.v2 + ' °E'
+        })
+      }, 1000)
     }
     return {
       store,
@@ -178,8 +189,10 @@ export default {
       outputNotSelected,
       outputCoords,
       outputEPSG,
-      transform,
-      hasTransformed
+      hasTransformed,
+      isLoading,
+      // visiblePopup,
+      transform
     }
   }
 }
@@ -220,8 +233,8 @@ label {
 .transformed-coordinates::selection {
   background: var(--highlight2);
 }
-.title-bar {
-  margin-bottom: 1rem;
+.title {
+  margin: 0.5rem 0;
 }
 .copy-btn {
   background-color: var(--lightSteel);
@@ -231,6 +244,10 @@ label {
   float: right;
   padding: 0.3rem 1rem;
   display: inline-flex;
+}
+.copy-btn.hasTransformed {
+  background-color: var(--action);
+  color: var(--white);
 }
 input[type=radio] {
   opacity: 0;

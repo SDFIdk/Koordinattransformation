@@ -3,8 +3,13 @@
     <section class="transform-container">
       <CoordinateTransformation id="coordinate-transform" />
     </section>
+    <Icon
+      draggable
+      id="mapMarker"
+      class="map-marker"
+      icon="MapMarker"
+    />
   </div>
-  <div id="mouse-position" />
 </template>
 
 <script>
@@ -31,7 +36,14 @@ export default {
     let olView = ref({})
     let olMap = ref({})
     let mousePositionControl = ref({})
+    // const tmpPin = computed(() => { return document.getElementById('mapMarker') || {} })
+    // const markerDropped = (event) => {
+    //   tmpPin.value.style.cssText = 'left: ' + event.pageX + 'px; top: ' + (event.pageY - 10) + 'px;'
+    // }
+    const marker = ref({})
     onMounted(() => {
+      marker.value = document.getElementById('mapMarker')
+      marker.value.addListener('drag', (e) => console.log('dragging'))
       mousePositionControl = new MousePosition({
         coordinateFormat: createStringXY(4),
         projection: 'EPSG:3857',
@@ -74,17 +86,24 @@ export default {
       })
     })
     return {
-      olMap
+      olMap, marker
     }
   }
 }
 </script>
 
 <style scoped>
+.map-marker {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  right: 50%;
+  cursor: move;
+}
 .olmap {
   width: 100%;
   height: 90vh;
-  position: sticky;
+  position: relative;
   top: 0;
   z-index: 0;
   overflow-y: scroll;

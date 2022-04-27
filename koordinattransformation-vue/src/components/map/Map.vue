@@ -43,7 +43,7 @@ export default {
     const marker = ref({})
     onMounted(() => {
       marker.value = document.getElementById('mapMarker')
-      marker.value.addListener('drag', (e) => console.log('dragging'))
+      // marker.value.addListener('drag', (e) => console.log('dragging'))
       mousePositionControl = new MousePosition({
         coordinateFormat: createStringXY(4),
         projection: 'EPSG:3857',

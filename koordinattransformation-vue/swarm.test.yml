@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+
+  koordinattransformation-test:
+    deploy:
+      mode: replicated
+      labels:
+        - "traefik.enable=true"
+        # for Traefik V2
+        - "traefik.http.routers.koordinattransformation-test-redirect.entrypoints=web"
+        - "traefik.http.routers.koordinattransformation-test-redirect.rule=Host(`dail.aws.dk`)"
+        - "traefik.http.routers.koordinattransformation-test-redirect.middlewares=secHeadersAndRedirect@file"
+        - "traefik.http.routers.koordinattransformation-test.entrypoints=websecure"
+        - "traefik.http.routers.koordinattransformation-test.rule=Host(`dail.aws.dk`)"
+        - "traefik.http.routers.koordinattransformation-test.tls.certresolver=letsencrypt"
+        - "traefik.http.services.koordinattransformation-test.loadbalancer.server.port=80"
+    image: dataforsyningen/koordinattransformation-web:test-latest
+    ports:
+      - "15000:80"
+    environment:
+      - TZ=Europe/Copenhagen
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    name: traefik
+    external: true

@@ -108,16 +108,16 @@ import { useStore } from 'vuex'
 export default {
   name: 'OutputCoordinates',
   props: {
+    inputCoords: {
+      type: Array,
+      default () {
+        return ['0', '0']
+      }
+    },
     inputEPSG: {
       type: Object,
       default () {
         return null
-      }
-    },
-    inputCoords: {
-      type: Array,
-      default () {
-        return [0, 0]
       }
     }
   },
@@ -143,11 +143,15 @@ export default {
   },
   watch: {
     inputEPSG () {
+      console.log('OutputCoordinates: inputEPSG Changed')
+      console.log('outputNotSelected:', this.outputNotSelected)
+      this.printInput()
       if (!this.outputNotSelected) {
         this.transform()
       }
     },
     inputCoords () {
+      this.printInput()
       if (!this.outputNotSelected) {
         this.transform()
       }
@@ -164,6 +168,11 @@ export default {
     const outputEPSG = ref(Object)
     const hasTransformed = ref(false)
     const isLoading = ref(false)
+    const printInput = () => {
+      console.log('input epsg:', props.inputEPSG.title)
+      console.log(props.inputCoords[0] ?? 0)
+      console.log(props.inputCoords[1] ?? 0)
+    }
     const transform = async () => {
       isLoading.value = true
       hasTransformed.value = true
@@ -175,7 +184,9 @@ export default {
         const v2 = props.inputCoords[1] ?? 0
         store.dispatch('trans/get', sridIn + '/' + sridOut + '/' + v1 + ',' + v2).then(() => {
           const output = store.state.trans.data
-          outputCoords.value = '\t' + output.v1 + ' °N,\t' + output.v2 + ' °E'
+          console.log('before:', outputCoords.value)
+          outputCoords.value = output.v1 + ' °N,' + output.v2 + ' °E'
+          console.log('after:', outputCoords.value)
         })
       }, 1000)
     }
@@ -192,7 +203,8 @@ export default {
       hasTransformed,
       isLoading,
       // visiblePopup,
-      transform
+      transform,
+      printInput
     }
   }
 }

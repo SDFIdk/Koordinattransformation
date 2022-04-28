@@ -1,12 +1,11 @@
 <template>
-  <div id="map" class="olmap" ref="map">
+  <div id="map" class="olmap" ref="map" @mousemove="onMouseMove" @mouseup="endDrag">
     <section class="transform-container">
-      <CoordinateTransformation id="coordinate-transform" />
+      <CoordinateTransformation :inputCoords=inputCoords id="coordinate-transform" />
+      <div id="mouse-position"></div>
     </section>
-    <Icon
-      draggable
-      id="mapMarker"
-      class="map-marker"
+    <Icon @mousedown="startDrag"
+      id="map-marker"
       icon="MapMarker"
     />
   </div>
@@ -14,7 +13,7 @@
 
 <script>
 import 'ol/ol.css'
-import { onMounted, ref, defineAsyncComponent } from 'vue'
+import { onMounted, ref, defineAsyncComponent, computed } from 'vue'
 import OlMap from 'ol/Map'
 import OlView from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
@@ -32,23 +31,20 @@ export default {
   components: {
     CoordinateTransformation: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateTransformation'))
   },
+  provide () {
+    return {
+      inputCoords: this.inputCoords
+    }
+  },
   setup () {
     let olView = ref({})
     let olMap = ref({})
     let mousePositionControl = ref({})
-    // const tmpPin = computed(() => { return document.getElementById('mapMarker') || {} })
-    // const markerDropped = (event) => {
-    //   tmpPin.value.style.cssText = 'left: ' + event.pageX + 'px; top: ' + (event.pageY - 10) + 'px;'
-    // }
-    const marker = ref({})
+    const inputCoords = ref(['0', '0'])
     onMounted(() => {
-      marker.value = document.getElementById('mapMarker')
-      // marker.value.addListener('drag', (e) => console.log('dragging'))
       mousePositionControl = new MousePosition({
         coordinateFormat: createStringXY(4),
         projection: 'EPSG:3857',
-        // comment the following two lines to have the mouse position
-        // be placed within the map.
         className: 'custom-mouse-position',
         target: document.getElementById('mouse-position')
       })
@@ -85,15 +81,31 @@ export default {
         ]
       })
     })
+    const dragging = ref(false)
+    const mapMarker = computed(() => { return document.getElementById('map-marker') || {} })
+    const startDrag = () => {
+      dragging.value = true
+    }
+    const endDrag = (event) => {
+      dragging.value = false
+      const mpos = document.getElementById('mouse-position')
+      console.log('mpos.textContent', mpos.textContent.split(', '))
+      inputCoords.value = mpos.textContent.split(', ')
+    }
+    const onMouseMove = (event) => {
+      if (dragging.value) {
+        mapMarker.value.style.cssText = 'left: ' + (event.pageX - 23) + 'px; top: ' + (event.pageY - 105) + 'px;'
+      }
+    }
     return {
-      olMap, marker
+      olMap, dragging, startDrag, endDrag, onMouseMove, mousePositionControl, inputCoords
     }
   }
 }
 </script>
 
 <style scoped>
-.map-marker {
+#map-marker {
   position: absolute;
   z-index: 1;
   top: 50%;
@@ -116,5 +128,8 @@ export default {
   padding: 3.5vh 5vw;
   position: absolute;
   z-index: 1;
+}
+svg:hover {
+  transform: scale3d(1.2,1.2,1.2)
 }
 </style>

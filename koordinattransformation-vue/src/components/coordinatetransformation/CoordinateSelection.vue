@@ -63,7 +63,6 @@
 import { onMounted, ref, inject } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
-// import { compose } from 'ol/transform'
 
 export default {
   name: 'CoordinateSelectionComponent',

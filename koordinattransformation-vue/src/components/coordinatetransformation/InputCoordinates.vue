@@ -67,7 +67,7 @@ export default {
     }
   },
   setup (props, context) {
-    const inputCoords = ref([1295112.66, 7606748.02])
+    const inputCoords = ref(['0', '0'])
     const colors = inject('themeColors')
     onUpdated(() => {
       if (inputCoords.value[0] !== '' && inputCoords.value[1] !== '') {

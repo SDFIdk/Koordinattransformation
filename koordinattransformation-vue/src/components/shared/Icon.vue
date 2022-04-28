@@ -6,7 +6,6 @@
       :strokeWidth="strokeWidth"
       :width="width * rootFontSize"
       :height="height * rootFontSize"
-      xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="xMidYMid meet"
       fill="none"
       :style="{ width: (width * rootFontSize) + 'px', height: height * rootFontSize + 'px' }"
@@ -19,7 +18,6 @@
     :width="width * rootFontSize"
     :height="height * rootFontSize"
     :style="{ width: (width * rootFontSize) + 'px', height: height * rootFontSize + 'px' }"
-    xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid meet"
     fill="none"
   />

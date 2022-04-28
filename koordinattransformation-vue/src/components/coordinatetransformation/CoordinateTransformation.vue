@@ -30,7 +30,7 @@ export default {
     }
   },
   setup () {
-    const inputCoords = ref([0, 0])
+    const inputCoords = ref(['0', '0'])
     const colors = inject('themeColors')
     const inputEPSG = ref(Object)
     const popupVisible = ref(false)

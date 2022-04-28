@@ -13,11 +13,12 @@
 
 <script>
 import 'ol/ol.css'
-import { onMounted, ref, defineAsyncComponent, computed } from 'vue'
+import { onMounted, ref, defineAsyncComponent, computed, provide } from 'vue'
 import OlMap from 'ol/Map'
 import OlView from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
 import OSM from 'ol/source/OSM'
+// import Overlay from 'ol/Overlay'
 import Zoom from 'ol/control/Zoom'
 import { createStringXY } from 'ol/coordinate'
 import {
@@ -31,16 +32,12 @@ export default {
   components: {
     CoordinateTransformation: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateTransformation'))
   },
-  provide () {
-    return {
-      inputCoords: this.inputCoords
-    }
-  },
   setup () {
     let olView = ref({})
     let olMap = ref({})
     let mousePositionControl = ref({})
     const inputCoords = ref(['0', '0'])
+    provide('inputCoords', inputCoords)
     onMounted(() => {
       mousePositionControl = new MousePosition({
         coordinateFormat: createStringXY(4),
@@ -83,14 +80,23 @@ export default {
     })
     const dragging = ref(false)
     const mapMarker = computed(() => { return document.getElementById('map-marker') || {} })
+    // const overlay = new Overlay({
+    //   element: mapMarker,
+    //   positioning: 'center-center'
+    // })
+    // olMap.value.addOverlay(overlay)
     const startDrag = () => {
       dragging.value = true
     }
-    const endDrag = (event) => {
+    const endDrag = () => {
       dragging.value = false
-      const mpos = document.getElementById('mouse-position')
-      console.log('mpos.textContent', mpos.textContent.split(', '))
-      inputCoords.value = mpos.textContent.split(', ')
+      let mpos = document.getElementById('mouse-position')
+      if (mpos !== undefined) {
+        mpos = mpos.textContent.split(', ')
+        if (mpos.length > 1) {
+          inputCoords.value = mpos
+        }
+      }
     }
     const onMouseMove = (event) => {
       if (dragging.value) {

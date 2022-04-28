@@ -115,7 +115,7 @@ export default {
       }
     },
     inputEPSG: {
-      type: Object,
+      type: Function,
       default () {
         return null
       }
@@ -143,15 +143,11 @@ export default {
   },
   watch: {
     inputEPSG () {
-      console.log('OutputCoordinates: inputEPSG Changed')
-      console.log('outputNotSelected:', this.outputNotSelected)
-      this.printInput()
       if (!this.outputNotSelected) {
         this.transform()
       }
     },
     inputCoords () {
-      this.printInput()
       if (!this.outputNotSelected) {
         this.transform()
       }
@@ -168,20 +164,19 @@ export default {
     const outputEPSG = ref(Object)
     const hasTransformed = ref(false)
     const isLoading = ref(false)
-    const printInput = () => {
-      console.log('input epsg:', props.inputEPSG.title)
-      console.log(props.inputCoords[0] ?? 0)
-      console.log(props.inputCoords[1] ?? 0)
-    }
     const transform = async () => {
       isLoading.value = true
       hasTransformed.value = true
       setTimeout(() => {
         isLoading.value = false
-        const sridIn = props.inputEPSG.srid === 'undefined' ? props.inputEPSG.srid : 'EPSG:25832'
+        const sridIn = props.inputEPSG.srid === undefined ? 'EPSG:25832' : props.inputEPSG.srid
+        console.log('sridIn', sridIn)
         const sridOut = outputEPSG.value.srid
         const v1 = props.inputCoords[0] ?? 0
         const v2 = props.inputCoords[1] ?? 0
+        console.log('inputCoords:', props.inputCoords)
+        console.log('v1', v1)
+        console.log('v2', v2)
         store.dispatch('trans/get', sridIn + '/' + sridOut + '/' + v1 + ',' + v2).then(() => {
           const output = store.state.trans.data
           console.log('before:', outputCoords.value)
@@ -202,9 +197,7 @@ export default {
       outputEPSG,
       hasTransformed,
       isLoading,
-      // visiblePopup,
-      transform,
-      printInput
+      transform
     }
   }
 }

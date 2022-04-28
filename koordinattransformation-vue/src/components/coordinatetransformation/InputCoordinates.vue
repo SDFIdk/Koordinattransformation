@@ -54,7 +54,7 @@
 <script>
 
 import { isMobile } from 'mobile-device-detect'
-import { defineAsyncComponent, ref, inject, onUpdated } from 'vue'
+import { defineAsyncComponent, ref, inject, onUpdated, watch } from 'vue'
 
 export default {
   name: 'InputCoordinates',
@@ -69,6 +69,11 @@ export default {
   setup (props, context) {
     const inputCoords = ref(['0', '0'])
     const colors = inject('themeColors')
+    const mapMarkerInputCoords = inject('inputCoords')
+    watch(mapMarkerInputCoords, () => {
+      console.log('WATCH')
+      inputCoords.value = mapMarkerInputCoords.value
+    })
     onUpdated(() => {
       if (inputCoords.value[0] !== '' && inputCoords.value[1] !== '') {
         context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1]])

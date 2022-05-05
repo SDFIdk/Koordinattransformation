@@ -50,8 +50,8 @@ export default {
     const olView = ref({})
     const olMap = ref({})
     let mousePositionControl = ref({})
-    const inputCoords = ref(['0', '0'])
     const center = props.isDenmark ? [1344085.3822, 7487513.4163] : [-5759445.7863, 9392886.5116]
+    const inputCoords = ref([])
     // const mapMarker = computed(() => { return document.getElementById('map-marker') || {} })
     provide('inputCoords', inputCoords)
     onMounted(() => {
@@ -104,6 +104,9 @@ export default {
         })
         overlay.setPosition([e.coordinate[0], e.coordinate[1]])
         olMap.value.addOverlay(overlay)
+      })
+      olMap.value.on('postrender', function () {
+        inputCoords.value = ['' + center[0], '' + center[1]]
       })
     })
 

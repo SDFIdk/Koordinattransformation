@@ -107,8 +107,6 @@ export default {
     }
 
     const endDrag = (e) => {
-      console.log(e)
-      console.log(olMap.value)
       // const pinnedMarker = document.getElementById('pinned-marker')
       // const overlay = new Overlay({
       //   element: pinnedMarker,

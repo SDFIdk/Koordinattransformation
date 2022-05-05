@@ -170,18 +170,12 @@ export default {
       setTimeout(() => {
         isLoading.value = false
         const sridIn = props.inputEPSG.srid === undefined ? 'EPSG:25832' : props.inputEPSG.srid
-        console.log('sridIn', sridIn)
         const sridOut = outputEPSG.value.srid
         const v1 = props.inputCoords[0] ?? 0
         const v2 = props.inputCoords[1] ?? 0
-        console.log('inputCoords:', props.inputCoords)
-        console.log('v1', v1)
-        console.log('v2', v2)
         store.dispatch('trans/get', sridIn + '/' + sridOut + '/' + v1 + ',' + v2).then(() => {
           const output = store.state.trans.data
-          console.log('before:', outputCoords.value)
           outputCoords.value = output.v1 + ' °N,' + output.v2 + ' °E'
-          console.log('after:', outputCoords.value)
         })
       }, 1000)
     }

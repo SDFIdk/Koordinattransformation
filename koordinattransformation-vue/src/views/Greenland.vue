@@ -1,10 +1,14 @@
 <template>
-  <h1>This is Greenland</h1>
+  <Map :isDenmark="false"/>
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue'
 export default {
-  name: 'GreenlandView'
+  name: 'GreenlandView',
+  components: {
+    Map: defineAsyncComponent(() => import('@/components/map/Map'))
+  }
 }
 </script>
 

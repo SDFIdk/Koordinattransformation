@@ -3,13 +3,14 @@
 </template>
 
 <script>
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 
 export default {
   name: 'HomeView',
   setup () {
-    const router = useRouter()
-    router.push('Denmark')
+    // const router = useRouter()
+    // router.push('Denmark')
+    // router.push('Greenland')
   }
 }
 </script>

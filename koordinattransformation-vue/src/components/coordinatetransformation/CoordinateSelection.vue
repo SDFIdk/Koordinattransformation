@@ -122,9 +122,9 @@ export default {
           ? 'Vælg koordinatsystem'
           : filteredCRS.value[0].title
       } else if (route.name === 'Greenland') {
-        for (let i = 0, iEnd = crs.value.DK.length; i < iEnd; ++i) {
+        for (let i = 0, iEnd = crs.value.GL.length; i < iEnd; ++i) {
           await store
-            .dispatch('CRSInformation/get', crs.value.DK[i])
+            .dispatch('CRSInformation/get', crs.value.GL[i])
             .then(() => {
               tempCRS.push(store.state.CRSInformation.data)
             })

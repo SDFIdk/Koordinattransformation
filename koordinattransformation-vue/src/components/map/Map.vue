@@ -37,11 +37,21 @@ export default {
   components: {
     CoordinateTransformation: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateTransformation'))
   },
-  setup () {
+  props: {
+    // Check if the selection is input or output selection
+    isDenmark: {
+      type: Boolean,
+      default () {
+        return true
+      }
+    }
+  },
+  setup (props) {
     const olView = ref({})
     const olMap = ref({})
     let mousePositionControl = ref({})
     const inputCoords = ref(['0', '0'])
+    const center = props.isDenmark ? [1344085.3822, 7487513.4163] : [-5759445.7863, 9392886.5116]
     // const mapMarker = computed(() => { return document.getElementById('map-marker') || {} })
     provide('inputCoords', inputCoords)
     onMounted(() => {
@@ -52,8 +62,8 @@ export default {
         target: document.getElementById('mouse-position')
       })
       olView.value = new OlView({
-        center: [1295112.66, 7606748.02],
-        zoom: 7.5,
+        center: center,
+        zoom: 10,
         minZoom: 4,
         maxZoom: 20,
         showFullExtent: true,
@@ -86,7 +96,6 @@ export default {
       olMap.value.on('click', function (e) {
         let mpos = document.getElementById('mouse-position')
         mpos = mpos.textContent.split(', ')
-        console.log(mpos)
         inputCoords.value = mpos
         const pinnedMarker = document.getElementById('pinned-marker')
         const overlay = new Overlay({

@@ -1,15 +1,14 @@
 <template>
-  <!-- <div id="map" class="olmap" ref="map"> -->
-  <div id="map" class="olmap" ref="map" @mousemove="onMouseMove" @mouseup="endDrag" >
+  <div id="map" class="olmap" ref="map">
+  <!-- <div id="map" class="olmap" ref="map" @mousemove="onMouseMove" @mouseup="endDrag" > -->
     <section class="transform-container">
       <CoordinateTransformation :inputCoords=inputCoords id="coordinate-transform" />
       <div id="mouse-position"></div>
     </section>
-    <Icon @mousedown="startDrag"
+    <!-- <Icon @mousedown="startDrag"
       id="map-marker"
       icon="MapMarker"
-      :class="{dragging: dragging}"
-    />
+    /> -->
     <Icon
       id="pinned-marker"
       icon="MapMarker"
@@ -19,12 +18,12 @@
 
 <script>
 import 'ol/ol.css'
-import { onMounted, ref, defineAsyncComponent, provide, computed } from 'vue'
+import { onMounted, ref, defineAsyncComponent, provide } from 'vue'
 import OlMap from 'ol/Map'
 import OlView from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
 import OSM from 'ol/source/OSM'
-// import Overlay from 'ol/Overlay'
+import Overlay from 'ol/Overlay'
 import Zoom from 'ol/control/Zoom'
 import { createStringXY } from 'ol/coordinate'
 import {
@@ -43,11 +42,9 @@ export default {
     const olMap = ref({})
     let mousePositionControl = ref({})
     const inputCoords = ref(['0', '0'])
-    // const pinnedMarker = ref({})
-    const mapMarker = computed(() => { return document.getElementById('map-marker') || {} })
+    // const mapMarker = computed(() => { return document.getElementById('map-marker') || {} })
     provide('inputCoords', inputCoords)
     onMounted(() => {
-      // pinnedMarker.value = document.getElementById('pinned-marker')
       mousePositionControl = new MousePosition({
         coordinateFormat: createStringXY(4),
         projection: 'EPSG:3857',
@@ -86,52 +83,71 @@ export default {
           })
         ]
       })
-      // olMap.value.on('click', function (e) {
-      //   console.log('coordinate', e.map)
-      //   console.log('coordinate', e.map.pixelToCoordinateTransform)
-      //   const pinnedMarker = document.getElementById('pinned-marker')
-      //   const overlay = new Overlay({
-      //     element: pinned-marker,
-      //     positioning: 'center-center'
-      //   })
-      //   overlay.setPosition([e.coordinate[0] + 0, e.coordinate[1] - 105])
-      //   olMap.value.addOverlay(overlay)
-      // })
+      olMap.value.on('click', function (e) {
+        let mpos = document.getElementById('mouse-position')
+        mpos = mpos.textContent.split(', ')
+        console.log(mpos)
+        inputCoords.value = mpos
+        const pinnedMarker = document.getElementById('pinned-marker')
+        const overlay = new Overlay({
+          element: pinnedMarker,
+          positioning: 'center-center'
+        })
+        overlay.setPosition([e.coordinate[0], e.coordinate[1]])
+        olMap.value.addOverlay(overlay)
+      })
     })
 
-    const isPinned = ref(false)
-    const dragging = ref(false)
+    // const isPinned = ref(false)
+    // const dragging = ref(false)
+    // const startDrag = () => {
+    //   dragging.value = true
+    // }
+    // const checkSize = () => {
+    //   console.log('check size')
+    //   // const small = olMap.value.getSize()[0] < 600
+    //   // attribution.setCollapsible(small)
+    //   // attribution.setCollapsed(small)
+    // }
+    // const attribution = new Attribution({
+    //   collapsible: false
+    // })
+    // const endDrag = (e) => {
+    //   let mpos = null
+    //   if (dragging.value) {
+    //     mpos = document.getElementById('mouse-position')
+    //     console.log(mpos)
+    //     if (mpos !== undefined) {
+    //       mpos = mpos.textContent.split(', ')
+    //       if (mpos.length > 1) {
+    //         inputCoords.value = mpos
+    //       }
+    //     }
+    //     const pinnedMarker = document.getElementById('pinned-marker')
+    //     const overlay = new Overlay({
+    //       element: pinnedMarker,
+    //       // element: mapMarker.value,
+    //       positioning: 'center-center'
+    //     })
+    //     overlay.setPosition(mpos)
+    //     olMap.value.addOverlay(overlay)
+    //     // window.addEventListener('resize', checkSize)
+    //     // console.log(window)
+    //     // olMap.value.addEventListener('resize', checkSize)
+    //     // checkSize()
+    //   }
+    //   // const pinnedMarker = document.getElementById('pinned-marker')
+    //   dragging.value = false
+    // }
+    // const onMouseMove = (event) => {
+    //   if (dragging.value) {
+    //     mapMarker.value.style.cssText = 'left: ' + (event.pageX - 20) + 'px; top: ' + (event.pageY - 96) + 'px;'
+    //   }
+    // }
 
-    const startDrag = () => {
-      dragging.value = true
-    }
-
-    const endDrag = (e) => {
-      // const pinnedMarker = document.getElementById('pinned-marker')
-      // const overlay = new Overlay({
-      //   element: pinnedMarker,
-      //   positioning: 'center-center'
-      // })
-      // overlay.setPosition(e.coordinate)
-      // olMap.value.addOverlay(overlay)
-
-      dragging.value = false
-      let mpos = document.getElementById('mouse-position')
-      if (mpos !== undefined) {
-        mpos = mpos.textContent.split(', ')
-        if (mpos.length > 1) {
-          inputCoords.value = mpos
-        }
-      }
-    }
-    const onMouseMove = (event) => {
-      if (dragging.value) {
-        mapMarker.value.style.cssText = 'left: ' + (event.pageX - 23) + 'px; top: ' + (event.pageY - 105) + 'px;'
-      }
-    }
     return {
-      // olMap, mousePositionControl, inputCoords
-      olMap, dragging, startDrag, endDrag, onMouseMove, mousePositionControl, inputCoords, isPinned
+      olMap, mousePositionControl, inputCoords
+      // olMap, dragging, startDrag, endDrag, onMouseMove, mousePositionControl, inputCoords, isPinned
     }
   }
 }
@@ -143,6 +159,7 @@ export default {
   z-index: 1;
   /* top: 50%;
   right: 50%; */
+  transform: translateX(-50%) translateY(-85%);
 }
 #map-marker {
   position: absolute;
@@ -150,9 +167,7 @@ export default {
   top: 50%;
   right: 50%;
   cursor: move;
-}
-#map-marker.dragged {
-  display: block;
+  display: none;
 }
 .olmap {
   width: 100%;
@@ -170,8 +185,5 @@ export default {
   padding: 3.5vh 5vw;
   position: absolute;
   z-index: 1;
-}
-svg:hover {
-  transform: scale3d(1.2,1.2,1.2)
 }
 </style>

@@ -175,7 +175,7 @@ export default {
         const v2 = props.inputCoords[1] ?? 0
         store.dispatch('trans/get', sridIn + '/' + sridOut + '/' + v1 + ',' + v2).then(() => {
           const output = store.state.trans.data
-          outputCoords.value = output.v1 + ' °N,' + output.v2 + ' °E'
+          outputCoords.value = output.v1 + ' °N, ' + output.v2 + ' °E'
         })
       }, 1000)
     }

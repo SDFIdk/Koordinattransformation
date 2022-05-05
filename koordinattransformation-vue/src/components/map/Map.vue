@@ -1,5 +1,6 @@
 <template>
-  <div id="map" class="olmap" ref="map" @mousemove="onMouseMove" @mouseup="endDrag">
+  <!-- <div id="map" class="olmap" ref="map"> -->
+  <div id="map" class="olmap" ref="map" @mousemove="onMouseMove" @mouseup="endDrag" >
     <section class="transform-container">
       <CoordinateTransformation :inputCoords=inputCoords id="coordinate-transform" />
       <div id="mouse-position"></div>
@@ -7,13 +8,18 @@
     <Icon @mousedown="startDrag"
       id="map-marker"
       icon="MapMarker"
+      :class="{dragging: dragging}"
+    />
+    <Icon
+      id="pinned-marker"
+      icon="MapMarker"
     />
   </div>
 </template>
 
 <script>
 import 'ol/ol.css'
-import { onMounted, ref, defineAsyncComponent, computed, provide } from 'vue'
+import { onMounted, ref, defineAsyncComponent, provide, computed } from 'vue'
 import OlMap from 'ol/Map'
 import OlView from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
@@ -33,19 +39,22 @@ export default {
     CoordinateTransformation: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateTransformation'))
   },
   setup () {
-    let olView = ref({})
-    let olMap = ref({})
+    const olView = ref({})
+    const olMap = ref({})
     let mousePositionControl = ref({})
     const inputCoords = ref(['0', '0'])
+    // const pinnedMarker = ref({})
+    const mapMarker = computed(() => { return document.getElementById('map-marker') || {} })
     provide('inputCoords', inputCoords)
     onMounted(() => {
+      // pinnedMarker.value = document.getElementById('pinned-marker')
       mousePositionControl = new MousePosition({
         coordinateFormat: createStringXY(4),
         projection: 'EPSG:3857',
         className: 'custom-mouse-position',
         target: document.getElementById('mouse-position')
       })
-      olView = new OlView({
+      olView.value = new OlView({
         center: [1295112.66, 7606748.02],
         zoom: 7.5,
         minZoom: 4,
@@ -53,7 +62,7 @@ export default {
         showFullExtent: true,
         projection: 'EPSG:3857'
       })
-      olMap = new OlMap({
+      olMap.value = new OlMap({
         target: 'map',
         controls: defaultControls({
           zoom: false,
@@ -70,25 +79,44 @@ export default {
           zoomInTipLabel: 'Zoom2',
           zoomOutTipLabel: 'Zoom2'
         }),
-        view: olView,
+        view: olView.value,
         layers: [
           new TileLayer({
             source: new OSM()
           })
         ]
       })
+      // olMap.value.on('click', function (e) {
+      //   console.log('coordinate', e.map)
+      //   console.log('coordinate', e.map.pixelToCoordinateTransform)
+      //   const pinnedMarker = document.getElementById('pinned-marker')
+      //   const overlay = new Overlay({
+      //     element: pinned-marker,
+      //     positioning: 'center-center'
+      //   })
+      //   overlay.setPosition([e.coordinate[0] + 0, e.coordinate[1] - 105])
+      //   olMap.value.addOverlay(overlay)
+      // })
     })
+
+    const isPinned = ref(false)
     const dragging = ref(false)
-    const mapMarker = computed(() => { return document.getElementById('map-marker') || {} })
-    // const overlay = new Overlay({
-    //   element: mapMarker,
-    //   positioning: 'center-center'
-    // })
-    // olMap.value.addOverlay(overlay)
+
     const startDrag = () => {
       dragging.value = true
     }
-    const endDrag = () => {
+
+    const endDrag = (e) => {
+      console.log(e)
+      console.log(olMap.value)
+      // const pinnedMarker = document.getElementById('pinned-marker')
+      // const overlay = new Overlay({
+      //   element: pinnedMarker,
+      //   positioning: 'center-center'
+      // })
+      // overlay.setPosition(e.coordinate)
+      // olMap.value.addOverlay(overlay)
+
       dragging.value = false
       let mpos = document.getElementById('mouse-position')
       if (mpos !== undefined) {
@@ -104,13 +132,20 @@ export default {
       }
     }
     return {
-      olMap, dragging, startDrag, endDrag, onMouseMove, mousePositionControl, inputCoords
+      // olMap, mousePositionControl, inputCoords
+      olMap, dragging, startDrag, endDrag, onMouseMove, mousePositionControl, inputCoords, isPinned
     }
   }
 }
 </script>
 
 <style scoped>
+#pinned-marker {
+  position: absolute;
+  z-index: 1;
+  /* top: 50%;
+  right: 50%; */
+}
 #map-marker {
   position: absolute;
   z-index: 1;
@@ -118,10 +153,13 @@ export default {
   right: 50%;
   cursor: move;
 }
+#map-marker.dragged {
+  display: block;
+}
 .olmap {
   width: 100%;
   height: 90vh;
-  position: relative;
+  position: sticky;
   top: 0;
   z-index: 0;
   overflow-y: scroll;

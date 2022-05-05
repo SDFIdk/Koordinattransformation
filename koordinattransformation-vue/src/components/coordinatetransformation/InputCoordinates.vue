@@ -71,7 +71,6 @@ export default {
     const colors = inject('themeColors')
     const mapMarkerInputCoords = inject('inputCoords')
     watch(mapMarkerInputCoords, () => {
-      console.log('WATCH')
       inputCoords.value = mapMarkerInputCoords.value
     })
     onUpdated(() => {

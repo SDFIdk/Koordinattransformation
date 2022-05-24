@@ -1,8 +1,8 @@
 pipeline {
    agent none
     stages {
-        stage ('load210') {
-            agent { node { label 'load210' } }
+        stage ('Utilhotel') {
+            agent { node { label 'Utilhotel' } }
             steps {
                 dir('/local/jenkins/koordinattransformation-test/build') {
                     git credentialsId: '48c7f747-c6c3-40aa-9579-b99fc976b0d4',
@@ -18,7 +18,7 @@ pipeline {
         }
 
         stage ('build-test') {
-            agent { node { label 'load210' } }
+            agent { node { label 'Utilhotel' } }
             steps {
                 dir('/local/jenkins/koordinattransformation-test/build') {
                     sh 'cp .env* public/koordinattransformation-vue'
@@ -30,7 +30,7 @@ pipeline {
         }
 
         stage ('deploy-test') {
-            agent { node { label 'load189' } }
+            agent { node { label 'Webhotel-Prod' } }
             steps {
                 dir('/local/jenkins/koordinattransformation-test/deploy') {
                     git credentialsId: '48c7f747-c6c3-40aa-9579-b99fc976b0d4',

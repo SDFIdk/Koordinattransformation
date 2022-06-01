@@ -119,8 +119,8 @@ export default {
 #pinned-marker {
   position: absolute;
   z-index: 1;
-  top: 50%;
-  right: 50%;
+  /* top: 50%;
+  right: 50%; */
   transform: translateX(-50%) translateY(-85%);
 }
 #map-marker {

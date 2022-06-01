@@ -117,7 +117,7 @@ export default {
 
 <style scoped>
 #pinned-marker {
-  position: absolute;
+  position: absolute; 
   z-index: 1;
   top: 50%;
   right: 50%;

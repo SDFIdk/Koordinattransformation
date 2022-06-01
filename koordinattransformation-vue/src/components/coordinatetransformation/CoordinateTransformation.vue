@@ -20,11 +20,9 @@ export default {
   },
   methods: {
     inputEPSGChanged (code) {
-      console.log('inputEPSGChanged')
       this.inputEPSG = code
     },
     inputCoordsChanged (coords) {
-      console.log('inputCoordsChanged')
       this.inputCoords = coords
     },
     coordinatesCopied (state) {

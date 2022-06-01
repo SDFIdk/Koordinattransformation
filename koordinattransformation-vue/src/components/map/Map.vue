@@ -95,10 +95,7 @@ export default {
       olMap.value.on('click', function (e) {
         let mpos = document.getElementById('mouse-position')
         mpos = mpos.textContent.split(', ')
-        console.log('mpos', mpos)
-        console.log('inputCoords, before', inputCoords.value)
         inputCoords.value = mpos
-        console.log('inputCoords, after', inputCoords.value)
         const pinnedMarker = document.getElementById('pinned-marker')
         const overlay = new Overlay({
           element: pinnedMarker,
@@ -106,6 +103,9 @@ export default {
         })
         overlay.setPosition([e.coordinate[0], e.coordinate[1]])
         olMap.value.addOverlay(overlay)
+      })
+      olMap.value.on('postrender', function () {
+        inputCoords.value = ['' + center[0], '' + center[1]]
       })
     })
     return {

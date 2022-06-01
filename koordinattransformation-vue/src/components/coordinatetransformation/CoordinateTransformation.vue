@@ -31,12 +31,8 @@ export default {
       this.popupVisible = state
     }
   },
-  updated (props) {
-    this.inputCoords = props.inputCoords
-  },
-  setup (props) {
+  setup () {
     const inputCoords = ref(['0', '0'])
-    // const inputCoords = props.inputCoords
     const colors = inject('themeColors')
     const inputEPSG = ref(Object)
     const popupVisible = ref(false)
@@ -45,8 +41,7 @@ export default {
       colors,
       isMobile,
       inputEPSG,
-      popupVisible,
-      props
+      popupVisible
     }
   }
 }

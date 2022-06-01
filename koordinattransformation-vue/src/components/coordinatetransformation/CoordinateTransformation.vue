@@ -20,17 +20,23 @@ export default {
   },
   methods: {
     inputEPSGChanged (code) {
+      console.log('inputEPSGChanged')
       this.inputEPSG = code
     },
     inputCoordsChanged (coords) {
+      console.log('inputCoordsChanged')
       this.inputCoords = coords
     },
     coordinatesCopied (state) {
       this.popupVisible = state
     }
   },
-  setup () {
+  updated (props) {
+    this.inputCoords = props.inputCoords
+  },
+  setup (props) {
     const inputCoords = ref(['0', '0'])
+    // const inputCoords = props.inputCoords
     const colors = inject('themeColors')
     const inputEPSG = ref(Object)
     const popupVisible = ref(false)
@@ -39,7 +45,8 @@ export default {
       colors,
       isMobile,
       inputEPSG,
-      popupVisible
+      popupVisible,
+      props
     }
   }
 }

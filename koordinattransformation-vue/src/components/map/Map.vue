@@ -51,8 +51,7 @@ export default {
     const olMap = ref({})
     let mousePositionControl = ref({})
     const center = props.isDenmark ? [1344085.3822, 7487513.4163] : [-5759445.7863, 9392886.5116]
-    const inputCoords = ref([])
-    // const mapMarker = computed(() => { return document.getElementById('map-marker') || {} })
+    const inputCoords = ref(['' + center[0], '' + center[1]])
     provide('inputCoords', inputCoords)
     onMounted(() => {
       mousePositionControl = new MousePosition({
@@ -96,7 +95,10 @@ export default {
       olMap.value.on('click', function (e) {
         let mpos = document.getElementById('mouse-position')
         mpos = mpos.textContent.split(', ')
+        console.log('mpos', mpos)
+        console.log('inputCoords, before', inputCoords.value)
         inputCoords.value = mpos
+        console.log('inputCoords, after', inputCoords.value)
         const pinnedMarker = document.getElementById('pinned-marker')
         const overlay = new Overlay({
           element: pinnedMarker,
@@ -105,61 +107,9 @@ export default {
         overlay.setPosition([e.coordinate[0], e.coordinate[1]])
         olMap.value.addOverlay(overlay)
       })
-      olMap.value.on('postrender', function () {
-        inputCoords.value = ['' + center[0], '' + center[1]]
-      })
     })
-
-    // const isPinned = ref(false)
-    // const dragging = ref(false)
-    // const startDrag = () => {
-    //   dragging.value = true
-    // }
-    // const checkSize = () => {
-    //   console.log('check size')
-    //   // const small = olMap.value.getSize()[0] < 600
-    //   // attribution.setCollapsible(small)
-    //   // attribution.setCollapsed(small)
-    // }
-    // const attribution = new Attribution({
-    //   collapsible: false
-    // })
-    // const endDrag = (e) => {
-    //   let mpos = null
-    //   if (dragging.value) {
-    //     mpos = document.getElementById('mouse-position')
-    //     console.log(mpos)
-    //     if (mpos !== undefined) {
-    //       mpos = mpos.textContent.split(', ')
-    //       if (mpos.length > 1) {
-    //         inputCoords.value = mpos
-    //       }
-    //     }
-    //     const pinnedMarker = document.getElementById('pinned-marker')
-    //     const overlay = new Overlay({
-    //       element: pinnedMarker,
-    //       // element: mapMarker.value,
-    //       positioning: 'center-center'
-    //     })
-    //     overlay.setPosition(mpos)
-    //     olMap.value.addOverlay(overlay)
-    //     // window.addEventListener('resize', checkSize)
-    //     // console.log(window)
-    //     // olMap.value.addEventListener('resize', checkSize)
-    //     // checkSize()
-    //   }
-    //   // const pinnedMarker = document.getElementById('pinned-marker')
-    //   dragging.value = false
-    // }
-    // const onMouseMove = (event) => {
-    //   if (dragging.value) {
-    //     mapMarker.value.style.cssText = 'left: ' + (event.pageX - 20) + 'px; top: ' + (event.pageY - 96) + 'px;'
-    //   }
-    // }
-
     return {
       olMap, mousePositionControl, inputCoords
-      // olMap, dragging, startDrag, endDrag, onMouseMove, mousePositionControl, inputCoords, isPinned
     }
   }
 }
@@ -169,8 +119,8 @@ export default {
 #pinned-marker {
   position: absolute;
   z-index: 1;
-  /* top: 50%;
-  right: 50%; */
+  top: 50%;
+  right: 50%;
   transform: translateX(-50%) translateY(-85%);
 }
 #map-marker {

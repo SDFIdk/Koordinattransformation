@@ -23,7 +23,7 @@ export class Koortrans {
         return new Promise((resolve, reject) => {
           commit('request')
           fetch(environmentAPIDomains[process.env.VUE_APP_NODE_ENV] + path + crsParameter + '?token=' + tokens.get[process.env.VUE_APP_NODE_ENV])
-          //fetch('https://api.dataforsyningen.dk/rest/webproj' + path + crsParameter + '?token=' + 'fe21ca875526ff7d91c068a943f2f821')
+          // fetch('https://api.dataforsyningen.dk/rest/webproj' + path + crsParameter + '?token=' + 'fe21ca875526ff7d91c068a943f2f821')
             .then(resp => {
               resp.json().then(data => {
                 commit('success', data)

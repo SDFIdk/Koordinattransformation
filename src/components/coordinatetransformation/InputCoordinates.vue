@@ -52,9 +52,10 @@
       <input class="searchbar-input"/>
       <Icon
         icon="SearchIcon"
-        :color="colors.black"
+        :color="colors.turquoise"
         :width="1.8"
         :height="1.8"
+        :stroke-width="0.75"
       />
     </div>
   </section>
@@ -62,7 +63,7 @@
 
 <script>
 
-import { isMobile } from 'mobile-device-detect'
+// import { isMobile, isBrowser } from 'mobile-device-detect'
 import { defineAsyncComponent, ref, inject, onUpdated, watch } from 'vue'
 
 export default {
@@ -76,6 +77,7 @@ export default {
     }
   },
   setup (props, context) {
+    const isMobile = true
     const mapMarkerInputCoords = inject('inputCoords')
     const inputCoords = ref(mapMarkerInputCoords.value)
     const colors = inject('themeColors')

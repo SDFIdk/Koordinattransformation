@@ -270,6 +270,7 @@ input[type=radio]:checked {
 }
 .radiogroup {
   display: inline-flex;
+  flex-wrap: nowrap;
 }
 .copy-icon {
   margin-left: 0.75rem;

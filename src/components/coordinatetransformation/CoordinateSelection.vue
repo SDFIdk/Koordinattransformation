@@ -187,8 +187,7 @@ export default {
   width: 100%;
 }
 .input-crs {
-  padding: 0.5rem 0 0 0.5rem;
-  margin-bottom: 0.5rem;
+  padding: 0 0 0 0.5rem;
   display: inline-flex;
   align-items: center;
 }

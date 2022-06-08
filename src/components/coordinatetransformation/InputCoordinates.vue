@@ -48,6 +48,15 @@
         <div class="degrees">°</div>
       </span>
     </article>
+    <div class="searchbar">
+      <input class="searchbar-input"/>
+      <Icon
+        icon="SearchIcon"
+        :color="colors.black"
+        :width="1.8"
+        :height="1.8"
+      />
+    </div>
   </section>
 </template>
 
@@ -95,10 +104,12 @@ export default {
 .coordinate-selection-wrapper {
   display: flex;
   align-items: center;
+  margin: 1rem 0;
 }
 .title-bar {
   display: inline-flex;
-  align-self: center;
+  align-items: center;
+  width: 100%;
 }
 input:focus {
   outline: none;
@@ -110,7 +121,6 @@ input:focus {
 }
 li {
   list-style-type: none;
-  padding: 0.5rem 0 0.5rem 0;
   margin: 0;
   border-bottom: var(--action) solid 1px;
 }
@@ -127,7 +137,7 @@ ul {
 }
 .chosen-coordinates span {
   border-bottom: var(--action) solid 1px;
-  margin: 0 1rem 0 0;
+  margin: 0 0.5rem 0 0;
   flex-grow: 1;
   justify-content: space-between;
   display: inline-flex;
@@ -138,7 +148,7 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type=number] {
+input {
   -moz-appearance: textfield;
   border: none;
   width: 90%;
@@ -148,7 +158,19 @@ input[type=number] {
   transform: rotate(90deg);
 }
 .degrees {
-  padding: 0 1.5rem 0.5rem 0;
+  padding: 0 0.5rem 0.5rem 0;
   font-size: 1.25rem;
+}
+.searchbar {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 1.25rem;
+  width: 100%;
+  border: var(--darkSteel) solid 1px;
+  border-radius: 16px;
+  height: 2rem;
+}
+.searchbar-input {
+  margin: 0 0 0 1rem;
 }
 </style>

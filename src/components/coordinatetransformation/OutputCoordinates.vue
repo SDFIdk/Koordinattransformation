@@ -1,15 +1,17 @@
 <template>
   <section class="output-coordinate">
-    <h3 class="title">Output</h3>
-    <CoordinateSelection
-      :isOutput="true"
-      :outputNotSelected="outputNotSelected"
-      @output-selected="outputSelectedMethod"/>
+    <h3>Output</h3>
+    <section class="coordinate-selection-wrapper">
+      <CoordinateSelection
+        :isOutput="true"
+        :outputNotSelected="outputNotSelected"
+        @output-selected="outputSelectedMethod"/>
+    </section>
     <div class="transformed-coordinates" :class="{ hasTransformed: hasTransformed}">
       <span v-if="isLoading">
-        <Loader size="1.5" :isLoading=isLoading></Loader>
+        <Loader size="1.5" :isLoading=isLoading />
       </span>
-      <span v-else >
+      <span v-else>
         {{ outputCoords }}
       </span>
     </div>
@@ -77,9 +79,9 @@
           class="info-icon"
         />
       </div>
-      <button class="copy-btn" @click="copyCoordinates" :class="{hasTransformed: hasTransformed}">
+      <button class="copy-btn" @click="copyCoordinates" :class="{hasTransformed: hasTransformed && !this.isLoading}">
         Kopiér
-        <Icon v-show="!hasTransformed"
+        <Icon v-show="!hasTransformed || isLoading"
           icon="CopyIcon"
           :width="1.5"
           :height="1.5"
@@ -87,7 +89,7 @@
           :strokeWidth="1"
           class="copy-icon"
         />
-        <Icon v-show="hasTransformed"
+        <Icon v-show="hasTransformed && !isLoading"
           icon="CopyIcon"
           :width="1.5"
           :height="1.5"
@@ -132,7 +134,7 @@ export default {
       this.transform()
     },
     copyCoordinates () {
-      if (!this.outputNotSelected) {
+      if (!this.outputNotSelected && !this.isLoading) {
         navigator.clipboard.writeText(this.outputCoords)
         this.$emit('coordinates-copied', true)
         window.setTimeout(() => {
@@ -202,6 +204,9 @@ export default {
   margin: 0;
   padding: 0;
 }
+.coordinate-selection-wrapper {
+  margin: 1.25rem 0 0.75rem 0;
+}
 .info-icon {
   border: var(--darkSteel) solid 1px;
   border-radius: 25px;
@@ -216,7 +221,7 @@ label {
   background-color: var(--lightSteel);
 }
 .transformed-coordinates {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   width: 100%;
   height: 2rem;
   display: inline-flex;
@@ -232,9 +237,6 @@ label {
 .transformed-coordinates::selection {
   background: var(--highlight2);
 }
-.title {
-  margin: 0.5rem 0;
-}
 .copy-btn {
   background-color: var(--lightSteel);
   color: var(--darkSteel);
@@ -243,6 +245,7 @@ label {
   float: right;
   padding: 0.3rem 1rem;
   display: inline-flex;
+  align-items: center;
 }
 .copy-btn.hasTransformed {
   background-color: var(--action);
@@ -258,10 +261,11 @@ input[type=radio]:checked {
   outline: var(--darkSteel) solid 1px;
 }
 .footer {
-  margin-top: 1rem;
+  margin-top: 1.25rem;
   align-items: center;
   display: inline-flex;
   justify-content: space-between;
+  width: 100%;
   flex-wrap: nowrap;
 }
 .radiogroup {

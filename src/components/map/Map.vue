@@ -1,14 +1,9 @@
 <template>
   <div id="map" class="olmap" ref="map">
-  <!-- <div id="map" class="olmap" ref="map" @mousemove="onMouseMove" @mouseup="endDrag" > -->
     <section class="transform-container">
       <CoordinateTransformation :inputCoords=inputCoords id="coordinate-transform" />
       <div id="mouse-position"></div>
     </section>
-    <!-- <Icon @mousedown="startDrag"
-      id="map-marker"
-      icon="MapMarker"
-    /> -->
     <Icon
       id="pinned-marker"
       icon="MapMarker"
@@ -38,7 +33,6 @@ export default {
     CoordinateTransformation: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateTransformation'))
   },
   props: {
-    // Check if the selection is input or output selection
     isDenmark: {
       type: Boolean,
       default () {
@@ -92,6 +86,7 @@ export default {
           })
         ]
       })
+      // on click listener
       olMap.value.on('click', function (e) {
         let mpos = document.getElementById('mouse-position')
         mpos = mpos.textContent.split(', ')
@@ -103,9 +98,6 @@ export default {
         })
         overlay.setPosition([e.coordinate[0], e.coordinate[1]])
         olMap.value.addOverlay(overlay)
-      })
-      olMap.value.on('postrender', function () {
-        inputCoords.value = ['' + center[0], '' + center[1]]
       })
     })
     return {
@@ -119,9 +111,7 @@ export default {
 #pinned-marker {
   position: absolute;
   z-index: 1;
-  /* top: 50%;
-  right: 50%; */
-  transform: translateX(-50%) translateY(-85%);
+  transform: translateX(-50%) translateY(-100%);
 }
 #map-marker {
   position: absolute;

@@ -205,7 +205,7 @@ export default {
   padding: 0;
 }
 .coordinate-selection-wrapper {
-  margin: 1.25rem 0 0.75rem 0;
+  margin: 1.4rem 0 0.75rem 0;
 }
 .info-icon {
   border: var(--darkSteel) solid 1px;

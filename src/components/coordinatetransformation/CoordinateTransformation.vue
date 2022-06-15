@@ -1,22 +1,24 @@
 <template>
-  <section class="container">
+  <section v-show="!menuClosed" class="container">
     <article class="coordinate-transformation-box" ref="mother">
       <InputCoordinates class="input" @input-epsg-changed="inputEPSGChanged"  @input-coords-changed="inputCoordsChanged"/>
       <OutputCoordinates class="output" :inputEPSG=inputEPSG :inputCoords=inputCoords @coordinates-copied="coordinatesCopied"/>
+      <menu-closer @handle-close="closeMenu" class="menu-closer"/>
     </article>
-  <div v-if="popupVisible" class="message">Koordinater kopieret</div>
+    <div v-if="popupVisible" class="message">Koordinater kopieret</div>
   </section>
+  <menu-closer v-show="menuClosed" @handle-close="closeMenu" class="menu-closed"/>
 </template>
 
 <script>
 import { defineAsyncComponent, ref, inject } from 'vue'
-import { isMobile } from 'mobile-device-detect'
 
 export default {
   name: 'CoordinateTransformation',
   components: {
     InputCoordinates: defineAsyncComponent(() => import('@/components/coordinatetransformation/InputCoordinates')),
-    OutputCoordinates: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCoordinates'))
+    OutputCoordinates: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCoordinates')),
+    MenuCloser: defineAsyncComponent(() => import('@/components/coordinatetransformation/MenuCloser'))
   },
   methods: {
     inputEPSGChanged (code) {
@@ -27,6 +29,9 @@ export default {
     },
     coordinatesCopied (state) {
       this.popupVisible = state
+    },
+    closeMenu () {
+      this.menuClosed = !this.menuClosed
     }
   },
   setup () {
@@ -34,12 +39,13 @@ export default {
     const colors = inject('themeColors')
     const inputEPSG = ref(Object)
     const popupVisible = ref(false)
+    const menuClosed = ref(false)
     return {
       inputCoords,
       colors,
-      isMobile,
       inputEPSG,
-      popupVisible
+      popupVisible,
+      menuClosed
     }
   }
 }
@@ -71,14 +77,15 @@ export default {
   border-radius: 25px 25px 0 0;
   position: relative;
   background: var(--white);
-  padding: 1rem 3rem 1rem 3rem;
+  padding: 1rem 1.5rem;
   border-bottom: var(--action) solid 2px;
   border-right: none;
 }
 .output {
-  border-radius: 0 0 25px 25px;
+  border-radius: 0 0 0 0;
   border-top: none;
 }
+
 .input:after {
   content: "";
   position: absolute;
@@ -105,7 +112,15 @@ export default {
   z-index: 2;
   transform: translateY(100%) translateX(-3px);
 }
-@media screen and (min-width: 37.5rem) {
+.menu-closer {
+  border-radius: 0 0 25px 25px;
+}
+.menu-closed {
+  border-radius: 25px;
+  border: 2px solid var(-darkSteel);
+  outline: 4px solid rgba(191, 223, 227, 0.7);
+}
+@media screen and (min-width: 44rem) {
   .coordinate-transformation-box {
     grid-template-columns: 1fr 1fr;
     grid-template-areas: "input output"
@@ -143,6 +158,15 @@ export default {
   }
   .output {
     border-radius: 0 25px 25px 0;
+  }
+  .menu-closer {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 703px) {
+  .output {
+    border-radius: 0 0 0 0;
   }
 }
 </style>

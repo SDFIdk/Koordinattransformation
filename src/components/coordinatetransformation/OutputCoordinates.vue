@@ -69,9 +69,9 @@
             :strokeWidth="1"
             :color="colors.darkSteel"
           />
-          min. sek.
+        min. sek.
         </label>
-        <Icon v-show="!isMobile"
+        <Icon
           icon="InfoIcon"
           :width="1.3"
           :height="1.3"
@@ -103,7 +103,6 @@
 </template>
 
 <script>
-import { isMobile } from 'mobile-device-detect'
 import { defineAsyncComponent, inject, ref } from 'vue'
 import { useStore } from 'vuex'
 
@@ -187,7 +186,6 @@ export default {
       firstChecked,
       secondChecked,
       thirdChecked,
-      isMobile,
       outputNotSelected,
       outputCoords,
       outputEPSG,
@@ -217,9 +215,10 @@ label {
   display: inline-flex;
 }
 .output-coordinate {
-  padding: 1rem 3rem 1rem 3rem;
+  padding: 1rem 1.5rem;
   background-color: var(--lightSteel);
 }
+
 .transformed-coordinates {
   margin-top: 0.5rem;
   width: 100%;
@@ -274,5 +273,26 @@ input[type=radio]:checked {
 }
 .copy-icon {
   margin-left: 0.75rem;
+}
+
+@media screen and (max-width: 904px) {
+  .transformed-coordinates {
+    height: 2.5rem;
+  }
+}
+
+@media screen and (max-width: 828px) {
+  .info-icon {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 703px) {
+  .info-icon {
+    display: block;
+  }
+  .transformed-coordinates {
+    height: 2rem;
+  }
 }
 </style>

@@ -13,7 +13,7 @@
 
 <script>
 import 'ol/ol.css'
-import { onMounted, ref, defineAsyncComponent, provide } from 'vue'
+import { onMounted, ref, defineAsyncComponent, inject, provide } from 'vue'
 import OlMap from 'ol/Map'
 import OlView from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
@@ -46,6 +46,7 @@ export default {
     let mousePositionControl = ref({})
     const center = props.isDenmark ? [1344085.3822, 7487513.4163] : [-5759445.7863, 9392886.5116]
     const inputCoords = ref(['' + center[0], '' + center[1]])
+    const colors = inject('themeColors')
     provide('inputCoords', inputCoords)
     onMounted(() => {
       mousePositionControl = new MousePosition({
@@ -101,7 +102,7 @@ export default {
       })
     })
     return {
-      olMap, mousePositionControl, inputCoords
+      olMap, mousePositionControl, inputCoords, colors
     }
   }
 }
@@ -121,6 +122,9 @@ export default {
   cursor: move;
   display: none;
 }
+expand-icon {
+  position: absolute;
+}
 .olmap {
   width: 100%;
   height: 90vh;
@@ -138,4 +142,5 @@ export default {
   position: absolute;
   z-index: 1;
 }
+
 </style>

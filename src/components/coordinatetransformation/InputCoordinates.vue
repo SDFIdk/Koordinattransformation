@@ -2,13 +2,6 @@
   <section class="input-coordinate">
     <div class="title-bar">
       <h3>Input</h3>
-      <Icon v-show="!isMobile"
-        icon="InfoIcon"
-        :width="1.8"
-        :height="1.8"
-        :color="colors.black"
-        class="info-icon"
-      />
     </div>
     <section class="coordinate-selection-wrapper">
       <CoordinateSelection :isOutput="false" @epsg-changed="inputEPSGChanged"/>
@@ -52,6 +45,7 @@
       <input class="searchbar-input"/>
       <Icon
         icon="SearchIcon"
+        class="searchbar-icon"
         :color="colors.turquoise"
         :width="1.8"
         :height="1.8"
@@ -63,7 +57,6 @@
 
 <script>
 
-// import { isMobile, isBrowser } from 'mobile-device-detect'
 import { defineAsyncComponent, ref, inject, onUpdated, watch } from 'vue'
 
 export default {
@@ -116,10 +109,14 @@ export default {
 input:focus {
   outline: none;
 }
+.hide {
+  margin: 0 0 0 auto;
+}
 .info-icon {
   border: var(--darkSteel) solid 1px;
   border-radius: 25px;
   margin: 0 0 0 auto;
+  transform: rotate(90deg);
 }
 li {
   list-style-type: none;
@@ -174,5 +171,14 @@ input {
 }
 .searchbar-input {
   margin: 0 0 0 1rem;
+}
+.searchbar-icon {
+  margin: 0 0.5rem 0 0;
+}
+
+@media screen and (max-width: 1144px) {
+  .chosen-coordinates > span{
+    margin: 0.25rem 0;
+  }
 }
 </style>

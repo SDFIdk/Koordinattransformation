@@ -28,7 +28,6 @@ export default {
     if (isConsole || isWearable || isSmartTV) {
       router.push({ path: '/PageDeviceIncompatible' })
     }
-
     return { error }
   }
 }
@@ -42,5 +41,9 @@ export default {
 
 main {
   padding: 0;
+}
+
+.ol-full-screen {
+  display: none;
 }
 </style>

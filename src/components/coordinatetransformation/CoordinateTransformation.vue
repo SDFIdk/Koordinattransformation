@@ -1,5 +1,5 @@
 <template>
-  <section v-show="!menuClosed" class="container">
+  <section v-show="!menuClosed || window.width > 703" class="container">
     <article class="coordinate-transformation-box" ref="mother">
       <InputCoordinates class="input" @input-epsg-changed="inputEPSGChanged"  @input-coords-changed="inputCoordsChanged"/>
       <OutputCoordinates class="output" :inputEPSG=inputEPSG :inputCoords=inputCoords @coordinates-copied="coordinatesCopied"/>
@@ -7,7 +7,7 @@
     </article>
     <div v-if="popupVisible" class="message">Koordinater kopieret</div>
   </section>
-  <menu-closer v-show="menuClosed" @handle-close="closeMenu" class="menu-closed"/>
+  <menu-closer v-show="menuClosed && window.width < 703" @handle-close="closeMenu" class="menu-closed"/>
 </template>
 
 <script>
@@ -32,21 +32,32 @@ export default {
     },
     closeMenu () {
       this.menuClosed = !this.menuClosed
+    },
+    handleResize () {
+      this.window.width = window.innerWidth
+      this.window.height = window.innerHeight
     }
   },
   setup () {
     const inputCoords = ref(['0', '0'])
     const colors = inject('themeColors')
+    // const window = inject('window')
     const inputEPSG = ref(Object)
     const popupVisible = ref(false)
     const menuClosed = ref(false)
+    const window = ref({ width: 0, height: 0 })
     return {
       inputCoords,
       colors,
       inputEPSG,
       popupVisible,
-      menuClosed
+      menuClosed,
+      window
     }
+  },
+  created () {
+    window.addEventListener('resize', this.handleResize)
+    this.handleResize()
   }
 }
 </script>

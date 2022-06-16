@@ -1,5 +1,5 @@
 <template>
-  <ul v-show="window.width > 770" class="nav">
+  <ul v-show="window.width > 770 || (burgerClicked && window.width < 770)" class="nav" :class="{'mobile-ul': burgerClicked}">
     <li>
       <router-link to="/Denmark">
         <h6>
@@ -29,23 +29,6 @@
       :color="colors.black"
       icon="BurgerIcon"
     />
-  </div>
-  <div class="burger-content" :class="{burgerClicked: burgerClicked}">
-    <router-link to="/Denmark">
-      <h6>
-        Danmark
-      </h6>
-    </router-link>
-    <router-link to="/Denmark">
-      <h6>
-        Grenland
-      </h6>
-    </router-link>
-    <router-link to="/Denmark">
-      <h6>
-        About
-      </h6>
-    </router-link>
   </div>
 </template>
 
@@ -83,6 +66,9 @@ export default {
       console.log('click')
       this.burgerClicked = !this.burgerClicked
     }
+  },
+  provide () {
+    return window
   }
 }
 </script>
@@ -100,32 +86,6 @@ export default {
   padding-left: 1rem;
   display: flex;
   justify-content: flex-end;
-}
-
-.burger-content {
-  position: absolute;
-  background: white;
-  margin: 3.5rem 0.25rem;
-  z-index: 3;
-  display: none;
-  border-top: 1px solid black;
-  border-left: 1px solid black;
-  border-right: 1px solid black;
-}
-
-.burger-content > a {
-  display: block;
-  /* box-shadow: none; */
-  width: 100%;
-  border-bottom: 1px solid black;
-}
-
-.burger-content > a:hover {
-  background: var(--action);
-}
-
-.burgerClicked {
-  display: block;
 }
 
 ul {
@@ -153,5 +113,36 @@ h6 {
   word-break: keep-all;
   flex-shrink: 0;
   padding: 0.5rem;
+}
+
+@media only screen and (max-width: 770px) {
+  .mobile-ul {
+    position: absolute;
+    display: block;
+    overflow: auto;
+    z-index: 3;
+    background: white;
+    margin: 3.5rem 0 0 0;
+    border: 1px solid var(--action);
+  }
+  h6 {
+    padding: 0;
+    margin: 0.75rem 0.75rem 0.75rem 0;
+  }
+  li > a {
+    width: 100%;
+    padding: 0;
+    margin: 0.5rem 0.5rem 0.5rem 0;
+  }
+  li > a:hover {
+    color: var(--action);
+    box-shadow: 0 -4px 0 var(--action) inset;
+  }
+  .router-link-active {
+    box-shadow: none;
+  }
+  ul {
+    display: none;
+  }
 }
 </style>

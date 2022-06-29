@@ -28,6 +28,7 @@
       :height="3"
       :color="colors.black"
       icon="BurgerIcon"
+      class="burger-icon"
     />
   </div>
 </template>
@@ -63,7 +64,6 @@ export default {
       this.window.height = window.innerHeight
     },
     handleClick () {
-      console.log('click')
       this.burgerClicked = !this.burgerClicked
     }
   },
@@ -78,11 +78,11 @@ export default {
   margin: 0;
   padding: 0;
 }
-.burger-menu {
-  margin: 0.5rem;
+.burger-icon {
+  margin: 0.5rem 0 0 0;
 }
 .nav {
-  margin-top: 0.5rem;
+  margin: 0.5rem 0;
   padding-left: 1rem;
   display: flex;
   justify-content: flex-end;

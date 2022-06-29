@@ -26,6 +26,7 @@ export default {
     },
     inputCoordsChanged (coords) {
       this.inputCoords = coords
+      this.$emit('input-coords-changed', coords)
     },
     coordinatesCopied (state) {
       this.popupVisible = state

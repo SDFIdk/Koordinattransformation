@@ -1,5 +1,5 @@
 <template>
-  <Map :isDenmark="false"/>
+  <Map :isDenmark="false" inputEPSG='EPSG:3178' />
 </template>
 
 <script>

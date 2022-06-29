@@ -178,7 +178,7 @@ export default {
           const output = store.state.trans.data
           outputCoords.value = output.v1 + ' °N, ' + output.v2 + ' °E'
         })
-      }, 1000)
+      }, 500)
     }
     return {
       store,

@@ -4,8 +4,8 @@ import { nextTick } from 'vue'
 // eslint-disable-next-line one-var
 const Home = () => import(/* webpackChunkName: "Home", webpackMode: "lazy", webpackPreload: true */ '@/views/Home.vue'),
   Denmark = () => import(/* webpackChunkName: "Home", webpackMode: "lazy", webpackPreload: true */ '@/views/Denmark.vue'),
-  Greenland = () => import(/* webpackChunkName: "Cases", webpackMode: "lazy", webpackPreload: true */ '@/views/Greenland.vue')
-
+  Greenland = () => import(/* webpackChunkName: "Cases", webpackMode: "lazy", webpackPreload: true */ '@/views/Greenland.vue'),
+  About = () => import('@/views/About.vue')
 const routes = [
   {
     path: '/',
@@ -28,6 +28,14 @@ const routes = [
     component: Greenland,
     meta: {
       title: 'Greenland'
+    }
+  },
+  {
+    path: '/About',
+    name: 'About',
+    component: About,
+    meta: {
+      title: 'About'
     }
   }
 ]

@@ -58,6 +58,7 @@
 <script>
 
 import { defineAsyncComponent, ref, inject, onUpdated, watch } from 'vue'
+import { useStore } from 'vuex'
 
 export default {
   name: 'InputCoordinates',
@@ -67,11 +68,20 @@ export default {
   methods: {
     inputEPSGChanged (code) {
       this.$emit('input-epsg-changed', code)
+      this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1]).then(() => {
+        const output = this.store.state.trans.data
+        this.inputEPSG = code.srid
+        this.inputCoords[0] = output.v1
+        this.inputCoords[1] = output.v2
+      })
     }
   },
   setup (props, context) {
+    // const inputEPSG = ref('')
+    const store = useStore()
     const isMobile = true
     const mapMarkerInputCoords = inject('inputCoords')
+    const inputEPSG = inject('inputEPSG')
     const inputCoords = ref(mapMarkerInputCoords.value)
     const colors = inject('themeColors')
     watch(mapMarkerInputCoords, () => {
@@ -85,7 +95,9 @@ export default {
     return {
       inputCoords,
       colors,
-      isMobile
+      isMobile,
+      store,
+      inputEPSG
     }
   }
 }
@@ -104,6 +116,7 @@ export default {
 .title-bar {
   display: inline-flex;
   align-items: center;
+  margin-bottom: 0.5rem;
   width: 100%;
 }
 input:focus {

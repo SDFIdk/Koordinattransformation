@@ -1,7 +1,7 @@
 <template>
   <div id="map" class="olmap" ref="map">
     <section class="transform-container">
-      <CoordinateTransformation :inputCoords=inputCoords id="coordinate-transform" />
+      <CoordinateTransformation @input-coords-changed="inputCoordsChanged" :inputCoords=inputCoords id="coordinate-transform" />
       <div id="mouse-position"></div>
     </section>
     <Icon
@@ -26,6 +26,7 @@ import {
   MousePosition,
   FullScreen
 } from 'ol/control'
+import { useStore } from 'vuex'
 
 export default {
   name: 'MapComponent',
@@ -39,29 +40,56 @@ export default {
         return true
       }
     }
+    // inputEPSG: {
+    //   type: String,
+    //   default () {
+    //     return 'EPSG:25832'
+    //   }
+    // }
+  },
+  methods: {
+    inputCoordsChanged (coords) {
+      setTimeout(() => {
+        this.store.dispatch('trans/get', this.inputEPSG + '/' + this.mapProjection + '/' + coords[0] + ',' + coords[1]).then(() => {
+          const pinnedMarker = document.getElementById('pinned-marker')
+          const overlay = new Overlay({
+            element: pinnedMarker,
+            positioning: 'center-center'
+          })
+          const output = this.store.state.trans.data
+          overlay.setPosition([output.v1, output.v2])
+          this.olMap.addOverlay(overlay)
+        })
+      }, this.timeout)
+    }
   },
   setup (props) {
+    const store = useStore()
     const olView = ref({})
     const olMap = ref({})
     let mousePositionControl = ref({})
-    const center = props.isDenmark ? [1344085.3822, 7487513.4163] : [-5759445.7863, 9392886.5116]
+    const center = props.isDenmark ? [1313083.9996, 7448871.7553] : [-5759445.7863, 9392886.5116]
     const inputCoords = ref(['' + center[0], '' + center[1]])
     const colors = inject('themeColors')
+    const mapProjection = 'EPSG:3857'
+    const inputEPSG = ref('EPSG:25832')
+    const timeout = 2
     provide('inputCoords', inputCoords)
+    provide('inputEPSG', inputEPSG)
     onMounted(() => {
       mousePositionControl = new MousePosition({
         coordinateFormat: createStringXY(4),
-        projection: 'EPSG:3857',
+        projection: mapProjection,
         className: 'custom-mouse-position',
         target: document.getElementById('mouse-position')
       })
       olView.value = new OlView({
         center: center,
-        zoom: 10,
+        zoom: 9,
         minZoom: 4,
         maxZoom: 20,
         showFullExtent: true,
-        projection: 'EPSG:3857'
+        projection: mapProjection
       })
       olMap.value = new OlMap({
         target: 'map',
@@ -87,22 +115,28 @@ export default {
           })
         ]
       })
-      // on click listener
-      olMap.value.on('click', function (e) {
-        let mpos = document.getElementById('mouse-position')
-        mpos = mpos.textContent.split(', ')
-        inputCoords.value = mpos
+      // set inital map marker
+      setTimeout(() => {
         const pinnedMarker = document.getElementById('pinned-marker')
         const overlay = new Overlay({
           element: pinnedMarker,
           positioning: 'center-center'
         })
-        overlay.setPosition([e.coordinate[0], e.coordinate[1]])
+        overlay.setPosition([center[0], center[1]])
         olMap.value.addOverlay(overlay)
+      }, timeout)
+      // on click listener
+      olMap.value.on('click', function (e) {
+        let mpos = document.getElementById('mouse-position')
+        mpos = mpos.textContent.split(', ')
+        store.dispatch('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1]).then(() => {
+          const output = store.state.trans.data
+          inputCoords.value = [output.v1, output.v2]
+        })
       })
     })
     return {
-      olMap, mousePositionControl, inputCoords, colors
+      olMap, mousePositionControl, inputCoords, colors, store, mapProjection, timeout, inputEPSG
     }
   }
 }

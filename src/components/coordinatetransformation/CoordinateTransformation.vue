@@ -22,7 +22,9 @@ export default {
   },
   methods: {
     inputEPSGChanged (code) {
+      console.log('changed')
       this.inputEPSG = code
+      this.$emit('input-epsg-changed', code)
     },
     inputCoordsChanged (coords) {
       this.inputCoords = coords

@@ -1,7 +1,7 @@
 <template>
   <div id="map" class="olmap" ref="map">
     <section class="transform-container">
-      <CoordinateTransformation @input-coords-changed="inputCoordsChanged" :inputCoords=inputCoords id="coordinate-transform" />
+      <CoordinateTransformation @input-epsg-changed="inputEPSGChanged" @input-coords-changed="inputCoordsChanged" :inputCoords=inputCoords id="coordinate-transform" />
       <div id="mouse-position"></div>
     </section>
     <Icon
@@ -40,27 +40,22 @@ export default {
         return true
       }
     }
-    // inputEPSG: {
-    //   type: String,
-    //   default () {
-    //     return 'EPSG:25832'
-    //   }
-    // }
   },
   methods: {
     inputCoordsChanged (coords) {
-      setTimeout(() => {
-        this.store.dispatch('trans/get', this.inputEPSG + '/' + this.mapProjection + '/' + coords[0] + ',' + coords[1]).then(() => {
-          const pinnedMarker = document.getElementById('pinned-marker')
-          const overlay = new Overlay({
-            element: pinnedMarker,
-            positioning: 'center-center'
-          })
-          const output = this.store.state.trans.data
-          overlay.setPosition([output.v1, output.v2])
-          this.olMap.addOverlay(overlay)
+      this.store.dispatch('trans/get', this.inputEPSG + '/' + this.mapProjection + '/' + coords[0] + ',' + coords[1]).then(() => {
+        const output = this.store.state.trans.data
+        const pinnedMarker = document.getElementById('pinned-marker')
+        const overlay = new Overlay({
+          element: pinnedMarker,
+          positioning: 'center-center'
         })
-      }, this.timeout)
+        overlay.setPosition([output.v1, output.v2])
+        this.olMap.addOverlay(overlay)
+      })
+    },
+    inputEPSGChanged (epsg) {
+      this.inputEPSG = epsg.srid
     }
   },
   setup (props) {
@@ -68,14 +63,14 @@ export default {
     const olView = ref({})
     const olMap = ref({})
     let mousePositionControl = ref({})
-    const center = props.isDenmark ? [1313203.2227, 7447191.3287] : [-5758833.2009, 9393681.2087]
-    const inputCoords = ref(['' + center[0], '' + center[1]])
+    const center = props.isDenmark ? [1313559.7686000003, 7448691.317399999] : [-5758833.2009, 9393681.2087]
+    const inputCoords = ref(props.isDenmark ? [677093.7465413888, 6147863.846297142] : [1611279.4886776865, 7323246.570397905])
     const colors = inject('themeColors')
     const mapProjection = 'EPSG:3857'
-    const inputEPSG = ref('EPSG:25832')
+    const inputEPSG = ref(props.isDenmark ? 'EPSG:25832' : 'EPSG:3178')
     const timeout = 100
     provide('inputCoords', inputCoords)
-    provide('inputEPSG', inputEPSG)
+    provide('inputEPSG', inputEPSG.value)
     onMounted(() => {
       mousePositionControl = new MousePosition({
         coordinateFormat: createStringXY(4),
@@ -133,6 +128,13 @@ export default {
           const output = store.state.trans.data
           inputCoords.value = [output.v1, output.v2]
         })
+        const pinnedMarker = document.getElementById('pinned-marker')
+        const overlay = new Overlay({
+          element: pinnedMarker,
+          positioning: 'center-center'
+        })
+        overlay.setPosition([mpos[0], mpos[1]])
+        olMap.value.addOverlay(overlay)
       })
     })
     return {

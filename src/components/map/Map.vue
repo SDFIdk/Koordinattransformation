@@ -68,12 +68,12 @@ export default {
     const olView = ref({})
     const olMap = ref({})
     let mousePositionControl = ref({})
-    const center = props.isDenmark ? [1313083.9996, 7448871.7553] : [-5759445.7863, 9392886.5116]
+    const center = props.isDenmark ? [1313203.2227, 7447191.3287] : [-5758833.2009, 9393681.2087]
     const inputCoords = ref(['' + center[0], '' + center[1]])
     const colors = inject('themeColors')
     const mapProjection = 'EPSG:3857'
     const inputEPSG = ref('EPSG:25832')
-    const timeout = 2
+    const timeout = 100
     provide('inputCoords', inputCoords)
     provide('inputEPSG', inputEPSG)
     onMounted(() => {

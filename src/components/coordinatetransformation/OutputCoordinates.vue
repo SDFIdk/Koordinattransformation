@@ -108,20 +108,20 @@ import { useStore } from 'vuex'
 
 export default {
   name: 'OutputCoordinates',
-  props: {
-    inputCoords: {
-      type: Array,
-      default () {
-        return ['0', '0']
-      }
-    },
-    inputEPSG: {
-      type: Function,
-      default () {
-        return null
-      }
-    }
-  },
+  // props: {
+  //   inputCoords: {
+  //     type: Array,
+  //     default () {
+  //       return ['0', '0']
+  //     }
+  //   }
+  //   // inputEPSG: {
+  //   //   type: Function,
+  //   //   default () {
+  //   //     return null
+  //   //   }
+  //   // }
+  // },
   components: {
     CoordinateSelection: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateSelection')),
     Loader: defineAsyncComponent(() => import('@/components/shared/Loader'))
@@ -157,6 +157,8 @@ export default {
   setup (props) {
     const store = useStore()
     const colors = inject('themeColors')
+    const inputEPSG = inject('inputEPSG')
+    const inputCoords = inject('inputCoords')
     const firstChecked = ref(true)
     const secondChecked = ref(false)
     const thirdChecked = ref(false)
@@ -170,13 +172,8 @@ export default {
       hasTransformed.value = true
       setTimeout(() => {
         isLoading.value = false
-        const sridIn = props.inputEPSG.srid === undefined ? 'EPSG:25832' : props.inputEPSG.srid
-        const sridOut = outputEPSG.value.srid
-        const v1 = props.inputCoords[0] ?? 0
-        const v2 = props.inputCoords[1] ?? 0
-        store.dispatch('trans/get', sridIn + '/' + sridOut + '/' + v1 + ',' + v2).then(() => {
-          const output = store.state.trans.data
-          outputCoords.value = output.v1 + ' °N, ' + output.v2 + ' °E'
+        store.dispatch('trans/get', inputEPSG + '/' + outputEPSG.value.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1]).then(() => {
+          outputCoords.value = store.state.trans.data.v1 + ' °N, ' + store.state.trans.data.v2 + ' °E'
         })
       }, 500)
     }

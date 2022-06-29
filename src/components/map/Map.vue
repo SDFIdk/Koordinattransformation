@@ -68,7 +68,6 @@ export default {
     const colors = inject('themeColors')
     const mapProjection = 'EPSG:3857'
     const inputEPSG = ref(props.isDenmark ? 'EPSG:25832' : 'EPSG:3178')
-    console.log('init epsg', inputEPSG.value)
     const timeout = 100
     provide('inputCoords', inputCoords)
     provide('inputEPSG', inputEPSG.value)

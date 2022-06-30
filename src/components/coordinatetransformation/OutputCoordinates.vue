@@ -108,20 +108,6 @@ import { useStore } from 'vuex'
 
 export default {
   name: 'OutputCoordinates',
-  // props: {
-  //   inputCoords: {
-  //     type: Array,
-  //     default () {
-  //       return ['0', '0']
-  //     }
-  //   }
-  //   // inputEPSG: {
-  //   //   type: Function,
-  //   //   default () {
-  //   //     return null
-  //   //   }
-  //   // }
-  // },
   components: {
     CoordinateSelection: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateSelection')),
     Loader: defineAsyncComponent(() => import('@/components/shared/Loader'))

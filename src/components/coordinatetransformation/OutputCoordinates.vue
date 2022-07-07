@@ -116,9 +116,9 @@ export default {
       }
     },
     inputEPSG: {
-      type: Function,
+      type: String,
       default () {
-        return null
+        return ''
       }
     }
   },
@@ -143,11 +143,6 @@ export default {
     }
   },
   watch: {
-    inputEPSG () {
-      if (!this.outputNotSelected) {
-        this.transform()
-      }
-    },
     inputCoords () {
       if (!this.outputNotSelected) {
         this.transform()
@@ -157,7 +152,7 @@ export default {
   setup (props) {
     const store = useStore()
     const colors = inject('themeColors')
-    const inputEPSG = inject('inputEPSG')
+    let inputEPSG = inject('inputEPSG')
     const inputCoords = inject('inputCoords')
     const firstChecked = ref(true)
     const secondChecked = ref(false)
@@ -168,6 +163,7 @@ export default {
     const hasTransformed = ref(false)
     const isLoading = ref(false)
     const transform = async () => {
+      inputEPSG = props.inputEPSG
       isLoading.value = true
       hasTransformed.value = true
       setTimeout(() => {

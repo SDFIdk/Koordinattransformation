@@ -77,7 +77,6 @@ export default {
     }
   },
   setup (props, context) {
-    // const inputEPSG = ref('')
     const store = useStore()
     const isMobile = true
     const mapMarkerInputCoords = inject('inputCoords')

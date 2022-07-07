@@ -22,8 +22,8 @@ export default {
   },
   methods: {
     inputEPSGChanged (code) {
-      this.inputEPSG = code
-      this.$emit('input-epsg-changed', code)
+      this.inputEPSG = code.srid
+      this.$emit('input-epsg-changed', code.srid)
     },
     inputCoordsChanged (coords) {
       this.inputCoords = coords
@@ -44,7 +44,7 @@ export default {
     const inputCoords = ref(['0', '0'])
     const colors = inject('themeColors')
     // const window = inject('window')
-    const inputEPSG = ref(Object)
+    const inputEPSG = inject('inputEPSG')
     const popupVisible = ref(false)
     const menuClosed = ref(false)
     const window = ref({ width: 0, height: 0 })

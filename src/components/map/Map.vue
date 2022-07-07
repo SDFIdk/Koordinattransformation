@@ -55,7 +55,7 @@ export default {
       })
     },
     inputEPSGChanged (epsg) {
-      this.inputEPSG = epsg.srid
+      this.inputEPSG = epsg
     }
   },
   setup (props) {

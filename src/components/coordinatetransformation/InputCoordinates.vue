@@ -78,7 +78,6 @@ export default {
   },
   setup (props, context) {
     const store = useStore()
-    const isMobile = true
     const mapMarkerInputCoords = inject('inputCoords')
     const inputEPSG = inject('inputEPSG')
     const inputCoords = ref(mapMarkerInputCoords.value)
@@ -94,7 +93,6 @@ export default {
     return {
       inputCoords,
       colors,
-      isMobile,
       store,
       inputEPSG
     }

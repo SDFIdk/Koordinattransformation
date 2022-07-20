@@ -145,6 +145,9 @@ export default {
 </script>
 
 <style scoped>
+#mouse-position {
+  display: none;
+}
 #pinned-marker {
   position: absolute;
   z-index: 1;

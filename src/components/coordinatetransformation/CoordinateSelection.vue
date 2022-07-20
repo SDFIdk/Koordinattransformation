@@ -44,14 +44,14 @@
         <ul v-for="CRS in filteredCRS" :key="CRS">
           <li
             @click="
-              chosenInput = CRS.title;
+              chosenInput = CRS.title_short;
               inputActive = false;
               if (isOutput)
                 outputSelected(CRS);
               epsgChanged(CRS);
             "
           >
-            {{ CRS.title }}
+            {{ CRS.title_short }}
           </li>
         </ul>
       </article>

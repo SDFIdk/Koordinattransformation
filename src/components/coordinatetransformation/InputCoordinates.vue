@@ -6,8 +6,8 @@
     <section class="coordinate-selection-wrapper">
       <CoordinateSelection :isOutput="false" @epsg-changed="inputEPSGChanged"/>
     </section>
-    <article class="chosen-coordinates">
-      <span>
+    <div class="input">
+      <span class="first-input">
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -16,41 +16,167 @@
           :stroke-width="0"
           class="arrow-icon-x-coordinate"
         />
-        <input
-          class="input-coordinates"
-          v-model=inputCoords[0]
-          type="number"
-          step="any"
-        />
-        <div class="degrees">°</div>
+        <span class="chosen-coordinates">
+          <input
+            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            v-model=input[0][0]
+            step="any"
+          />
+          <span class="degrees">°</span>
+        </span>
+        <span class="chosen-coordinates" v-show="isMinutes || isSeconds">
+          <input
+            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            v-model=input[0][1]
+            step="any"
+          />
+          <span class="degrees">'</span>
+        </span>
+        <span class="chosen-coordinates" v-show="isSeconds">
+          <input
+            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            v-model=input[0][2]
+            step="any"
+          />
+          <span class="degrees">"</span>
+        </span>
       </span>
-      <span>
+      <span class="first-input">
         <Icon
           icon="ArrowIcon"
           :width="2"
           :height="2"
-          :stroke-width="0"
           :color="colors.turquoise"
+          :stroke-width="0"
         />
+        <span class="chosen-coordinates">
         <input
-          class="input-coordinates"
-          v-model=inputCoords[1]
-          type="number"
+            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+          v-model=input[1][0]
           step="any"
         />
-        <div class="degrees">°</div>
+        <span class="degrees">°</span>
+        </span>
+        <span class="chosen-coordinates" v-show="isMinutes || isSeconds">
+          <input
+            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            v-model=input[1][1]
+            step="any"
+          />
+          <span class="degrees">'</span>
+        </span>
+        <span class="chosen-coordinates" v-show="isSeconds">
+          <input
+            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            v-model=input[1][2]
+            step="any"
+          />
+          <span class="degrees">"</span>
+        </span>
       </span>
-    </article>
-    <div class="searchbar">
-      <input class="searchbar-input"/>
-      <Icon
-        icon="SearchIcon"
-        class="searchbar-icon"
-        :color="colors.turquoise"
-        :width="1.8"
-        :height="1.8"
-        :stroke-width="0.75"
-      />
+      <span class="third-input">
+        <Icon
+          icon="ArrowIcon"
+          :width="2"
+          :height="2"
+          :color="colors.turquoise"
+          :stroke-width="0"
+          class="arrow-icon-z-coordinate"
+        />
+        <span class="chosen-coordinates">
+        <input
+            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+          v-model=input[2][0]
+          step="any"
+        />
+        <span class="degrees">°</span>
+        </span>
+        <span class="chosen-coordinates" v-show="isMinutes || isSeconds">
+          <input
+            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            v-model=input[2][1]
+            step="any"
+          />
+          <span class="degrees">'</span>
+        </span>
+        <span class="chosen-coordinates" v-show="isSeconds">
+          <input
+            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            v-model=input[2][2]
+            step="any"
+          />
+         <span class="degrees">"</span>
+        </span>
+      </span>
+    </div>
+    <div class="footer">
+      <div class="searchbar">
+        <input class="searchbar-input"/>
+        <Icon
+          icon="SearchIcon"
+          class="searchbar-icon"
+          :color="colors.turquoise"
+          :width="1.8"
+          :height="1.8"
+          :stroke-width="0.75"
+        />
+      </div>
+      <div class="radiogroup">
+        <label class="radio" @click="firstChecked = true; secondChecked = false; thirdChecked = false">
+          <input type="radio" name="date-format">
+          <Icon v-show="firstChecked"
+            icon="RadioOnIcon"
+            :width="1.3"
+            :height="1.3"
+            :strokeWidth="1"
+            :color="colors.turquoise"
+          />
+          <Icon v-show="!firstChecked"
+            icon="RadioIcon"
+            :width="1.3"
+            :height="1.3"
+            :strokeWidth="1"
+            :color="colors.darkSteel"
+          />
+          DD
+        </label>
+        <label class="radio" @click="firstChecked = false; secondChecked = true; thirdChecked = false">
+          <input type="radio" name="date-format">
+          <Icon v-show="secondChecked"
+            icon="RadioOnIcon"
+            :width="1.3"
+            :height="1.3"
+            :strokeWidth="1"
+            :color="colors.turquoise"
+          />
+          <Icon v-show="!secondChecked"
+            icon="RadioIcon"
+            :width="1.3"
+            :height="1.3"
+            :strokeWidth="1"
+            :color="colors.darkSteel"
+          />
+          min.
+        </label>
+        <label class="radio" @click="firstChecked = false; secondChecked = false; thirdChecked = true">
+          <input type="radio" name="date-format">
+          <Icon v-show="thirdChecked"
+            icon="RadioOnIcon"
+            :width="1.3"
+            :height="1.3"
+            :strokeWidth="1"
+            :color="colors.turquoise"
+          />
+          <Icon v-show="!thirdChecked"
+            icon="RadioIcon"
+            :width="1.3"
+            :height="1.3"
+            :strokeWidth="1"
+            :color="colors.darkSteel"
+          />
+        min. sek.
+        </label>
+      </div>
     </div>
   </section>
 </template>
@@ -73,6 +199,7 @@ export default {
         this.inputEPSG = code.srid
         this.inputCoords[0] = output.v1
         this.inputCoords[1] = output.v2
+        this.setInput()
       })
     }
   },
@@ -82,6 +209,42 @@ export default {
     const inputEPSG = inject('inputEPSG')
     const inputCoords = ref(mapMarkerInputCoords.value)
     const colors = inject('themeColors')
+    const firstChecked = ref(true)
+    const secondChecked = ref(false)
+    const thirdChecked = ref(false)
+    const isDegrees = ref(false)
+    const isMinutes = ref(false)
+    const isSeconds = ref(true)
+    const input = ref([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
+    const setInput = () => {
+      if (isDegrees.value) {
+        input.value[0][0] = inputCoords.value[0].toFixed(4)
+        input.value[1][0] = inputCoords.value[1].toFixed(4)
+      } else if (isMinutes.value) {
+        const deg0 = Math.floor(inputCoords.value[0])
+        const deg1 = Math.floor(inputCoords.value[1])
+        const min0 = ((inputCoords.value[0] - deg0) * 60).toFixed(4)
+        const min1 = ((inputCoords.value[1] - deg1) * 60).toFixed(4)
+        input.value[0][0] = deg0
+        input.value[0][1] = min0
+        input.value[1][0] = deg1
+        input.value[1][1] = min1
+      } else {
+        const deg0 = Math.floor(inputCoords.value[0])
+        const deg1 = Math.floor(inputCoords.value[1])
+        const min0 = Math.floor((inputCoords.value[0] - deg0) * 60)
+        const min1 = Math.floor((inputCoords.value[1] - deg1) * 60)
+        const sec0 = ((inputCoords.value[0] - deg0 - min0 / 60) * 3600).toFixed(4)
+        const sec1 = ((inputCoords.value[1] - deg1 - min1 / 60) * 3600).toFixed(4)
+        input.value[0][0] = deg0
+        input.value[0][1] = min0
+        input.value[0][2] = sec0
+        input.value[1][0] = deg1
+        input.value[1][1] = min1
+        input.value[1][2] = sec1
+      }
+    }
+    setInput()
     watch(mapMarkerInputCoords, () => {
       inputCoords.value = mapMarkerInputCoords.value
     })
@@ -94,7 +257,15 @@ export default {
       inputCoords,
       colors,
       store,
-      inputEPSG
+      inputEPSG,
+      isMinutes,
+      isSeconds,
+      isDegrees,
+      firstChecked,
+      secondChecked,
+      thirdChecked,
+      setInput,
+      input
     }
   }
 }
@@ -139,18 +310,20 @@ li:hover {
 ul {
   list-style-type: none;
 }
-.chosen-coordinates {
-  display: flex;
-  flex-flow: row wrap;
-  align-self: center;
+.degreesInput {
+  width: 20%;
 }
-.chosen-coordinates span {
+.metresInput {
+  width: 10%;
+}
+.secondsInput {
+  width: 7.5%;
+}
+.chosen-coordinates {
   border-bottom: var(--action) solid 1px;
   margin: 0 0.5rem 0 0;
-  flex-grow: 1;
-  justify-content: space-between;
-  display: inline-flex;
-  align-items: flex-end;
+  box-sizing: border-box;
+  padding-bottom: 0.25rem;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -160,35 +333,75 @@ input::-webkit-inner-spin-button {
 input {
   -moz-appearance: textfield;
   border: none;
-  width: 90%;
-  align-self: center;
+}
+.arrow-icon-x-coordinate {
+  transform: rotate(90deg);
+}
+.arrow-icon-z-coordinate {
+  transform: rotate(45deg);
 }
 .arrow-icon-x-coordinate {
   transform: rotate(90deg);
 }
 .degrees {
-  padding: 0 0.5rem 0.5rem 0;
   font-size: 1.25rem;
 }
 .searchbar {
   display: inline-flex;
   align-items: center;
   margin-top: 1.25rem;
-  width: 100%;
+  width: 75%;
   border: var(--darkSteel) solid 1px;
   border-radius: 16px;
-  height: 2rem;
+  /* height: 2rem; */
 }
 .searchbar-input {
   margin: 0 0 0 1rem;
+  width: 92%;
 }
 .searchbar-icon {
   margin: 0 0.5rem 0 0;
 }
+input[type=radio] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  cursor: pointer;
+}
+input[type=radio]:checked {
+  outline: var(--darkSteel) solid 1px;
+}
+.radiogroup {
+  margin-top: 1rem;
+  display: inline-flex;
+  flex-wrap: nowrap;
+}
+.footer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: nowrap;
+}
 
-@media screen and (max-width: 1144px) {
-  .chosen-coordinates > span{
-    margin: 0.25rem 0;
+@media screen and (max-width: 1180px) {
+  .degreesInput {
+    width: 80%;
+  }
+  .metresInput {
+    width: 40%;
+  }
+  .secondsInput {
+    width: 25%;
+  }
+  .first-input, .second-input, .third-input {
+    display: block;
+  }
+  .footer {
+    display: block;
+  }
+  .searchbar {
+    width: 100%;
   }
 }
 </style>

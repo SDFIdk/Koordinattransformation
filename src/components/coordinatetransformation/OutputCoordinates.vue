@@ -17,16 +17,16 @@
     </div>
     <article class="footer">
       <div class="radiogroup">
-        <label class="radio" @click="firstChecked = true; secondChecked = false; thirdChecked = false">
+        <label class="radio" @click="checkDegrees">
           <input type="radio" name="date-format">
-          <Icon v-show="firstChecked"
+          <Icon v-show="degreesChecked"
             icon="RadioOnIcon"
             :width="1.3"
             :height="1.3"
             :strokeWidth="1"
             :color="colors.turquoise"
           />
-          <Icon v-show="!firstChecked"
+          <Icon v-show="!degreesChecked"
             icon="RadioIcon"
             :width="1.3"
             :height="1.3"
@@ -35,16 +35,16 @@
           />
           DD
         </label>
-        <label class="radio" @click="firstChecked = false; secondChecked = true; thirdChecked = false">
+        <label class="radio" @click="checkMinutes">
           <input type="radio" name="date-format">
-          <Icon v-show="secondChecked"
+          <Icon v-show="minutesChecked"
             icon="RadioOnIcon"
             :width="1.3"
             :height="1.3"
             :strokeWidth="1"
             :color="colors.turquoise"
           />
-          <Icon v-show="!secondChecked"
+          <Icon v-show="!minutesChecked"
             icon="RadioIcon"
             :width="1.3"
             :height="1.3"
@@ -53,16 +53,16 @@
           />
           min.
         </label>
-        <label class="radio" @click="firstChecked = false; secondChecked = false; thirdChecked = true">
+        <label class="radio" @click="checkSeconds">
           <input type="radio" name="date-format">
-          <Icon v-show="thirdChecked"
+          <Icon v-show="secondsChecked"
             icon="RadioOnIcon"
             :width="1.3"
             :height="1.3"
             :strokeWidth="1"
             :color="colors.turquoise"
           />
-          <Icon  v-show="!thirdChecked"
+          <Icon  v-show="!secondsChecked"
             icon="RadioIcon"
             :width="1.3"
             :height="1.3"
@@ -140,6 +140,24 @@ export default {
           this.$emit('coordinates-copied', false)
         }, 3000)
       }
+    },
+    checkDegrees () {
+      this.degreesChecked = true
+      this.minutesChecked = false
+      this.secondsChecked = false
+      this.setOutput()
+    },
+    checkMinutes () {
+      this.degreesChecked = false
+      this.minutesChecked = true
+      this.secondsChecked = false
+      this.setOutput()
+    },
+    checkSeconds () {
+      this.degreesChecked = false
+      this.minutesChecked = false
+      this.secondsChecked = true
+      this.setOutput()
     }
   },
   watch: {
@@ -154,14 +172,33 @@ export default {
     const colors = inject('themeColors')
     let inputEPSG = inject('inputEPSG')
     const inputCoords = inject('inputCoords')
-    const firstChecked = ref(true)
-    const secondChecked = ref(false)
-    const thirdChecked = ref(false)
+    const degreesChecked = ref(true)
+    const minutesChecked = ref(false)
+    const secondsChecked = ref(false)
     const outputNotSelected = ref(true)
     const outputCoords = ref('')
     const outputEPSG = ref(Object)
     const hasTransformed = ref(false)
     const isLoading = ref(false)
+    const setOutput = () => {
+      if (degreesChecked.value) {
+        outputCoords.value = store.state.trans.data.v1 + '°N, ' + store.state.trans.data.v2 + '°E'
+      } else if (minutesChecked.value) {
+        const d1 = Math.floor(store.state.trans.data.v1)
+        const d2 = Math.floor(store.state.trans.data.v2)
+        const m1 = (store.state.trans.data.v1 - d1) * 60
+        const m2 = (store.state.trans.data.v2 - d2) * 60
+        outputCoords.value = d1 + '°N ' + m1 + '\', ' + d2 + '°E ' + m2 + '\''
+      } else {
+        const d1 = Math.floor(store.state.trans.data.v1)
+        const d2 = Math.floor(store.state.trans.data.v2)
+        const m1 = Math.floor((store.state.trans.data.v1 - d1) * 60)
+        const m2 = Math.floor((store.state.trans.data.v2 - d2) * 60)
+        const s1 = (store.state.trans.data.v1 - d1 - m1 / 60) * 3600
+        const s2 = (store.state.trans.data.v2 - d2 - m2 / 60) * 3600
+        outputCoords.value = d1 + '°N ' + m1 + '\' ' + s1 + '", ' + d2 + '°E ' + m2 + '\' ' + s2 + '"'
+      }
+    }
     const transform = async () => {
       inputEPSG = props.inputEPSG
       isLoading.value = true
@@ -169,22 +206,23 @@ export default {
       setTimeout(() => {
         isLoading.value = false
         store.dispatch('trans/get', inputEPSG + '/' + outputEPSG.value.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1]).then(() => {
-          outputCoords.value = store.state.trans.data.v1 + ' °N, ' + store.state.trans.data.v2 + ' °E'
+          setOutput()
         })
-      }, 500)
+      }, 300)
     }
     return {
       store,
       colors,
-      firstChecked,
-      secondChecked,
-      thirdChecked,
+      degreesChecked,
+      minutesChecked,
+      secondsChecked,
       outputNotSelected,
       outputCoords,
       outputEPSG,
       hasTransformed,
       isLoading,
-      transform
+      transform,
+      setOutput
     }
   }
 }

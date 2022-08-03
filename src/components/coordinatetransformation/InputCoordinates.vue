@@ -18,30 +18,30 @@
         />
         <span class="chosen-coordinates">
           <input
-            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=degrees[0]
             step="any"
           />
           <span class="degrees">°</span>
         </span>
-        <span class="chosen-coordinates" v-show="isMinutes || isSeconds">
+        <span class="chosen-coordinates" v-show="minutesChecked || secondsChecked">
           <input
-            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
-            v-model=minutes[1]
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            v-model=minutes[0]
             step="any"
           />
           <span class="degrees">'</span>
         </span>
-        <span class="chosen-coordinates" v-show="isSeconds">
+        <span class="chosen-coordinates" v-show="secondsChecked">
           <input
-            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[0]
             step="any"
           />
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="first-input">
+      <span class="second-input">
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -51,23 +51,23 @@
         />
         <span class="chosen-coordinates">
         <input
-            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
           v-model=degrees[1]
           step="any"
         />
         <span class="degrees">°</span>
         </span>
-        <span class="chosen-coordinates" v-show="isMinutes || isSeconds">
+        <span class="chosen-coordinates" v-show="minutesChecked || secondsChecked">
           <input
-            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[1]
             step="any"
           />
           <span class="degrees">'</span>
         </span>
-        <span class="chosen-coordinates" v-show="isSeconds">
+        <span class="chosen-coordinates" v-show="secondsChecked">
           <input
-            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[1]
             step="any"
           />
@@ -85,23 +85,23 @@
         />
         <span class="chosen-coordinates">
         <input
-            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
           v-model=degrees[2]
           step="any"
         />
         <span class="degrees">°</span>
         </span>
-        <span class="chosen-coordinates" v-show="isMinutes || isSeconds">
+        <span class="chosen-coordinates" v-show="minutesChecked || secondsChecked">
           <input
-            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[2]
             step="any"
           />
           <span class="degrees">'</span>
         </span>
-        <span class="chosen-coordinates" v-show="isSeconds">
+        <span class="chosen-coordinates" v-show="secondsChecked">
           <input
-            :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[2]
             step="any"
           />
@@ -121,17 +121,17 @@
           :stroke-width="0.75"
         />
       </div>
-      <div class="radiogroup" :class="{isConvertible: !isConvertible}">
-        <label class="radio" @click="checkFirst">
+      <div class="radiogroup" :class="{isDegrees: !isDegrees}">
+        <label class="radio" @click="checkDegrees">
           <input type="radio" name="date-format">
-          <Icon v-show="firstChecked"
+          <Icon v-show="degreesChecked"
             icon="RadioOnIcon"
             :width="1.3"
             :height="1.3"
             :strokeWidth="1"
             :color="colors.turquoise"
           />
-          <Icon v-show="!firstChecked"
+          <Icon v-show="!degreesChecked"
             icon="RadioIcon"
             :width="1.3"
             :height="1.3"
@@ -140,16 +140,16 @@
           />
           DD
         </label>
-        <label class="radio" @click="checkSecond">
+        <label class="radio" @click="checkMinutes">
           <input type="radio" name="date-format">
-          <Icon v-show="secondChecked"
+          <Icon v-show="minutesChecked"
             icon="RadioOnIcon"
             :width="1.3"
             :height="1.3"
             :strokeWidth="1"
             :color="colors.turquoise"
           />
-          <Icon v-show="!secondChecked"
+          <Icon v-show="!minutesChecked"
             icon="RadioIcon"
             :width="1.3"
             :height="1.3"
@@ -158,16 +158,16 @@
           />
           min.
         </label>
-        <label class="radio" @click="checkThird">
+        <label class="radio" @click="checkSeconds">
           <input type="radio" name="date-format">
-          <Icon v-show="thirdChecked"
+          <Icon v-show="secondsChecked"
             icon="RadioOnIcon"
             :width="1.3"
             :height="1.3"
             :strokeWidth="1"
             :color="colors.turquoise"
           />
-          <Icon v-show="!thirdChecked"
+          <Icon v-show="!secondsChecked"
             icon="RadioIcon"
             :width="1.3"
             :height="1.3"
@@ -194,7 +194,7 @@ export default {
   methods: {
     inputEPSGChanged (code) {
       this.$emit('input-epsg-changed', code)
-      this.isConvertible = code.v1_unit === 'degree'
+      this.isDegrees = code.v1_unit === 'degree'
       this.is3D = code.v3 !== null
       this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1]).then(() => {
         const output = this.store.state.trans.data
@@ -204,36 +204,27 @@ export default {
         this.setInput()
       })
     },
-    checkFirst () {
-      if (!this.firstChecked) {
-        this.firstChecked = true
-        this.secondChecked = false
-        this.thirdChecked = false
-        this.isDegrees = true
-        this.isMinutes = false
-        this.isSeconds = false
+    checkDegrees () {
+      if (!this.degreesChecked) {
+        this.degreesChecked = true
+        this.minutesChecked = false
+        this.secondsChecked = false
         this.setInput()
       }
     },
-    checkSecond () {
-      if (!this.secondChecked) {
-        this.firstChecked = false
-        this.secondChecked = true
-        this.thirdChecked = false
-        this.isDegrees = false
-        this.isMinutes = true
-        this.isSeconds = false
+    checkMinutes () {
+      if (!this.minutesChecked) {
+        this.degreesChecked = false
+        this.minutesChecked = true
+        this.secondsChecked = false
         this.setInput()
       }
     },
-    checkThird () {
-      if (!this.thirdChecked) {
-        this.firstChecked = false
-        this.secondChecked = false
-        this.thirdChecked = true
-        this.isDegrees = false
-        this.isMinutes = false
-        this.isSeconds = true
+    checkSeconds () {
+      if (!this.secondsChecked) {
+        this.degreesChecked = false
+        this.minutesChecked = false
+        this.secondsChecked = true
         this.setInput()
       }
     }
@@ -244,22 +235,19 @@ export default {
     const inputCoords = ref(mapMarkerInputCoords.value)
     const colors = inject('themeColors')
     const store = useStore()
-    const firstChecked = ref(false)
-    const secondChecked = ref(false)
-    const thirdChecked = ref(false)
-    const isDegrees = ref(false)
-    const isMinutes = ref(true)
-    const isSeconds = ref(false)
+    const degreesChecked = ref(false)
+    const minutesChecked = ref(true)
+    const secondsChecked = ref(false)
     const degrees = ref([0, 0, 0])
     const minutes = ref([0, 0, 0])
     const seconds = ref([0, 0, 0])
     const is3D = ref(true)
-    const isConvertible = ref(false)
+    const isDegrees = ref(false)
     const setInput = () => {
-      if (isDegrees.value) {
+      if (degreesChecked.value) {
         degrees.value[0] = inputCoords.value[0].toFixed(4)
         degrees.value[1] = inputCoords.value[1].toFixed(4)
-      } else if (isMinutes.value) {
+      } else if (minutesChecked.value) {
         const deg0 = Math.floor(inputCoords.value[0])
         const deg1 = Math.floor(inputCoords.value[1])
         const min0 = ((inputCoords.value[0] - deg0) * 60).toFixed(4)
@@ -289,32 +277,26 @@ export default {
       setInput()
     })
     watch([degrees.value, minutes.value, seconds.value], () => {
-      if (isDegrees.value) {
+      if (degreesChecked.value) {
         inputCoords.value[0] = degrees.value[0]
         inputCoords.value[1] = degrees.value[1]
-      } else if (isMinutes.value) {
+      } else if (minutesChecked.value) {
         inputCoords.value[0] = degrees.value[0] + minutes.value[0] / 60
         inputCoords.value[1] = degrees.value[1] + minutes.value[1] / 60
-      } else if (isSeconds.value) {
+      } else if (secondsChecked.value) {
         inputCoords.value[0] = degrees.value[0] + minutes.value[0] / 60 + seconds.value[0] / 3600
         inputCoords.value[1] = degrees.value[1] + minutes.value[1] / 60 + seconds.value[1] / 3600
       }
     })
-    watch(isConvertible, () => {
-      if (!isConvertible.value) {
-        firstChecked.value = false
-        secondChecked.value = false
-        thirdChecked.value = false
-        isDegrees.value = false
-        isMinutes.value = true
-        isSeconds.value = false
+    watch(isDegrees, () => {
+      if (!isDegrees.value) {
+        degreesChecked.value = false
+        minutesChecked.value = true
+        secondsChecked.value = false
       } else {
-        firstChecked.value = true
-        secondChecked.value = false
-        thirdChecked.value = false
-        isDegrees.value = true
-        isMinutes.value = false
-        isSeconds.value = false
+        degreesChecked.value = true
+        minutesChecked.value = false
+        secondsChecked.value = false
       }
     })
     onUpdated(() => {
@@ -325,18 +307,15 @@ export default {
       colors,
       store,
       inputEPSG,
-      isMinutes,
-      isSeconds,
-      isDegrees,
-      firstChecked,
-      secondChecked,
-      thirdChecked,
+      minutesChecked,
+      secondsChecked,
+      degreesChecked,
       setInput,
       degrees,
       minutes,
       seconds,
       is3D,
-      isConvertible
+      isDegrees
     }
   }
 }
@@ -439,7 +418,7 @@ input[type=radio] {
   display: inline-flex;
   flex-wrap: nowrap;
 }
-.isConvertible {
+.isDegrees {
   pointer-events: none;
 }
 .footer {

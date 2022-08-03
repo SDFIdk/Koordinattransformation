@@ -19,7 +19,7 @@
         <span class="chosen-coordinates">
           <input
             :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
-            v-model=input[0][0]
+            v-model=degrees[0]
             step="any"
           />
           <span class="degrees">°</span>
@@ -27,7 +27,7 @@
         <span class="chosen-coordinates" v-show="isMinutes || isSeconds">
           <input
             :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
-            v-model=input[0][1]
+            v-model=minutes[1]
             step="any"
           />
           <span class="degrees">'</span>
@@ -35,7 +35,7 @@
         <span class="chosen-coordinates" v-show="isSeconds">
           <input
             :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
-            v-model=input[0][2]
+            v-model=seconds[0]
             step="any"
           />
           <span class="degrees">"</span>
@@ -52,7 +52,7 @@
         <span class="chosen-coordinates">
         <input
             :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
-          v-model=input[1][0]
+          v-model=degrees[1]
           step="any"
         />
         <span class="degrees">°</span>
@@ -60,7 +60,7 @@
         <span class="chosen-coordinates" v-show="isMinutes || isSeconds">
           <input
             :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
-            v-model=input[1][1]
+            v-model=minutes[1]
             step="any"
           />
           <span class="degrees">'</span>
@@ -68,13 +68,13 @@
         <span class="chosen-coordinates" v-show="isSeconds">
           <input
             :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
-            v-model=input[1][2]
+            v-model=seconds[1]
             step="any"
           />
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="third-input">
+      <span class="third-input" v-show="is3D">
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -86,7 +86,7 @@
         <span class="chosen-coordinates">
         <input
             :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
-          v-model=input[2][0]
+          v-model=degrees[2]
           step="any"
         />
         <span class="degrees">°</span>
@@ -94,7 +94,7 @@
         <span class="chosen-coordinates" v-show="isMinutes || isSeconds">
           <input
             :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
-            v-model=input[2][1]
+            v-model=minutes[2]
             step="any"
           />
           <span class="degrees">'</span>
@@ -102,7 +102,7 @@
         <span class="chosen-coordinates" v-show="isSeconds">
           <input
             :class="{degreesInput: isDegrees, metresInput: isMinutes, secondsInput: isSeconds}"
-            v-model=input[2][2]
+            v-model=seconds[2]
             step="any"
           />
          <span class="degrees">"</span>
@@ -121,8 +121,8 @@
           :stroke-width="0.75"
         />
       </div>
-      <div class="radiogroup">
-        <label class="radio" @click="firstChecked = true; secondChecked = false; thirdChecked = false">
+      <div class="radiogroup" :class="{isConvertible: !isConvertible}">
+        <label class="radio" @click="checkFirst">
           <input type="radio" name="date-format">
           <Icon v-show="firstChecked"
             icon="RadioOnIcon"
@@ -140,7 +140,7 @@
           />
           DD
         </label>
-        <label class="radio" @click="firstChecked = false; secondChecked = true; thirdChecked = false">
+        <label class="radio" @click="checkSecond">
           <input type="radio" name="date-format">
           <Icon v-show="secondChecked"
             icon="RadioOnIcon"
@@ -158,7 +158,7 @@
           />
           min.
         </label>
-        <label class="radio" @click="firstChecked = false; secondChecked = false; thirdChecked = true">
+        <label class="radio" @click="checkThird">
           <input type="radio" name="date-format">
           <Icon v-show="thirdChecked"
             icon="RadioOnIcon"
@@ -174,7 +174,7 @@
             :strokeWidth="1"
             :color="colors.darkSteel"
           />
-        min. sek.
+          <span style="display: inline-flex;">min. sek.</span>
         </label>
       </div>
     </div>
@@ -194,6 +194,8 @@ export default {
   methods: {
     inputEPSGChanged (code) {
       this.$emit('input-epsg-changed', code)
+      this.isConvertible = code.v1_unit === 'degree'
+      this.is3D = code.v3 !== null
       this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1]).then(() => {
         const output = this.store.state.trans.data
         this.inputEPSG = code.srid
@@ -201,34 +203,71 @@ export default {
         this.inputCoords[1] = output.v2
         this.setInput()
       })
+    },
+    checkFirst () {
+      if (!this.firstChecked) {
+        this.firstChecked = true
+        this.secondChecked = false
+        this.thirdChecked = false
+        this.isDegrees = true
+        this.isMinutes = false
+        this.isSeconds = false
+        this.setInput()
+      }
+    },
+    checkSecond () {
+      if (!this.secondChecked) {
+        this.firstChecked = false
+        this.secondChecked = true
+        this.thirdChecked = false
+        this.isDegrees = false
+        this.isMinutes = true
+        this.isSeconds = false
+        this.setInput()
+      }
+    },
+    checkThird () {
+      if (!this.thirdChecked) {
+        this.firstChecked = false
+        this.secondChecked = false
+        this.thirdChecked = true
+        this.isDegrees = false
+        this.isMinutes = false
+        this.isSeconds = true
+        this.setInput()
+      }
     }
   },
   setup (props, context) {
-    const store = useStore()
     const mapMarkerInputCoords = inject('inputCoords')
     const inputEPSG = inject('inputEPSG')
     const inputCoords = ref(mapMarkerInputCoords.value)
     const colors = inject('themeColors')
-    const firstChecked = ref(true)
+    const store = useStore()
+    const firstChecked = ref(false)
     const secondChecked = ref(false)
     const thirdChecked = ref(false)
     const isDegrees = ref(false)
-    const isMinutes = ref(false)
-    const isSeconds = ref(true)
-    const input = ref([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
+    const isMinutes = ref(true)
+    const isSeconds = ref(false)
+    const degrees = ref([0, 0, 0])
+    const minutes = ref([0, 0, 0])
+    const seconds = ref([0, 0, 0])
+    const is3D = ref(true)
+    const isConvertible = ref(false)
     const setInput = () => {
       if (isDegrees.value) {
-        input.value[0][0] = inputCoords.value[0].toFixed(4)
-        input.value[1][0] = inputCoords.value[1].toFixed(4)
+        degrees.value[0] = inputCoords.value[0].toFixed(4)
+        degrees.value[1] = inputCoords.value[1].toFixed(4)
       } else if (isMinutes.value) {
         const deg0 = Math.floor(inputCoords.value[0])
         const deg1 = Math.floor(inputCoords.value[1])
         const min0 = ((inputCoords.value[0] - deg0) * 60).toFixed(4)
         const min1 = ((inputCoords.value[1] - deg1) * 60).toFixed(4)
-        input.value[0][0] = deg0
-        input.value[0][1] = min0
-        input.value[1][0] = deg1
-        input.value[1][1] = min1
+        degrees.value[0] = deg0
+        degrees.value[1] = deg1
+        minutes.value[0] = min0
+        minutes.value[1] = min1
       } else {
         const deg0 = Math.floor(inputCoords.value[0])
         const deg1 = Math.floor(inputCoords.value[1])
@@ -236,22 +275,50 @@ export default {
         const min1 = Math.floor((inputCoords.value[1] - deg1) * 60)
         const sec0 = ((inputCoords.value[0] - deg0 - min0 / 60) * 3600).toFixed(4)
         const sec1 = ((inputCoords.value[1] - deg1 - min1 / 60) * 3600).toFixed(4)
-        input.value[0][0] = deg0
-        input.value[0][1] = min0
-        input.value[0][2] = sec0
-        input.value[1][0] = deg1
-        input.value[1][1] = min1
-        input.value[1][2] = sec1
+        degrees.value[0] = deg0
+        degrees.value[1] = deg1
+        minutes.value[0] = min0
+        minutes.value[1] = min1
+        seconds.value[0] = sec0
+        seconds.value[1] = sec1
       }
     }
     setInput()
     watch(mapMarkerInputCoords, () => {
       inputCoords.value = mapMarkerInputCoords.value
+      setInput()
+    })
+    watch([degrees.value, minutes.value, seconds.value], () => {
+      if (isDegrees.value) {
+        inputCoords.value[0] = degrees.value[0]
+        inputCoords.value[1] = degrees.value[1]
+      } else if (isMinutes.value) {
+        inputCoords.value[0] = degrees.value[0] + minutes.value[0] / 60
+        inputCoords.value[1] = degrees.value[1] + minutes.value[1] / 60
+      } else if (isSeconds.value) {
+        inputCoords.value[0] = degrees.value[0] + minutes.value[0] / 60 + seconds.value[0] / 3600
+        inputCoords.value[1] = degrees.value[1] + minutes.value[1] / 60 + seconds.value[1] / 3600
+      }
+    })
+    watch(isConvertible, () => {
+      if (!isConvertible.value) {
+        firstChecked.value = false
+        secondChecked.value = false
+        thirdChecked.value = false
+        isDegrees.value = false
+        isMinutes.value = true
+        isSeconds.value = false
+      } else {
+        firstChecked.value = true
+        secondChecked.value = false
+        thirdChecked.value = false
+        isDegrees.value = true
+        isMinutes.value = false
+        isSeconds.value = false
+      }
     })
     onUpdated(() => {
-      if (inputCoords.value[0] !== '' && inputCoords.value[1] !== '') {
-        context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1]])
-      }
+      context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1]])
     })
     return {
       inputCoords,
@@ -265,7 +332,11 @@ export default {
       secondChecked,
       thirdChecked,
       setInput,
-      input
+      degrees,
+      minutes,
+      seconds,
+      is3D,
+      isConvertible
     }
   }
 }
@@ -310,15 +381,6 @@ li:hover {
 ul {
   list-style-type: none;
 }
-.degreesInput {
-  width: 20%;
-}
-.metresInput {
-  width: 10%;
-}
-.secondsInput {
-  width: 7.5%;
-}
 .chosen-coordinates {
   border-bottom: var(--action) solid 1px;
   margin: 0 0.5rem 0 0;
@@ -350,10 +412,10 @@ input {
   display: inline-flex;
   align-items: center;
   margin-top: 1.25rem;
-  width: 75%;
+  margin-right: 1rem;
+  width: 100%;
   border: var(--darkSteel) solid 1px;
   border-radius: 16px;
-  /* height: 2rem; */
 }
 .searchbar-input {
   margin: 0 0 0 1rem;
@@ -368,13 +430,17 @@ input[type=radio] {
   height: 0;
   cursor: pointer;
 }
-input[type=radio]:checked {
-  outline: var(--darkSteel) solid 1px;
-}
+/* input[type=radio]:checked {
+  outline: red solid 1px;
+  outline: var(--action) solid 1px;
+} */
 .radiogroup {
   margin-top: 1rem;
   display: inline-flex;
   flex-wrap: nowrap;
+}
+.isConvertible {
+  pointer-events: none;
 }
 .footer {
   display: inline-flex;
@@ -383,16 +449,27 @@ input[type=radio]:checked {
   width: 100%;
   flex-wrap: nowrap;
 }
-
+.degreesInput {
+  width: 90%;
+}
+.metresInput {
+  width: 43%;
+}
+.secondsInput {
+  width: 28%;
+}
+.first-input, .second-input, .third-input {
+  display: block;
+}
 @media screen and (max-width: 1180px) {
   .degreesInput {
     width: 80%;
   }
   .metresInput {
-    width: 40%;
+    width: 38%;
   }
   .secondsInput {
-    width: 25%;
+    width: 24%;
   }
   .first-input, .second-input, .third-input {
     display: block;

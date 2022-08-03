@@ -64,7 +64,7 @@ export default {
     const olMap = ref({})
     let mousePositionControl = ref({})
     const center = props.isDenmark ? [1313559.7686000003, 7448691.317399999] : [-5758833.2009, 9393681.2087]
-    const inputCoords = ref(props.isDenmark ? [677093.7465413888, 6147863.846297142] : [1611279.4886776865, 7323246.570397905])
+    const inputCoords = ref(props.isDenmark ? [677093.7465413888, 6147863.846297142, 0] : [1611279.4886776865, 7323246.570397905, 0])
     const colors = inject('themeColors')
     const mapProjection = 'EPSG:3857'
     const inputEPSG = ref(props.isDenmark ? 'EPSG:25832' : 'EPSG:3178')
@@ -126,7 +126,7 @@ export default {
         mpos = mpos.textContent.split(', ')
         store.dispatch('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1]).then(() => {
           const output = store.state.trans.data
-          inputCoords.value = [output.v1, output.v2]
+          inputCoords.value = [output.v1, output.v2, output.v3]
         })
         const pinnedMarker = document.getElementById('pinned-marker')
         const overlay = new Overlay({
@@ -138,7 +138,14 @@ export default {
       })
     })
     return {
-      olMap, mousePositionControl, inputCoords, colors, store, mapProjection, timeout, inputEPSG
+      olMap,
+      mousePositionControl,
+      inputCoords,
+      colors,
+      store,
+      mapProjection,
+      timeout,
+      inputEPSG
     }
   }
 }

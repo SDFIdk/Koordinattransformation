@@ -12,7 +12,7 @@
         <Loader size="1.5" :isLoading=isLoading />
       </span>
       <span v-else>
-        {{ outputCoords }}
+        {{ output }}
       </span>
     </div>
     <article class="footer">
@@ -112,7 +112,7 @@ export default {
     inputCoords: {
       type: Array,
       default () {
-        return ['0', '0']
+        return [0, 0, 0]
       }
     },
     inputEPSG: {
@@ -134,7 +134,7 @@ export default {
     },
     copyCoordinates () {
       if (!this.outputNotSelected && !this.isLoading) {
-        navigator.clipboard.writeText(this.outputCoords)
+        navigator.clipboard.writeText(this.output)
         this.$emit('coordinates-copied', true)
         window.setTimeout(() => {
           this.$emit('coordinates-copied', false)
@@ -176,27 +176,29 @@ export default {
     const minutesChecked = ref(false)
     const secondsChecked = ref(false)
     const outputNotSelected = ref(true)
-    const outputCoords = ref('')
+    const outputCoords = ref([0, 0])
+    const output = ref('')
     const outputEPSG = ref(Object)
     const hasTransformed = ref(false)
     const isLoading = ref(false)
     const setOutput = () => {
+      if (!hasTransformed.value) return
       if (degreesChecked.value) {
-        outputCoords.value = store.state.trans.data.v1 + '°N, ' + store.state.trans.data.v2 + '°E'
+        output.value = outputCoords.value[0] + '°N, ' + outputCoords.value[1] + '°E'
       } else if (minutesChecked.value) {
-        const d1 = Math.floor(store.state.trans.data.v1)
-        const d2 = Math.floor(store.state.trans.data.v2)
-        const m1 = (store.state.trans.data.v1 - d1) * 60
-        const m2 = (store.state.trans.data.v2 - d2) * 60
-        outputCoords.value = d1 + '°N ' + m1 + '\', ' + d2 + '°E ' + m2 + '\''
+        const d1 = Math.floor(outputCoords.value[0])
+        const d2 = Math.floor(outputCoords.value[1])
+        const m1 = (outputCoords.value[0] - d1) * 60
+        const m2 = (outputCoords.value[1] - d2) * 60
+        output.value = d1 + '°N ' + m1 + '\', ' + d2 + '°E ' + m2 + '\''
       } else {
-        const d1 = Math.floor(store.state.trans.data.v1)
-        const d2 = Math.floor(store.state.trans.data.v2)
-        const m1 = Math.floor((store.state.trans.data.v1 - d1) * 60)
-        const m2 = Math.floor((store.state.trans.data.v2 - d2) * 60)
-        const s1 = (store.state.trans.data.v1 - d1 - m1 / 60) * 3600
-        const s2 = (store.state.trans.data.v2 - d2 - m2 / 60) * 3600
-        outputCoords.value = d1 + '°N ' + m1 + '\' ' + s1 + '", ' + d2 + '°E ' + m2 + '\' ' + s2 + '"'
+        const d1 = Math.floor(outputCoords.value[0])
+        const d2 = Math.floor(outputCoords.value[1])
+        const m1 = Math.floor((outputCoords.value[0] - d1) * 60)
+        const m2 = Math.floor((outputCoords.value[1] - d2) * 60)
+        const s1 = (outputCoords.value[0] - d1 - m1 / 60) * 3600
+        const s2 = (outputCoords.value[1] - d2 - m2 / 60) * 3600
+        output.value = d1 + '°N ' + m1 + '\' ' + s1 + '", ' + d2 + '°E ' + m2 + '\' ' + s2 + '"'
       }
     }
     const transform = async () => {
@@ -206,6 +208,8 @@ export default {
       setTimeout(() => {
         isLoading.value = false
         store.dispatch('trans/get', inputEPSG + '/' + outputEPSG.value.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1]).then(() => {
+          outputCoords.value[0] = store.state.trans.data.v1
+          outputCoords.value[1] = store.state.trans.data.v2
           setOutput()
         })
       }, 300)
@@ -222,7 +226,8 @@ export default {
       hasTransformed,
       isLoading,
       transform,
-      setOutput
+      setOutput,
+      output
     }
   }
 }

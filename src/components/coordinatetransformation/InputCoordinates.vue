@@ -111,7 +111,7 @@
     </div>
     <div class="footer">
       <div class="searchbar">
-        <input class="searchbar-input"/>
+        <input class="searchbar-input" id="dawa-autocomplete-input"/>
         <Icon
           icon="SearchIcon"
           class="searchbar-icon"
@@ -183,7 +183,7 @@
 
 <script>
 
-import { defineAsyncComponent, ref, inject, onUpdated, watch } from 'vue'
+import { defineAsyncComponent, ref, inject, onUpdated, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
@@ -243,6 +243,7 @@ export default {
     const seconds = ref([0, 0, 0])
     const is3D = ref(true)
     const isDegrees = ref(false)
+    const selected = ref('')
     const setInput = () => {
       if (degreesChecked.value) {
         degrees.value[0] = inputCoords.value[0].toFixed(4)
@@ -271,6 +272,18 @@ export default {
         seconds.value[1] = sec1
       }
     }
+    onMounted(() => {
+      const dawaAutocomplete2 = require('dawa-autocomplete2')
+      const inputElm = document.getElementById('dawa-autocomplete-input')
+      dawaAutocomplete2.dawaAutocomplete(inputElm, {
+        select: function (selected) {
+          console.log('Valgt adresse: ' + selected.tekst)
+          console.log(selected.value)
+          selected.value = selected.tekst
+          console.log(selected.value)
+        }
+      })
+    })
     setInput()
     watch(mapMarkerInputCoords, () => {
       inputCoords.value = mapMarkerInputCoords.value
@@ -315,7 +328,8 @@ export default {
       minutes,
       seconds,
       is3D,
-      isDegrees
+      isDegrees,
+      selected
     }
   }
 }

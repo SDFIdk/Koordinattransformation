@@ -20,6 +20,7 @@
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=degrees[0]
+            type="number"
             step="any"
           />
           <span class="degrees">°</span>
@@ -28,6 +29,7 @@
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[0]
+            type="number"
             step="any"
           />
           <span class="degrees">'</span>
@@ -36,6 +38,7 @@
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[0]
+            type="number"
             step="any"
           />
           <span class="degrees">"</span>
@@ -53,6 +56,7 @@
         <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
           v-model=degrees[1]
+            type="number"
           step="any"
         />
         <span class="degrees">°</span>
@@ -61,6 +65,7 @@
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[1]
+            type="number"
             step="any"
           />
           <span class="degrees">'</span>
@@ -69,6 +74,7 @@
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[1]
+            type="number"
             step="any"
           />
           <span class="degrees">"</span>
@@ -87,6 +93,7 @@
         <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
           v-model=degrees[2]
+            type="number"
           step="any"
         />
         <span class="degrees">°</span>
@@ -95,6 +102,7 @@
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[2]
+            type="number"
             step="any"
           />
           <span class="degrees">'</span>
@@ -103,6 +111,7 @@
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[2]
+            type="number"
             step="any"
           />
          <span class="degrees">"</span>
@@ -231,7 +240,7 @@ export default {
   },
   setup (props, context) {
     const mapMarkerInputCoords = inject('inputCoords')
-    const inputEPSG = inject('inputEPSG')
+    const inputEPSG = ref('')
     const inputCoords = ref(mapMarkerInputCoords.value)
     const colors = inject('themeColors')
     const store = useStore()
@@ -244,26 +253,26 @@ export default {
     const is3D = ref(true)
     const isDegrees = ref(false)
     const selected = ref('')
-    const setInput = () => {
+    const setInput = (coords) => {
       if (degreesChecked.value) {
-        degrees.value[0] = inputCoords.value[0].toFixed(4)
-        degrees.value[1] = inputCoords.value[1].toFixed(4)
+        degrees.value[0] = parseFloat(coords[0].toFixed(4))
+        degrees.value[1] = parseFloat(coords[1].toFixed(4))
       } else if (minutesChecked.value) {
-        const deg0 = Math.floor(inputCoords.value[0])
-        const deg1 = Math.floor(inputCoords.value[1])
-        const min0 = ((inputCoords.value[0] - deg0) * 60).toFixed(4)
-        const min1 = ((inputCoords.value[1] - deg1) * 60).toFixed(4)
+        const deg0 = Math.floor(coords[0])
+        const deg1 = Math.floor(coords[1])
+        const min0 = parseFloat(((coords[0] - deg0) * 60).toFixed(4))
+        const min1 = parseFloat(((coords[1] - deg1) * 60).toFixed(4))
         degrees.value[0] = deg0
         degrees.value[1] = deg1
         minutes.value[0] = min0
         minutes.value[1] = min1
       } else {
-        const deg0 = Math.floor(inputCoords.value[0])
-        const deg1 = Math.floor(inputCoords.value[1])
-        const min0 = Math.floor((inputCoords.value[0] - deg0) * 60)
-        const min1 = Math.floor((inputCoords.value[1] - deg1) * 60)
-        const sec0 = ((inputCoords.value[0] - deg0 - min0 / 60) * 3600).toFixed(4)
-        const sec1 = ((inputCoords.value[1] - deg1 - min1 / 60) * 3600).toFixed(4)
+        const deg0 = Math.floor(coords[0])
+        const deg1 = Math.floor(coords[1])
+        const min0 = Math.floor((coords[0] - deg0) * 60)
+        const min1 = Math.floor((coords[1] - deg1) * 60)
+        const sec0 = parseFloat(((coords[0] - deg0 - min0 / 60) * 3600).toFixed(4))
+        const sec1 = parseFloat(((coords[1] - deg1 - min1 / 60) * 3600).toFixed(4))
         degrees.value[0] = deg0
         degrees.value[1] = deg1
         minutes.value[0] = min0
@@ -273,32 +282,44 @@ export default {
       }
     }
     onMounted(() => {
+      inputEPSG.value = inject('inputEPSG')
       const dawaAutocomplete2 = require('dawa-autocomplete2')
       const inputElm = document.getElementById('dawa-autocomplete-input')
       dawaAutocomplete2.dawaAutocomplete(inputElm, {
         select: function (selected) {
-          console.log('Valgt adresse: ' + selected.tekst)
-          console.log(selected.value)
           selected.value = selected.tekst
-          console.log(selected.value)
+          fetch('https://api.dataforsyningen.dk/adresser?q=' + selected.value)
+            .then(res => res.json())
+            .then(data => data[0].adgangsadresse.vejpunkt.koordinater)
+            .then(coords => {
+              store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0]).then(() => {
+                const output = store.state.trans.data
+                inputCoords.value[0] = output.v1
+                inputCoords.value[1] = output.v2
+                setInput([output.v1, output.v2])
+                context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1]])
+              })
+            })
         }
       })
     })
-    setInput()
+    setInput(inputCoords.value)
     watch(mapMarkerInputCoords, () => {
       inputCoords.value = mapMarkerInputCoords.value
-      setInput()
+      setInput(inputCoords.value)
     })
     watch([degrees.value, minutes.value, seconds.value], () => {
       if (degreesChecked.value) {
-        inputCoords.value[0] = degrees.value[0]
-        inputCoords.value[1] = degrees.value[1]
+        const val = [degrees.value[0], degrees.value[1]]
+        inputCoords.value = val
       } else if (minutesChecked.value) {
-        inputCoords.value[0] = degrees.value[0] + minutes.value[0] / 60
-        inputCoords.value[1] = degrees.value[1] + minutes.value[1] / 60
+        const val = [degrees.value[0] + minutes.value[0] / 60, degrees.value[1] + minutes.value[1] / 60]
+        inputCoords.value = val
       } else if (secondsChecked.value) {
-        inputCoords.value[0] = degrees.value[0] + minutes.value[0] / 60 + seconds.value[0] / 3600
-        inputCoords.value[1] = degrees.value[1] + minutes.value[1] / 60 + seconds.value[1] / 3600
+        const val1 = degrees.value[0] + minutes.value[0] / 60 + seconds.value[0] / 3600
+        const val2 = degrees.value[1] + minutes.value[1] / 60 + seconds.value[1] / 3600
+        const val = [val1, val2]
+        inputCoords.value = val
       }
     })
     watch(isDegrees, () => {

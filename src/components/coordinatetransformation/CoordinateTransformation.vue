@@ -41,9 +41,8 @@ export default {
     }
   },
   setup () {
-    const inputCoords = ref(['0', '0'])
+    const inputCoords = inject('inputCoords')
     const colors = inject('themeColors')
-    // const window = inject('window')
     const inputEPSG = inject('inputEPSG')
     const popupVisible = ref(false)
     const menuClosed = ref(false)

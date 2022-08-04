@@ -4,7 +4,7 @@
     <section class="coordinate-selection-wrapper">
       <CoordinateSelection
         :isOutput="true"
-        :outputNotSelected="outputNotSelected"
+        :outputSelected="!outputSelected"
         @output-selected="outputSelectedMethod"/>
     </section>
     <div class="transformed-coordinates" :class="{ hasTransformed: hasTransformed}">
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import { defineAsyncComponent, inject, ref } from 'vue'
+import { defineAsyncComponent, inject, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
@@ -113,12 +113,7 @@ export default {
       type: Array,
       default () {
         return [0, 0, 0]
-      }
-    },
-    inputEPSG: {
-      type: String,
-      default () {
-        return ''
+        // return inject('inputCoords')
       }
     }
   },
@@ -128,12 +123,12 @@ export default {
   },
   methods: {
     outputSelectedMethod (code) {
-      this.outputNotSelected = false
+      this.outputSelected = true
       this.outputEPSG = code
       this.transform()
     },
     copyCoordinates () {
-      if (!this.outputNotSelected && !this.isLoading) {
+      if (this.outputSelected && !this.isLoading) {
         navigator.clipboard.writeText(this.output)
         this.$emit('coordinates-copied', true)
         window.setTimeout(() => {
@@ -161,8 +156,8 @@ export default {
     }
   },
   watch: {
-    inputCoords () {
-      if (!this.outputNotSelected) {
+    inputCoords (newCoords, oldCoords) {
+      if (this.outputSelected) {
         this.transform()
       }
     }
@@ -170,17 +165,20 @@ export default {
   setup (props) {
     const store = useStore()
     const colors = inject('themeColors')
-    let inputEPSG = inject('inputEPSG')
-    const inputCoords = inject('inputCoords')
+    const inputEPSG = ref('')
+    const outputEPSG = ref('')
+    // const inputCoords = inject('inputCoords')
     const degreesChecked = ref(true)
     const minutesChecked = ref(false)
     const secondsChecked = ref(false)
-    const outputNotSelected = ref(true)
+    const outputSelected = ref(false)
     const outputCoords = ref([0, 0])
     const output = ref('')
-    const outputEPSG = ref(Object)
     const hasTransformed = ref(false)
     const isLoading = ref(false)
+    onMounted(() => {
+      inputEPSG.value = inject('inputEPSG')
+    })
     const setOutput = () => {
       if (!hasTransformed.value) return
       if (degreesChecked.value) {
@@ -202,12 +200,12 @@ export default {
       }
     }
     const transform = async () => {
-      inputEPSG = props.inputEPSG
       isLoading.value = true
       hasTransformed.value = true
       setTimeout(() => {
         isLoading.value = false
-        store.dispatch('trans/get', inputEPSG + '/' + outputEPSG.value.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1]).then(() => {
+        store.dispatch('trans/get', inputEPSG.value + '/' + outputEPSG.value.srid + '/' + props.inputCoords[0] + ',' + props.inputCoords[1]).then(() => {
+        // store.dispatch('trans/get', inputEPSG.value + '/' + outputEPSG.value.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1]).then(() => {
           outputCoords.value[0] = store.state.trans.data.v1
           outputCoords.value[1] = store.state.trans.data.v2
           setOutput()
@@ -220,13 +218,14 @@ export default {
       degreesChecked,
       minutesChecked,
       secondsChecked,
-      outputNotSelected,
+      outputSelected,
       outputCoords,
       outputEPSG,
       hasTransformed,
       isLoading,
       transform,
       setOutput,
+      // inputCoords,
       output
     }
   }

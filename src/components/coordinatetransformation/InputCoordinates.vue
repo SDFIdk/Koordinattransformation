@@ -25,7 +25,7 @@
             step="any"
           />
           <span class="degrees" v-show="isDegrees"> °</span>
-          <span class="degrees" v-show="!isDegrees" style="font-size: 1rem"> m</span>
+        <span class="degrees" v-show="!isDegrees" style="font-size: 0.9rem"> m</span>
         </span>
         <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
           <input
@@ -63,7 +63,7 @@
             step="any"
           />
           <span class="degrees" v-show="isDegrees"> °</span>
-          <span class="degrees" v-show="!isDegrees" style="font-size: 1rem"> m</span>
+        <span class="degrees" v-show="!isDegrees" style="font-size: 0.9rem"> m</span>
         </span>
         <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
           <input
@@ -102,7 +102,7 @@
           step="any"
         />
         <span class="degrees" v-show="isDegrees"> °</span>
-        <span class="degrees" v-show="!isDegrees" style="font-size: 1rem"> m</span>
+        <span class="degrees" v-show="!isDegrees" style="font-size: 0.9rem"> m</span>
         </span>
         <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
           <input
@@ -208,7 +208,6 @@ export default {
   },
   methods: {
     inputEPSGChanged (code) {
-      // console.log('inputEPSGChanged', code)
       this.$emit('input-epsg-changed', code)
       if (code.v1_unit === 'degree') {
         this.isDegrees = true

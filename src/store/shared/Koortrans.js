@@ -29,7 +29,8 @@ export class Koortrans {
                 resolve(data)
               })
             })
-            .catch((err) => {
+            .catch(err => {
+              // console.log('Koortrans error', err)
               commit('error', err)
               reject(err)
             })

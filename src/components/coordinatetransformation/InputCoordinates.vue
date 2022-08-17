@@ -265,6 +265,7 @@ export default {
     const isDegrees = ref(false)
     const selected = ref('')
     const setInput = (coords) => {
+      if (coords == null) return
       if (degreesChecked.value) {
         degrees.value[0] = parseFloat(coords[0].toFixed(4))
         degrees.value[1] = parseFloat(coords[1].toFixed(4))
@@ -310,6 +311,13 @@ export default {
                 setInput([output.v1, output.v2])
                 context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1]])
               })
+            })
+            .catch(err => {
+              // console.log(err)
+              this.$emit('error-occurred', true, err)
+              window.setTimeout(() => {
+                this.$emit('error-occurred', false)
+              }, 3000)
             })
         }
       })

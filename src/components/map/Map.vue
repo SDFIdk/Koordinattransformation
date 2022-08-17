@@ -2,6 +2,7 @@
   <div id="map" class="olmap" ref="map">
     <section class="transform-container">
       <CoordinateTransformation @input-epsg-changed="inputEPSGChanged" @input-coords-changed="inputCoordsChanged" :inputCoords=inputCoords id="coordinate-transform" />
+      <div id="mouse-position"></div>
       <p>BUILD TEST</p>
     </section>
     <Icon

@@ -1,11 +1,12 @@
 <template>
   <section v-show="!menuClosed || window.width > 703" class="container">
     <article class="coordinate-transformation-box" ref="mother">
-      <InputCoordinates class="input" @input-epsg-changed="inputEPSGChanged"  @input-coords-changed="inputCoordsChanged"/>
+      <InputCoordinates class="input" @input-epsg-changed="inputEPSGChanged" @error-occured="errorOccurred" @input-coords-changed="inputCoordsChanged"/>
       <OutputCoordinates class="output" :inputEPSG=inputEPSG :inputCoords=inputCoords @coordinates-copied="coordinatesCopied"/>
       <menu-closer @handle-close="closeMenu" class="menu-closer"/>
     </article>
     <div v-if="popupVisible" class="message">Koordinater kopieret</div>
+    <div v-if="errorVisible" class="message">{{error}}</div>
   </section>
   <menu-closer v-show="menuClosed && window.width < 703" @handle-close="closeMenu" class="menu-closed"/>
 </template>
@@ -29,6 +30,10 @@ export default {
       this.inputCoords = coords
       this.$emit('input-coords-changed', coords)
     },
+    errorOccurred (state, err) {
+      this.error = err
+      this.errorVisible = state
+    },
     coordinatesCopied (state) {
       this.popupVisible = state
     },
@@ -47,13 +52,15 @@ export default {
     const popupVisible = ref(false)
     const menuClosed = ref(false)
     const window = ref({ width: 0, height: 0 })
+    const error = ref('')
     return {
       inputCoords,
       colors,
       inputEPSG,
       popupVisible,
       menuClosed,
-      window
+      window,
+      error
     }
   },
   created () {

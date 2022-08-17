@@ -16,7 +16,7 @@
       </span>
     </div>
     <article class="footer">
-      <div class="radiogroup">
+      <div class="radiogroup"  :class="{radioGroupDisabled: isMetres}">
         <label class="radio" @click="checkDegrees">
           <input type="radio" name="date-format">
           <Icon v-show="degreesChecked"
@@ -113,7 +113,6 @@ export default {
       type: Array,
       default () {
         return [0, 0, 0]
-        // return inject('inputCoords')
       }
     }
   },
@@ -123,8 +122,15 @@ export default {
   },
   methods: {
     outputSelectedMethod (code) {
+      if (code.v1_unit === 'metre') {
+        this.isMetres = true
+        this.disableRadioButtons()
+      } else {
+        this.isMetres = false
+        this.degreesChecked = true
+      }
       this.outputSelected = true
-      this.outputEPSG = code
+      this.outputEPSG = code.srid
       this.transform()
     },
     copyCoordinates () {
@@ -135,6 +141,11 @@ export default {
           this.$emit('coordinates-copied', false)
         }, 3000)
       }
+    },
+    disableRadioButtons () {
+      this.degreesChecked = false
+      this.minutesChecked = false
+      this.secondsChecked = false
     },
     checkDegrees () {
       this.degreesChecked = true
@@ -156,7 +167,7 @@ export default {
     }
   },
   watch: {
-    inputCoords (newCoords, oldCoords) {
+    inputCoords () {
       if (this.outputSelected) {
         this.transform()
       }
@@ -167,8 +178,7 @@ export default {
     const colors = inject('themeColors')
     const inputEPSG = ref('')
     const outputEPSG = ref('')
-    // const inputCoords = inject('inputCoords')
-    const degreesChecked = ref(true)
+    const degreesChecked = ref(false)
     const minutesChecked = ref(false)
     const secondsChecked = ref(false)
     const outputSelected = ref(false)
@@ -176,27 +186,36 @@ export default {
     const output = ref('')
     const hasTransformed = ref(false)
     const isLoading = ref(false)
+    const isMetres = ref(true)
     onMounted(() => {
       inputEPSG.value = inject('inputEPSG')
     })
     const setOutput = () => {
       if (!hasTransformed.value) return
-      if (degreesChecked.value) {
-        output.value = outputCoords.value[0] + '°N, ' + outputCoords.value[1] + '°E'
-      } else if (minutesChecked.value) {
-        const d1 = Math.floor(outputCoords.value[0])
-        const d2 = Math.floor(outputCoords.value[1])
-        const m1 = (outputCoords.value[0] - d1) * 60
-        const m2 = (outputCoords.value[1] - d2) * 60
-        output.value = d1 + '°N ' + m1 + '\', ' + d2 + '°E ' + m2 + '\''
+      if (isMetres.value) {
+        const d1 = outputCoords.value[0].toFixed(4)
+        const d2 = outputCoords.value[1].toFixed(4)
+        output.value = d1 + ' N, ' + d2 + ' E'
       } else {
-        const d1 = Math.floor(outputCoords.value[0])
-        const d2 = Math.floor(outputCoords.value[1])
-        const m1 = Math.floor((outputCoords.value[0] - d1) * 60)
-        const m2 = Math.floor((outputCoords.value[1] - d2) * 60)
-        const s1 = (outputCoords.value[0] - d1 - m1 / 60) * 3600
-        const s2 = (outputCoords.value[1] - d2 - m2 / 60) * 3600
-        output.value = d1 + '°N ' + m1 + '\' ' + s1 + '", ' + d2 + '°E ' + m2 + '\' ' + s2 + '"'
+        if (degreesChecked.value) {
+          const d1 = outputCoords.value[0].toFixed(4)
+          const d2 = outputCoords.value[1].toFixed(4)
+          output.value = d1 + '° N, ' + d2 + '° E'
+        } else if (minutesChecked.value) {
+          const d1 = Math.floor(outputCoords.value[0])
+          const d2 = Math.floor(outputCoords.value[1])
+          const m1 = ((outputCoords.value[0] - d1) * 60).toFixed(4)
+          const m2 = ((outputCoords.value[1] - d2) * 60).toFixed(4)
+          output.value = d1 + '° ' + m1 + '\' N, ' + d2 + '° ' + m2 + '\' E'
+        } else {
+          const d1 = Math.floor(outputCoords.value[0])
+          const d2 = Math.floor(outputCoords.value[1])
+          const m1 = Math.floor((outputCoords.value[0] - d1) * 60)
+          const m2 = Math.floor((outputCoords.value[1] - d2) * 60)
+          const s1 = ((outputCoords.value[0] - d1 - m1 / 60) * 3600).toFixed(4)
+          const s2 = ((outputCoords.value[1] - d2 - m2 / 60) * 3600).toFixed(4)
+          output.value = d1 + '° ' + m1 + '\' ' + s1 + '" N, ' + d2 + '° ' + m2 + '\' ' + s2 + '" E'
+        }
       }
     }
     const transform = async () => {
@@ -204,13 +223,12 @@ export default {
       hasTransformed.value = true
       setTimeout(() => {
         isLoading.value = false
-        store.dispatch('trans/get', inputEPSG.value + '/' + outputEPSG.value.srid + '/' + props.inputCoords[0] + ',' + props.inputCoords[1]).then(() => {
-        // store.dispatch('trans/get', inputEPSG.value + '/' + outputEPSG.value.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1]).then(() => {
+        store.dispatch('trans/get', inputEPSG.value + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1]).then(() => {
           outputCoords.value[0] = store.state.trans.data.v1
           outputCoords.value[1] = store.state.trans.data.v2
           setOutput()
         })
-      }, 300)
+      }, 500)
     }
     return {
       store,
@@ -225,8 +243,8 @@ export default {
       isLoading,
       transform,
       setOutput,
-      // inputCoords,
-      output
+      output,
+      isMetres
     }
   }
 }
@@ -253,7 +271,6 @@ label {
   padding: 1rem 1.5rem;
   background-color: var(--lightSteel);
 }
-
 .transformed-coordinates {
   margin-top: 0.5rem;
   width: 100%;
@@ -293,6 +310,9 @@ input[type=radio] {
 }
 input[type=radio]:checked {
   outline: var(--darkSteel) solid 1px;
+}
+.radioGroupDisabled {
+  pointer-events: none;
 }
 .footer {
   margin-top: 1.25rem;

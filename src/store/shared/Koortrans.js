@@ -23,7 +23,6 @@ export class Koortrans {
         return new Promise((resolve, reject) => {
           commit('request')
           fetch(environmentAPIDomains[process.env.VUE_APP_NODE_ENV] + path + crsParameter + '?token=' + tokens.get[process.env.VUE_APP_NODE_ENV])
-          // fetch(environmentAPIDomains[process.env.VUE_APP_NODE_ENV] + path + crsParameter)
             .then(resp => {
               resp.json().then(data => {
                 commit('success', data)

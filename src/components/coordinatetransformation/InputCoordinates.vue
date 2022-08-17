@@ -410,6 +410,7 @@ input::-webkit-inner-spin-button {
 input {
   -moz-appearance: textfield;
   border: none;
+  width: 100%;
 }
 .arrow-icon-x-coordinate {
   transform: rotate(90deg);
@@ -426,7 +427,7 @@ input {
 .searchbar {
   display: inline-flex;
   align-items: center;
-  margin-top: 1.25rem;
+  margin-top: 1rem;
   margin-right: 1rem;
   width: 100%;
   border: var(--darkSteel) solid 1px;
@@ -467,11 +468,14 @@ input[type=radio] {
   display: block;
 }
 .isMetresInput {
+  margin-top: 0.25rem;
   display: inline-flex;
+  width: 32.5%;
+  align-items: center;
 }
-/* .first-input, .second-input, .third-input {
-  display: block;
-} */
+.chosen-coordinates {
+  width: 100%;
+}
 @media screen and (max-width: 1180px) {
   .degreesInput {
     width: 80%;

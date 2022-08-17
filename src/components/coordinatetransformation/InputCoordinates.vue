@@ -7,7 +7,7 @@
       <CoordinateSelection :isOutput="false" @epsg-changed="inputEPSGChanged"/>
     </section>
     <div class="input">
-      <span class="first-input">
+      <span class="first-input" :class="{metresInput: !isDegrees}">
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -23,9 +23,10 @@
             type="number"
             step="any"
           />
-          <span class="degrees">°</span>
+          <span class="degrees" v-show="isDegrees"> °</span>
+          <span class="degrees" v-show="!isDegrees" style="font-size: 1rem"> m</span>
         </span>
-        <span class="chosen-coordinates" v-show="minutesChecked || secondsChecked">
+        <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[0]
@@ -34,7 +35,7 @@
           />
           <span class="degrees">'</span>
         </span>
-        <span class="chosen-coordinates" v-show="secondsChecked">
+        <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[0]
@@ -53,15 +54,16 @@
           :stroke-width="0"
         />
         <span class="chosen-coordinates">
-        <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
-          v-model=degrees[1]
-            type="number"
-          step="any"
-        />
-        <span class="degrees">°</span>
+          <input
+              :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            v-model=degrees[1]
+              type="number"
+            step="any"
+          />
+          <span class="degrees" v-show="isDegrees"> °</span>
+          <span class="degrees" v-show="!isDegrees" style="font-size: 1rem"> m</span>
         </span>
-        <span class="chosen-coordinates" v-show="minutesChecked || secondsChecked">
+        <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[1]
@@ -70,7 +72,7 @@
           />
           <span class="degrees">'</span>
         </span>
-        <span class="chosen-coordinates" v-show="secondsChecked">
+        <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[1]
@@ -96,9 +98,10 @@
             type="number"
           step="any"
         />
-        <span class="degrees">°</span>
+        <span class="degrees" v-show="isDegrees"> °</span>
+        <span class="degrees" v-show="!isDegrees" style="font-size: 1rem"> m</span>
         </span>
-        <span class="chosen-coordinates" v-show="minutesChecked || secondsChecked">
+        <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[2]
@@ -107,7 +110,7 @@
           />
           <span class="degrees">'</span>
         </span>
-        <span class="chosen-coordinates" v-show="secondsChecked">
+        <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[2]
@@ -130,7 +133,7 @@
           :stroke-width="0.75"
         />
       </div>
-      <div class="radiogroup" :class="{isDegrees: !isDegrees}">
+      <div class="radiogroup" v-show="isDegrees" :class="{isDegrees: !isDegrees}">
         <label class="radio" @click="checkDegrees">
           <input type="radio" name="date-format">
           <Icon v-show="degreesChecked"
@@ -202,8 +205,14 @@ export default {
   },
   methods: {
     inputEPSGChanged (code) {
+      // console.log('inputEPSGChanged', code)
       this.$emit('input-epsg-changed', code)
-      this.isDegrees = code.v1_unit === 'degree'
+      if (code.v1_unit === 'degree') {
+        this.isDegrees = true
+      } else {
+        this.isDegrees = false
+        this.checkDegrees()
+      }
       this.is3D = code.v3 !== null
       this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1]).then(() => {
         const output = this.store.state.trans.data
@@ -244,8 +253,8 @@ export default {
     const inputCoords = ref(mapMarkerInputCoords.value)
     const colors = inject('themeColors')
     const store = useStore()
-    const degreesChecked = ref(false)
-    const minutesChecked = ref(true)
+    const degreesChecked = ref(true)
+    const minutesChecked = ref(false)
     const secondsChecked = ref(false)
     const degrees = ref([0, 0, 0])
     const minutes = ref([0, 0, 0])
@@ -320,17 +329,6 @@ export default {
         const val2 = degrees.value[1] + minutes.value[1] / 60 + seconds.value[1] / 3600
         const val = [val1, val2]
         inputCoords.value = val
-      }
-    })
-    watch(isDegrees, () => {
-      if (!isDegrees.value) {
-        degreesChecked.value = false
-        minutesChecked.value = true
-        secondsChecked.value = false
-      } else {
-        degreesChecked.value = true
-        minutesChecked.value = false
-        secondsChecked.value = false
       }
     })
     onUpdated(() => {
@@ -432,11 +430,8 @@ input {
   border-radius: 16px;
 }
 .searchbar-input {
-  margin: 0 0 0 1rem;
+  margin-left: 2rem;
   width: 92%;
-}
-.searchbar-icon {
-  margin: 0 0.5rem 0 0;
 }
 input[type=radio] {
   opacity: 0;
@@ -444,17 +439,10 @@ input[type=radio] {
   height: 0;
   cursor: pointer;
 }
-/* input[type=radio]:checked {
-  outline: red solid 1px;
-  outline: var(--action) solid 1px;
-} */
 .radiogroup {
   margin-top: 1rem;
   display: inline-flex;
   flex-wrap: nowrap;
-}
-.isDegrees {
-  pointer-events: none;
 }
 .footer {
   display: inline-flex;

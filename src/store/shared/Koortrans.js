@@ -1,12 +1,12 @@
 import { environmentAPIDomains } from '@/store/shared/Paths'
 
-// const tokens = {
-//   get: {
-//     production: process.env.VUE_APP_TOKEN,
-//     development: process.env.VUE_APP_TOKEN,
-//     staging: process.env.VUE_APP_TOKEN
-//   }
-// }
+const tokens = {
+  get: {
+    production: process.env.VUE_APP_TOKEN,
+    development: process.env.VUE_APP_TOKEN,
+    staging: process.env.VUE_APP_TOKEN
+  }
+}
 
 export class Koortrans {
   constructor (path, parseData) {
@@ -22,8 +22,8 @@ export class Koortrans {
       get ({ commit, dispatch }, crsParameter) {
         return new Promise((resolve, reject) => {
           commit('request')
-          // fetch(environmentAPIDomains[process.env.VUE_APP_NODE_ENV] + path + crsParameter + '?token=' + tokens.get[process.env.VUE_APP_NODE_ENV])
-          fetch(environmentAPIDomains[process.env.VUE_APP_NODE_ENV] + path + crsParameter)
+          fetch(environmentAPIDomains[process.env.VUE_APP_NODE_ENV] + path + crsParameter + '?token=' + tokens.get[process.env.VUE_APP_NODE_ENV])
+          // fetch(environmentAPIDomains[process.env.VUE_APP_NODE_ENV] + path + crsParameter)
             .then(resp => {
               resp.json().then(data => {
                 commit('success', data)

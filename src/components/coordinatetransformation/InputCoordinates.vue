@@ -7,7 +7,8 @@
       <CoordinateSelection :isOutput="false" @epsg-changed="inputEPSGChanged"/>
     </section>
     <div class="input">
-      <span class="first-input" :class="{metresInput: !isDegrees}">
+      <span class="first-input">
+      <!-- <span class="first-input" :class="{metresInput: !isDegrees}"> -->
         <Icon
           icon="ArrowIcon"
           :width="2"

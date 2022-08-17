@@ -8,7 +8,7 @@
     </section>
     <div class="input">
       <span class="first-input">
-      <!-- <span class="first-input" :class="{metresInput: !isDegrees}"> -->
+      <!-- <span :class="{isDegreesInput: !isDegrees}"> -->
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -47,6 +47,7 @@
         </span>
       </span>
       <span class="second-input">
+      <!-- <span :class="{isDegreesInput: !isDegrees}"> -->
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -83,6 +84,7 @@
           <span class="degrees">"</span>
         </span>
       </span>
+      <!-- <span v-show="is3D" :class="{isDegreesInput: !isDegrees}"> -->
       <span class="third-input" v-show="is3D">
         <Icon
           icon="ArrowIcon"
@@ -461,6 +463,9 @@ input[type=radio] {
 .secondsInput {
   width: 28%;
 }
+.isDegreesInput {
+  display: block;
+}
 .first-input, .second-input, .third-input {
   display: block;
 }
@@ -474,9 +479,9 @@ input[type=radio] {
   .secondsInput {
     width: 24%;
   }
-  .first-input, .second-input, .third-input {
+  /* .first-input, .second-input, .third-input {
     display: block;
-  }
+  } */
   .footer {
     display: block;
   }

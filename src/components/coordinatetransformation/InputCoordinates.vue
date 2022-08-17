@@ -7,8 +7,8 @@
       <CoordinateSelection :isOutput="false" @epsg-changed="inputEPSGChanged"/>
     </section>
     <div class="input">
-      <span class="first-input">
-      <!-- <span :class="{isDegreesInput: !isDegrees}"> -->
+      <!-- <span class="first-input"> -->
+      <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -46,8 +46,8 @@
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="second-input">
-      <!-- <span :class="{isDegreesInput: !isDegrees}"> -->
+      <!-- <span class="second-input"> -->
+      <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -84,8 +84,8 @@
           <span class="degrees">"</span>
         </span>
       </span>
-      <!-- <span v-show="is3D" :class="{isDegreesInput: !isDegrees}"> -->
-      <span class="third-input" v-show="is3D">
+      <!-- <span class="third-input" v-show="is3D"> -->
+      <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -466,9 +466,12 @@ input[type=radio] {
 .isDegreesInput {
   display: block;
 }
-.first-input, .second-input, .third-input {
-  display: block;
+.isMetresInput {
+  display: inline-flex;
 }
+/* .first-input, .second-input, .third-input {
+  display: block;
+} */
 @media screen and (max-width: 1180px) {
   .degreesInput {
     width: 80%;

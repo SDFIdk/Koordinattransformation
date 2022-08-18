@@ -16,68 +16,75 @@
       </span>
     </div>
     <article class="footer">
-      <div class="radiogroup"  :class="{radioGroupDisabled: isMetres}">
-        <label class="radio" @click="checkDegrees">
-          <input type="radio" name="date-format">
-          <Icon v-show="degreesChecked"
-            icon="RadioOnIcon"
-            :width="1.3"
-            :height="1.3"
-            :strokeWidth="1"
-            :color="colors.turquoise"
-          />
-          <Icon v-show="!degreesChecked"
-            icon="RadioIcon"
-            :width="1.3"
-            :height="1.3"
-            :strokeWidth="1"
-            :color="colors.darkSteel"
-          />
-          DD
-        </label>
-        <label class="radio" @click="checkMinutes">
-          <input type="radio" name="date-format">
-          <Icon v-show="minutesChecked"
-            icon="RadioOnIcon"
-            :width="1.3"
-            :height="1.3"
-            :strokeWidth="1"
-            :color="colors.turquoise"
-          />
-          <Icon v-show="!minutesChecked"
-            icon="RadioIcon"
-            :width="1.3"
-            :height="1.3"
-            :strokeWidth="1"
-            :color="colors.darkSteel"
-          />
-          min.
-        </label>
-        <label class="radio" @click="checkSeconds">
-          <input type="radio" name="date-format">
-          <Icon v-show="secondsChecked"
-            icon="RadioOnIcon"
-            :width="1.3"
-            :height="1.3"
-            :strokeWidth="1"
-            :color="colors.turquoise"
-          />
-          <Icon  v-show="!secondsChecked"
-            icon="RadioIcon"
-            :width="1.3"
-            :height="1.3"
-            :strokeWidth="1"
-            :color="colors.darkSteel"
-          />
-        min. sek.
-        </label>
+      <div class="radio-and-info-group">
+        <div class="radiogroup"  :class="{radioGroupDisabled: isMetres}">
+          <label class="radio" @click="checkDegrees">
+            <input type="radio" name="date-format">
+            <Icon v-show="degreesChecked"
+              icon="RadioOnIcon"
+              :width="1.3"
+              :height="1.3"
+              :strokeWidth="1"
+              :color="colors.turquoise"
+            />
+            <Icon v-show="!degreesChecked"
+              icon="RadioIcon"
+              :width="1.3"
+              :height="1.3"
+              :strokeWidth="1"
+              :color="colors.darkSteel"
+            />
+            DD
+          </label>
+          <label class="radio" @click="checkMinutes">
+            <input type="radio" name="date-format">
+            <Icon v-show="minutesChecked"
+              icon="RadioOnIcon"
+              :width="1.3"
+              :height="1.3"
+              :strokeWidth="1"
+              :color="colors.turquoise"
+            />
+            <Icon v-show="!minutesChecked"
+              icon="RadioIcon"
+              :width="1.3"
+              :height="1.3"
+              :strokeWidth="1"
+              :color="colors.darkSteel"
+            />
+            min.
+          </label>
+          <label class="radio" @click="checkSeconds">
+            <input type="radio" name="date-format">
+            <Icon v-show="secondsChecked"
+              icon="RadioOnIcon"
+              :width="1.3"
+              :height="1.3"
+              :strokeWidth="1"
+              :color="colors.turquoise"
+            />
+            <Icon  v-show="!secondsChecked"
+              icon="RadioIcon"
+              :width="1.3"
+              :height="1.3"
+              :strokeWidth="1"
+              :color="colors.darkSteel"
+            />
+          min. sek.
+          </label>
+        </div>
         <Icon
           icon="InfoIcon"
           :width="1.3"
           :height="1.3"
           :color="colors.black"
           class="info-icon"
+          @mouseenter="hover = true"
+          @mouseleave="hover = false"
         />
+        <Transition>
+          <p class="info-text" v-if="hover">Formatknapperne virker kun for EPSG-koder, hvis enhed er i grader.</p>
+        </Transition>
       </div>
       <button class="copy-btn" @click="copyCoordinates" :class="{hasTransformed: hasTransformed && !this.isLoading}">
         Kopiér
@@ -187,6 +194,7 @@ export default {
     const hasTransformed = ref(false)
     const isLoading = ref(false)
     const isMetres = ref(true)
+    const hover = ref(false)
     onMounted(() => {
       inputEPSG.value = inject('inputEPSG')
     })
@@ -244,6 +252,7 @@ export default {
       transform,
       setOutput,
       output,
+      hover,
       isMetres
     }
   }
@@ -258,11 +267,22 @@ export default {
 .coordinate-selection-wrapper {
   margin: 1.4rem 0 0.75rem 0;
 }
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
 .info-icon {
   border: var(--darkSteel) solid 1px;
   border-radius: 25px;
   background: var(--white);
   margin: 0 0 0 0.5rem;
+}
+.info-text {
+  margin-left: 0.5rem;
 }
 label {
   display: inline-flex;
@@ -321,6 +341,9 @@ input[type=radio]:checked {
   justify-content: space-between;
   width: 100%;
   flex-wrap: nowrap;
+}
+.radio-and-info-group {
+  display: inline-flex;
 }
 .radiogroup {
   display: inline-flex;

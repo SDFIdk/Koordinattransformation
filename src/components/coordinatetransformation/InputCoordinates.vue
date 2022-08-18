@@ -7,7 +7,6 @@
       <CoordinateSelection :isOutput="false" @epsg-changed="inputEPSGChanged"/>
     </section>
     <div class="input">
-      <!-- <span class="first-input"> -->
       <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
         <Icon
           icon="ArrowIcon"
@@ -46,7 +45,6 @@
           <span class="degrees">"</span>
         </span>
       </span>
-      <!-- <span class="second-input"> -->
       <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
         <Icon
           icon="ArrowIcon"
@@ -84,7 +82,6 @@
           <span class="degrees">"</span>
         </span>
       </span>
-      <!-- <span class="third-input" v-show="is3D"> -->
       <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
         <Icon
           icon="ArrowIcon"
@@ -136,7 +133,8 @@
           :stroke-width="0.75"
         />
       </div>
-      <div class="radiogroup" v-show="isDegrees" :class="{isDegrees: !isDegrees}">
+      <!-- <div class="radiogroup" :class="{isDegrees: !isDegrees}"> -->
+      <div class="radiogroup" :class="{radioGroupDisabled: !isDegrees}">
         <label class="radio" @click="checkDegrees">
           <input type="radio" name="date-format">
           <Icon v-show="degreesChecked"
@@ -211,9 +209,10 @@ export default {
       this.$emit('input-epsg-changed', code)
       if (code.v1_unit === 'degree') {
         this.isDegrees = true
+        this.checkDegrees()
       } else {
         this.isDegrees = false
-        this.checkDegrees()
+        this.disableRadioButtons()
       }
       this.is3D = code.v3 !== null
       this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1]).then(() => {
@@ -223,6 +222,11 @@ export default {
         this.inputCoords[1] = output.v2
         this.setInput()
       })
+    },
+    disableRadioButtons () {
+      this.degreesChecked = false
+      this.minutesChecked = false
+      this.secondsChecked = false
     },
     checkDegrees () {
       if (!this.degreesChecked) {
@@ -255,7 +259,7 @@ export default {
     const inputCoords = ref(mapMarkerInputCoords.value)
     const colors = inject('themeColors')
     const store = useStore()
-    const degreesChecked = ref(true)
+    const degreesChecked = ref(false)
     const minutesChecked = ref(false)
     const secondsChecked = ref(false)
     const degrees = ref([0, 0, 0])
@@ -417,7 +421,7 @@ input::-webkit-inner-spin-button {
 input {
   -moz-appearance: textfield;
   border: none;
-  width: 100%;
+  width: 91%;
 }
 .arrow-icon-x-coordinate {
   transform: rotate(90deg);
@@ -433,16 +437,13 @@ input {
 }
 .searchbar {
   display: inline-flex;
+  justify-content: space-between;
   align-items: center;
-  margin-top: 1rem;
-  margin-right: 1rem;
-  width: 100%;
+  margin-right: 0.5rem;
   border: var(--darkSteel) solid 1px;
   border-radius: 16px;
-}
-.searchbar-input {
-  margin-left: 2rem;
-  width: 92%;
+  flex-grow: 1;
+  padding: 0.1rem 0.5rem 0.1rem 1rem;
 }
 input[type=radio] {
   opacity: 0;
@@ -451,16 +452,18 @@ input[type=radio] {
   cursor: pointer;
 }
 .radiogroup {
-  margin-top: 1rem;
   display: inline-flex;
   flex-wrap: nowrap;
+}
+.radioGroupDisabled {
+  pointer-events: none;
 }
 .footer {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  flex-wrap: nowrap;
+  margin-top: 1rem;
 }
 .degreesInput {
   width: 90%;
@@ -493,9 +496,9 @@ input[type=radio] {
   .secondsInput {
     width: 24%;
   }
-  /* .first-input, .second-input, .third-input {
+  .first-input, .second-input, .third-input {
     display: block;
-  } */
+  }
   .footer {
     display: block;
   }

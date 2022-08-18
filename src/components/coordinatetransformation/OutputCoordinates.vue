@@ -110,12 +110,18 @@
 </template>
 
 <script>
-import { defineAsyncComponent, inject, onMounted, ref } from 'vue'
+import { defineAsyncComponent, inject, ref } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
   name: 'OutputCoordinates',
   props: {
+    inputEPSG: {
+      type: String,
+      default () {
+        return ''
+      }
+    },
     inputCoords: {
       type: Array,
       default () {
@@ -174,16 +180,15 @@ export default {
     }
   },
   watch: {
-    inputCoords () {
+    inputCoords (after, before) {
       if (this.outputSelected) {
         this.transform()
       }
     }
   },
-  setup (props) {
+  setup (props, { emit }) {
     const store = useStore()
     const colors = inject('themeColors')
-    const inputEPSG = ref('')
     const outputEPSG = ref('')
     const degreesChecked = ref(false)
     const minutesChecked = ref(false)
@@ -195,9 +200,6 @@ export default {
     const isLoading = ref(false)
     const isMetres = ref(true)
     const hover = ref(false)
-    onMounted(() => {
-      inputEPSG.value = inject('inputEPSG')
-    })
     const setOutput = () => {
       if (!hasTransformed.value) return
       if (isMetres.value) {
@@ -226,16 +228,23 @@ export default {
         }
       }
     }
-    const transform = async () => {
+    const transform = () => {
       isLoading.value = true
       hasTransformed.value = true
       setTimeout(() => {
         isLoading.value = false
-        store.dispatch('trans/get', inputEPSG.value + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1]).then(() => {
-          outputCoords.value[0] = store.state.trans.data.v1
-          outputCoords.value[1] = store.state.trans.data.v2
-          setOutput()
-        })
+        store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
+          .then(() => {
+            outputCoords.value[0] = parseFloat(store.state.trans.data.v1)
+            outputCoords.value[1] = parseFloat(store.state.trans.data.v2)
+            setOutput()
+          })
+          .catch(err => {
+            emit('error-occurred', true, err)
+            window.setTimeout(() => {
+              emit('error-occurred', false)
+            }, 5000)
+          })
       }, 500)
     }
     return {

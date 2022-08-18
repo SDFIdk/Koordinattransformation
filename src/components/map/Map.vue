@@ -43,16 +43,17 @@ export default {
   },
   methods: {
     inputCoordsChanged (coords) {
-      this.store.dispatch('trans/get', this.inputEPSG + '/' + this.mapProjection + '/' + coords[0] + ',' + coords[1]).then(() => {
-        const output = this.store.state.trans.data
-        const pinnedMarker = document.getElementById('pinned-marker')
-        const overlay = new Overlay({
-          element: pinnedMarker,
-          positioning: 'center-center'
+      this.store.dispatch('trans/get', this.inputEPSG + '/' + this.mapProjection + '/' + coords[0] + ',' + coords[1])
+        .then(() => {
+          const output = this.store.state.trans.data
+          const pinnedMarker = document.getElementById('pinned-marker')
+          const overlay = new Overlay({
+            element: pinnedMarker,
+            positioning: 'center-center'
+          })
+          overlay.setPosition([output.v1, output.v2])
+          this.olMap.addOverlay(overlay)
         })
-        overlay.setPosition([output.v1, output.v2])
-        this.olMap.addOverlay(overlay)
-      })
     },
     inputEPSGChanged (epsg) {
       this.inputEPSG = epsg
@@ -124,10 +125,11 @@ export default {
       olMap.value.on('click', function (e) {
         let mpos = document.getElementById('mouse-position')
         mpos = mpos.textContent.split(', ')
-        store.dispatch('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1]).then(() => {
-          const output = store.state.trans.data
-          inputCoords.value = [output.v1, output.v2, output.v3]
-        })
+        store.dispatch('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1])
+          .then(() => {
+            const output = store.state.trans.data
+            inputCoords.value = [output.v1, output.v2, output.v3]
+          })
         const pinnedMarker = document.getElementById('pinned-marker')
         const overlay = new Overlay({
           element: pinnedMarker,

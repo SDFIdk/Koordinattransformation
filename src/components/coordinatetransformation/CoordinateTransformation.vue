@@ -1,12 +1,16 @@
 <template>
   <section v-show="!menuClosed || window.width > 703" class="container">
     <article class="coordinate-transformation-box" ref="mother">
-      <InputCoordinates class="input" @input-epsg-changed="inputEPSGChanged" @error-occured="errorOccurred" @input-coords-changed="inputCoordsChanged"/>
-      <OutputCoordinates class="output" :inputEPSG=inputEPSG :inputCoords=inputCoords @coordinates-copied="coordinatesCopied"/>
+      <InputCoordinates class="input" @input-epsg-changed="inputEPSGChanged" @error-occurred="errorOccurred" @input-coords-changed="inputCoordsChanged"/>
+      <OutputCoordinates class="output" :inputEPSG=inputEPSG :inputCoords=inputCoords @error-occurred="errorOccurred" @coordinates-copied="coordinatesCopied"/>
       <menu-closer @handle-close="closeMenu" class="menu-closer"/>
     </article>
     <div v-if="popupVisible" class="message">Koordinater kopieret</div>
-    <div v-if="errorVisible" class="message">{{error}}</div>
+    <div v-if="errorVisible" class="message">
+      <!-- <p>Ups, du har valgt to inkompatible EPSG-koder</p>
+      <p>eller et koordinat uden for rækkevidde.</p> -->
+      Ups, du har valgt to inkompatible EPSG-koder eller et koordinat, der er uden for rækkevidde.
+    </div>
   </section>
   <menu-closer v-show="menuClosed && window.width < 703" @handle-close="closeMenu" class="menu-closed"/>
 </template>
@@ -30,8 +34,7 @@ export default {
       this.inputCoords = coords
       this.$emit('input-coords-changed', coords)
     },
-    errorOccurred (state, err) {
-      this.error = err
+    errorOccurred (state) {
       this.errorVisible = state
     },
     coordinatesCopied (state) {
@@ -52,7 +55,7 @@ export default {
     const popupVisible = ref(false)
     const menuClosed = ref(false)
     const window = ref({ width: 0, height: 0 })
-    const error = ref('')
+    const errorVisible = ref('')
     return {
       inputCoords,
       colors,
@@ -60,7 +63,7 @@ export default {
       popupVisible,
       menuClosed,
       window,
-      error
+      errorVisible
     }
   },
   created () {
@@ -88,7 +91,7 @@ export default {
   align-self: center;
   text-align: center;
   margin: 1rem 0 0 0;
-  padding: 1rem;
+  padding: 0.5rem;
   background: var(--lightSteel);
   border-radius: 18px;
 }

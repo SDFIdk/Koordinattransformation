@@ -133,7 +133,6 @@
           :stroke-width="0.75"
         />
       </div>
-      <!-- <div class="radiogroup" :class="{isDegrees: !isDegrees}"> -->
       <div class="radiogroup" :class="{radioGroupDisabled: !isDegrees}">
         <label class="radio" @click="checkDegrees">
           <input type="radio" name="date-format">
@@ -215,13 +214,14 @@ export default {
         this.disableRadioButtons()
       }
       this.is3D = code.v3 !== null
-      this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1]).then(() => {
-        const output = this.store.state.trans.data
-        this.inputEPSG = code.srid
-        this.inputCoords[0] = output.v1
-        this.inputCoords[1] = output.v2
-        this.setInput()
-      })
+      this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1])
+        .then(() => {
+          const output = this.store.state.trans.data
+          this.inputEPSG = code.srid
+          this.inputCoords[0] = output.v1
+          this.inputCoords[1] = output.v2
+          this.setInput()
+        })
     },
     disableRadioButtons () {
       this.degreesChecked = false
@@ -268,33 +268,63 @@ export default {
     const is3D = ref(true)
     const isDegrees = ref(false)
     const selected = ref('')
-    const setInput = (coords) => {
-      if (coords == null) return
-      if (degreesChecked.value) {
-        degrees.value[0] = parseFloat(coords[0].toFixed(4))
-        degrees.value[1] = parseFloat(coords[1].toFixed(4))
-      } else if (minutesChecked.value) {
-        const deg0 = Math.floor(coords[0])
-        const deg1 = Math.floor(coords[1])
-        const min0 = parseFloat(((coords[0] - deg0) * 60).toFixed(4))
-        const min1 = parseFloat(((coords[1] - deg1) * 60).toFixed(4))
-        degrees.value[0] = deg0
-        degrees.value[1] = deg1
-        minutes.value[0] = min0
-        minutes.value[1] = min1
+    const setInput = () => {
+      if (isDegrees.value) {
+        if (degreesChecked.value) {
+          degrees.value[0] = parseFloat(inputCoords.value[0].toFixed(4))
+          degrees.value[1] = parseFloat(inputCoords.value[1].toFixed(4))
+        } else if (minutesChecked.value) {
+          const deg0 = Math.floor(inputCoords.value[0])
+          const deg1 = Math.floor(inputCoords.value[1])
+          const min0 = parseFloat(((inputCoords.value[0] - deg0) * 60).toFixed(4))
+          const min1 = parseFloat(((inputCoords.value[1] - deg1) * 60).toFixed(4))
+          degrees.value[0] = deg0
+          degrees.value[1] = deg1
+          minutes.value[0] = min0
+          minutes.value[1] = min1
+        } else {
+          const deg0 = Math.floor(inputCoords.value[0])
+          const deg1 = Math.floor(inputCoords.value[1])
+          const min0 = Math.floor((inputCoords.value[0] - deg0) * 60)
+          const min1 = Math.floor((inputCoords.value[1] - deg1) * 60)
+          const sec0 = parseFloat(((inputCoords.value[0] - deg0 - min0 / 60) * 3600).toFixed(4))
+          const sec1 = parseFloat(((inputCoords.value[1] - deg1 - min1 / 60) * 3600).toFixed(4))
+          degrees.value[0] = deg0
+          degrees.value[1] = deg1
+          minutes.value[0] = min0
+          minutes.value[1] = min1
+          seconds.value[0] = sec0
+          seconds.value[1] = sec1
+        }
+        if (degreesChecked.value) {
+          degrees.value[0] = parseFloat(inputCoords.value[0].toFixed(4))
+          degrees.value[1] = parseFloat(inputCoords.value[1].toFixed(4))
+        } else if (minutesChecked.value) {
+          const deg0 = Math.floor(inputCoords.value[0])
+          const deg1 = Math.floor(inputCoords.value[1])
+          const min0 = parseFloat(((inputCoords.value[0] - deg0) * 60).toFixed(4))
+          const min1 = parseFloat(((inputCoords.value[1] - deg1) * 60).toFixed(4))
+          degrees.value[0] = deg0
+          degrees.value[1] = deg1
+          minutes.value[0] = min0
+          minutes.value[1] = min1
+        } else {
+          const deg0 = Math.floor(inputCoords.value[0])
+          const deg1 = Math.floor(inputCoords.value[1])
+          const min0 = Math.floor((inputCoords.value[0] - deg0) * 60)
+          const min1 = Math.floor((inputCoords.value[1] - deg1) * 60)
+          const sec0 = parseFloat(((inputCoords.value[0] - deg0 - min0 / 60) * 3600).toFixed(4))
+          const sec1 = parseFloat(((inputCoords.value[1] - deg1 - min1 / 60) * 3600).toFixed(4))
+          degrees.value[0] = deg0
+          degrees.value[1] = deg1
+          minutes.value[0] = min0
+          minutes.value[1] = min1
+          seconds.value[0] = sec0
+          seconds.value[1] = sec1
+        }
       } else {
-        const deg0 = Math.floor(coords[0])
-        const deg1 = Math.floor(coords[1])
-        const min0 = Math.floor((coords[0] - deg0) * 60)
-        const min1 = Math.floor((coords[1] - deg1) * 60)
-        const sec0 = parseFloat(((coords[0] - deg0 - min0 / 60) * 3600).toFixed(4))
-        const sec1 = parseFloat(((coords[1] - deg1 - min1 / 60) * 3600).toFixed(4))
-        degrees.value[0] = deg0
-        degrees.value[1] = deg1
-        minutes.value[0] = min0
-        minutes.value[1] = min1
-        seconds.value[0] = sec0
-        seconds.value[1] = sec1
+        degrees.value[0] = parseFloat(inputCoords.value[0].toFixed(4))
+        degrees.value[1] = parseFloat(inputCoords.value[1].toFixed(4))
       }
     }
     onMounted(() => {
@@ -312,12 +342,11 @@ export default {
                 const output = store.state.trans.data
                 inputCoords.value[0] = output.v1
                 inputCoords.value[1] = output.v2
-                setInput([output.v1, output.v2])
+                setInput()
                 context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1]])
               })
             })
             .catch(err => {
-              // console.log(err)
               this.$emit('error-occurred', true, err)
               window.setTimeout(() => {
                 this.$emit('error-occurred', false)
@@ -326,10 +355,10 @@ export default {
         }
       })
     })
-    setInput(inputCoords.value)
+    setInput()
     watch(mapMarkerInputCoords, () => {
       inputCoords.value = mapMarkerInputCoords.value
-      setInput(inputCoords.value)
+      setInput()
     })
     watch([degrees.value, minutes.value, seconds.value], () => {
       if (degreesChecked.value) {
@@ -443,7 +472,7 @@ input {
   border: var(--darkSteel) solid 1px;
   border-radius: 16px;
   flex-grow: 1;
-  padding: 0.1rem 0.5rem 0.1rem 1rem;
+  padding: 0rem 0.75rem 0.1rem 1rem;
 }
 input[type=radio] {
   opacity: 0;

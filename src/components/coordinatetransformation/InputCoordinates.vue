@@ -401,6 +401,7 @@ export default {
 * {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
 }
 .coordinate-selection-wrapper {
   display: flex;
@@ -438,8 +439,8 @@ ul {
 }
 .chosen-coordinates {
   border-bottom: var(--action) solid 1px;
-  margin: 0 0.5rem 0 0;
   box-sizing: border-box;
+  margin: 0 0.5rem 0 0;
   padding-bottom: 0.25rem;
 }
 input::-webkit-outer-spin-button,
@@ -450,7 +451,7 @@ input::-webkit-inner-spin-button {
 input {
   -moz-appearance: textfield;
   border: none;
-  width: 91%;
+  width: 88%;
 }
 .arrow-icon-x-coordinate {
   transform: rotate(90deg);
@@ -532,7 +533,11 @@ input[type=radio] {
     display: block;
   }
   .searchbar {
+    margin-bottom: 1.5rem;
     width: 100%;
+  }
+  input {
+    width: 78%;
   }
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
   <section v-show="!menuClosed || window.width > 703" class="container">
     <article class="coordinate-transformation-box" ref="mother">
-      <InputCoordinates class="input" @input-epsg-changed="inputEPSGChanged" @error-occurred="errorOccurred" @input-coords-changed="inputCoordsChanged"/>
-      <OutputCoordinates class="output" :inputEPSG=inputEPSG :inputCoords=inputCoords @error-occurred="errorOccurred" @coordinates-copied="coordinatesCopied"/>
+      <InputCoordinates class="input" @input-epsg-changed="inputEPSGChanged" @error-occurred="errorOccurred" @input-coords-changed="inputCoordsChanged" @is-3d-changed="is3DChanged"/>
+      <OutputCoordinates class="output" :inputEPSG=inputEPSG :inputCoords=inputCoords @error-occurred="errorOccurred" @coordinates-copied="coordinatesCopied" :is3D=is3D />
       <menu-closer @handle-close="closeMenu" class="menu-closer"/>
     </article>
     <div v-if="popupVisible" class="message">Koordinater kopieret</div>
@@ -32,6 +32,10 @@ export default {
       this.inputCoords = coords
       this.$emit('input-coords-changed', coords)
     },
+    is3DChanged (state) {
+      // console.log('is3DChanged', state)
+      this.is3D = state
+    },
     errorOccurred (state) {
       this.errorVisible = state
     },
@@ -48,6 +52,7 @@ export default {
   },
   setup () {
     const inputCoords = inject('inputCoords')
+    const is3D = ref(true)
     const colors = inject('themeColors')
     const inputEPSG = inject('inputEPSG')
     const popupVisible = ref(false)
@@ -61,6 +66,7 @@ export default {
       popupVisible,
       menuClosed,
       window,
+      is3D,
       errorVisible
     }
   },

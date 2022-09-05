@@ -21,28 +21,25 @@
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=degrees[0]
             type="number"
-            step="any"
           />
-          <span class="degrees" v-show="isDegrees"> °</span>
-        <span class="degrees" v-show="!isDegrees" style="font-size: 0.9rem"> m</span>
+          <span class="degrees" v-show="isDegrees">°N</span>
+        <span class="degrees" v-show="!isDegrees">mN</span>
         </span>
         <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[0]
             type="number"
-            step="any"
           />
-          <span class="degrees">'</span>
+          <span class="degrees">N'</span>
         </span>
         <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[0]
             type="number"
-            step="any"
           />
-          <span class="degrees">"</span>
+          <span class="degrees">N"</span>
         </span>
       </span>
       <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
@@ -58,31 +55,28 @@
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=degrees[1]
             type="number"
-            step="any"
           />
-          <span class="degrees" v-show="isDegrees"> °</span>
-        <span class="degrees" v-show="!isDegrees" style="font-size: 0.9rem"> m</span>
+          <span class="degrees" v-show="isDegrees">°E</span>
+        <span class="degrees" v-show="!isDegrees">mE</span>
         </span>
         <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[1]
             type="number"
-            step="any"
           />
-          <span class="degrees">'</span>
+          <span class="degrees">E'</span>
         </span>
         <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[1]
             type="number"
-            step="any"
           />
-          <span class="degrees">"</span>
+          <span class="degrees">E"</span>
         </span>
       </span>
-      <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
+      <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}" v-show = "is3D">
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -96,10 +90,8 @@
           :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
           v-model=degrees[2]
           type="number"
-          step="any"
         />
-        <span class="degrees" v-show="isDegrees"> °</span>
-        <span class="degrees" v-show="!isDegrees" style="font-size: 0.9rem"> m</span>
+        <span class="degrees">m</span>
         </span>
         <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
           <input
@@ -114,7 +106,6 @@
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[2]
             type="number"
-            step="any"
           />
          <span class="degrees">"</span>
         </span>
@@ -193,7 +184,6 @@
 </template>
 
 <script>
-
 import { defineAsyncComponent, ref, inject, onUpdated, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
 
@@ -205,6 +195,10 @@ export default {
   methods: {
     inputEPSGChanged (code) {
       this.$emit('input-epsg-changed', code)
+      console.log('code', code)
+      // console.log('v3', code.v3)
+      // console.log('v3_short', code.v3_short)
+      // console.log('v3_unit', code.v3_unit)
       if (code.v1_unit === 'degree') {
         this.isDegrees = true
         this.checkDegrees()
@@ -213,6 +207,7 @@ export default {
         this.disableRadioButtons()
       }
       this.is3D = code.v3 !== null
+      // console.log('is3D', this.is3D)
       this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1])
         .then(() => {
           const output = this.store.state.trans.data
@@ -361,7 +356,7 @@ export default {
     })
     watch([degrees.value, minutes.value, seconds.value], () => {
       if (degreesChecked.value) {
-        const val = [degrees.value[0], degrees.value[1]]
+        const val = [degrees.value[0], degrees.value[1], degrees.value[2]]
         inputCoords.value = val
       } else if (minutesChecked.value) {
         const val = [degrees.value[0] + minutes.value[0] / 60, degrees.value[1] + minutes.value[1] / 60]
@@ -374,7 +369,8 @@ export default {
       }
     })
     onUpdated(() => {
-      context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1]])
+      context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
+      context.emit('is-3d-changed', is3D.value)
     })
     return {
       inputCoords,
@@ -460,9 +456,6 @@ input {
 }
 .arrow-icon-x-coordinate {
   transform: rotate(90deg);
-}
-.degrees {
-  font-size: 1.25rem;
 }
 .searchbar {
   display: inline-flex;

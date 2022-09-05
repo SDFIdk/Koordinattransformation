@@ -82,9 +82,13 @@
           @mouseenter="hover = true"
           @mouseleave="hover = false"
         />
-        <Transition>
-          <p class="info-text" v-if="hover">Formatknapperne virker kun for EPSG-koder, hvis enhed er i grader.</p>
-        </Transition>
+        <div class="info-text-container">
+          <Transition>
+            <!-- <p class="info-text" v-if="hover">Formatknapperne virker kun for EPSG-koder, hvis enhed er i grader.</p> -->
+            <p class="info-text" v-if="hover">Repræsentation af geografiske koordinater, vælg mellem decimalgrader, grader og decimalminutter eller grader, minutter og sekunder.</p>
+            <!-- <p class="info-text" v-if="hover">Repræsentation.</p> -->
+          </Transition>
+        </div>
       </div>
       <button class="copy-btn" @click="copyCoordinates" :class="{hasTransformed: hasTransformed && !this.isLoading}">
         Kopiér
@@ -120,6 +124,12 @@ export default {
       type: String,
       default () {
         return ''
+      }
+    },
+    is3D: {
+      type: Boolean,
+      default () {
+        return true
       }
     },
     inputCoords: {
@@ -202,21 +212,31 @@ export default {
     const hover = ref(false)
     const setOutput = () => {
       if (!hasTransformed.value) return
+      const d3 = outputCoords.value[2].toFixed(4)
       if (isMetres.value) {
         const d1 = outputCoords.value[0].toFixed(4)
         const d2 = outputCoords.value[1].toFixed(4)
-        output.value = d1 + ' N, ' + d2 + ' E'
+        let res = d1 + ' mN,\t' + d2 + ' mE'
+        if (props.is3D) res += ',\t' + d3 + ' m'
+        output.value = res
+        // output.value = d1 + ' N, ' + d2 + ' E'
       } else {
         if (degreesChecked.value) {
           const d1 = outputCoords.value[0].toFixed(4)
           const d2 = outputCoords.value[1].toFixed(4)
-          output.value = d1 + '° N, ' + d2 + '° E'
+          let res = d1 + ' °N,\t' + d2 + ' °E'
+          if (props.is3D) res += ', \t' + d3 + ' m'
+          output.value = res
+          // output.value = d1 + '° N, ' + d2 + '° E'
         } else if (minutesChecked.value) {
           const d1 = Math.floor(outputCoords.value[0])
           const d2 = Math.floor(outputCoords.value[1])
           const m1 = ((outputCoords.value[0] - d1) * 60).toFixed(4)
           const m2 = ((outputCoords.value[1] - d2) * 60).toFixed(4)
-          output.value = d1 + '° ' + m1 + '\' N, ' + d2 + '° ' + m2 + '\' E'
+          let res = d1 + ' ° ' + m1 + '\' N,\t' + d2 + ' ° ' + m2 + ' \' E'
+          if (props.is3D) res += ', \t' + d3 + ' m'
+          output.value = res
+          // output.value = d1 + '° ' + m1 + '\' N, ' + d2 + '° ' + m2 + '\' E'
         } else {
           const d1 = Math.floor(outputCoords.value[0])
           const d2 = Math.floor(outputCoords.value[1])
@@ -224,7 +244,10 @@ export default {
           const m2 = Math.floor((outputCoords.value[1] - d2) * 60)
           const s1 = ((outputCoords.value[0] - d1 - m1 / 60) * 3600).toFixed(4)
           const s2 = ((outputCoords.value[1] - d2 - m2 / 60) * 3600).toFixed(4)
-          output.value = d1 + '° ' + m1 + '\' ' + s1 + '" N, ' + d2 + '° ' + m2 + '\' ' + s2 + '" E'
+          let res = d1 + '° ' + m1 + '\' ' + s1 + '" N, ' + d2 + '° ' + m2 + '\' ' + s2 + '" E'
+          if (props.is3D) res += ', \t' + d3 + ' m'
+          output.value = res
+          // output.value = d1 + '° ' + m1 + '\' ' + s1 + '" N, ' + d2 + '° ' + m2 + '\' ' + s2 + '" E'
         }
       }
     }
@@ -233,10 +256,12 @@ export default {
       hasTransformed.value = true
       setTimeout(() => {
         isLoading.value = false
-        store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
+        // if (props.is3D) {
+        store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
           .then(() => {
             outputCoords.value[0] = parseFloat(store.state.trans.data.v1)
             outputCoords.value[1] = parseFloat(store.state.trans.data.v2)
+            outputCoords.value[2] = parseFloat(store.state.trans.data.v3)
             setOutput()
           })
           .catch(err => {
@@ -245,6 +270,20 @@ export default {
               emit('error-occurred', false)
             }, 5000)
           })
+        // } else {
+        //   store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
+        //     .then(() => {
+        //       outputCoords.value[0] = parseFloat(store.state.trans.data.v1)
+        //       outputCoords.value[1] = parseFloat(store.state.trans.data.v2)
+        //       setOutput()
+        //     })
+        //     .catch(err => {
+        //       emit('error-occurred', true, err)
+        //       window.setTimeout(() => {
+        //         emit('error-occurred', false)
+        //       }, 5000)
+        //     })   
+        // }
       }, 500)
     }
     return {
@@ -290,8 +329,17 @@ export default {
   background: var(--white);
   margin: 0 0 0 0.5rem;
 }
+.info-text-container {
+  position: relative;
+  flex-grow: 1;
+}
 .info-text {
-  margin-left: 0.5rem;
+  position: absolute;
+  padding: 10px;
+  border: 1px solid var(--darkSteel);
+  border-radius: 10px;
+  background-color: var(--white);
+  margin: 0 2rem 0 0.5rem;
 }
 label {
   display: inline-flex;
@@ -353,6 +401,7 @@ input[type=radio]:checked {
 }
 .radio-and-info-group {
   display: inline-flex;
+  flex-grow: 1;
 }
 .radiogroup {
   display: inline-flex;

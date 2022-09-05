@@ -31,7 +31,7 @@
             v-model=minutes[0]
             type="number"
           />
-          <span class="degrees">N'</span>
+          <span class="degrees">'</span>
         </span>
         <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
           <input
@@ -39,7 +39,7 @@
             v-model=seconds[0]
             type="number"
           />
-          <span class="degrees">N"</span>
+          <span class="degrees">"</span>
         </span>
       </span>
       <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
@@ -65,7 +65,7 @@
             v-model=minutes[1]
             type="number"
           />
-          <span class="degrees">E'</span>
+          <span class="degrees">'</span>
         </span>
         <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
           <input
@@ -73,7 +73,7 @@
             v-model=seconds[1]
             type="number"
           />
-          <span class="degrees">E"</span>
+          <span class="degrees">"</span>
         </span>
       </span>
       <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}" v-show = "is3D">
@@ -86,14 +86,19 @@
           class="arrow-icon-z-coordinate"
         />
         <span class="chosen-coordinates">
-        <input
+        <!-- <input
           :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
           v-model=degrees[2]
+          type="number"
+        /> -->
+        <input
+          :class="{degreesInput: true}"
+          v-model=meters
           type="number"
         />
         <span class="degrees">m</span>
         </span>
-        <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
+        <!-- <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[2]
@@ -108,7 +113,7 @@
             type="number"
           />
          <span class="degrees">"</span>
-        </span>
+        </span> -->
       </span>
     </div>
     <div class="footer">
@@ -208,12 +213,21 @@ export default {
       }
       this.is3D = code.v3 !== null
       // console.log('is3D', this.is3D)
-      this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1])
+      // this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1])
+      //   .then(() => {
+      //     const output = this.store.state.trans.data
+      //     this.inputEPSG = code.srid
+      //     this.inputCoords[0] = output.v1
+      //     this.inputCoords[1] = output.v2
+      //     this.setInput()
+      //   })
+      this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1] + ',' + this.inputCoords[2])
         .then(() => {
           const output = this.store.state.trans.data
           this.inputEPSG = code.srid
           this.inputCoords[0] = output.v1
           this.inputCoords[1] = output.v2
+          this.inputCoords[2] = output.v3
           this.setInput()
         })
     },
@@ -256,69 +270,40 @@ export default {
     const degreesChecked = ref(false)
     const minutesChecked = ref(false)
     const secondsChecked = ref(false)
-    const degrees = ref([0, 0, 0])
-    const minutes = ref([0, 0, 0])
-    const seconds = ref([0, 0, 0])
+    const degrees = ref([0, 0])
+    const minutes = ref([0, 0])
+    const seconds = ref([0, 0])
+    const meters = ref(0)
     const is3D = ref(true)
     const isDegrees = ref(false)
     const selected = ref('')
     const setInput = () => {
-      if (isDegrees.value) {
-        if (degreesChecked.value) {
-          degrees.value[0] = parseFloat(inputCoords.value[0].toFixed(4))
-          degrees.value[1] = parseFloat(inputCoords.value[1].toFixed(4))
-        } else if (minutesChecked.value) {
-          const deg0 = Math.floor(inputCoords.value[0])
-          const deg1 = Math.floor(inputCoords.value[1])
-          const min0 = parseFloat(((inputCoords.value[0] - deg0) * 60).toFixed(4))
-          const min1 = parseFloat(((inputCoords.value[1] - deg1) * 60).toFixed(4))
-          degrees.value[0] = deg0
-          degrees.value[1] = deg1
-          minutes.value[0] = min0
-          minutes.value[1] = min1
-        } else {
-          const deg0 = Math.floor(inputCoords.value[0])
-          const deg1 = Math.floor(inputCoords.value[1])
-          const min0 = Math.floor((inputCoords.value[0] - deg0) * 60)
-          const min1 = Math.floor((inputCoords.value[1] - deg1) * 60)
-          const sec0 = parseFloat(((inputCoords.value[0] - deg0 - min0 / 60) * 3600).toFixed(4))
-          const sec1 = parseFloat(((inputCoords.value[1] - deg1 - min1 / 60) * 3600).toFixed(4))
-          degrees.value[0] = deg0
-          degrees.value[1] = deg1
-          minutes.value[0] = min0
-          minutes.value[1] = min1
-          seconds.value[0] = sec0
-          seconds.value[1] = sec1
-        }
-        if (degreesChecked.value) {
-          degrees.value[0] = parseFloat(inputCoords.value[0].toFixed(4))
-          degrees.value[1] = parseFloat(inputCoords.value[1].toFixed(4))
-        } else if (minutesChecked.value) {
-          const deg0 = Math.floor(inputCoords.value[0])
-          const deg1 = Math.floor(inputCoords.value[1])
-          const min0 = parseFloat(((inputCoords.value[0] - deg0) * 60).toFixed(4))
-          const min1 = parseFloat(((inputCoords.value[1] - deg1) * 60).toFixed(4))
-          degrees.value[0] = deg0
-          degrees.value[1] = deg1
-          minutes.value[0] = min0
-          minutes.value[1] = min1
-        } else {
-          const deg0 = Math.floor(inputCoords.value[0])
-          const deg1 = Math.floor(inputCoords.value[1])
-          const min0 = Math.floor((inputCoords.value[0] - deg0) * 60)
-          const min1 = Math.floor((inputCoords.value[1] - deg1) * 60)
-          const sec0 = parseFloat(((inputCoords.value[0] - deg0 - min0 / 60) * 3600).toFixed(4))
-          const sec1 = parseFloat(((inputCoords.value[1] - deg1 - min1 / 60) * 3600).toFixed(4))
-          degrees.value[0] = deg0
-          degrees.value[1] = deg1
-          minutes.value[0] = min0
-          minutes.value[1] = min1
-          seconds.value[0] = sec0
-          seconds.value[1] = sec1
-        }
-      } else {
+      meters.value = inputCoords.value[2]
+      if (isDegrees.value || degreesChecked.value) {
         degrees.value[0] = parseFloat(inputCoords.value[0].toFixed(4))
         degrees.value[1] = parseFloat(inputCoords.value[1].toFixed(4))
+      } else if (minutesChecked.value) {
+        const deg0 = Math.floor(inputCoords.value[0])
+        const deg1 = Math.floor(inputCoords.value[1])
+        const min0 = parseFloat(((inputCoords.value[0] - deg0) * 60).toFixed(4))
+        const min1 = parseFloat(((inputCoords.value[1] - deg1) * 60).toFixed(4))
+        degrees.value[0] = deg0
+        degrees.value[1] = deg1
+        minutes.value[0] = min0
+        minutes.value[1] = min1
+      } else {
+        const deg0 = Math.floor(inputCoords.value[0])
+        const deg1 = Math.floor(inputCoords.value[1])
+        const min0 = Math.floor((inputCoords.value[0] - deg0) * 60)
+        const min1 = Math.floor((inputCoords.value[1] - deg1) * 60)
+        const sec0 = parseFloat(((inputCoords.value[0] - deg0 - min0 / 60) * 3600).toFixed(4))
+        const sec1 = parseFloat(((inputCoords.value[1] - deg1 - min1 / 60) * 3600).toFixed(4))
+        degrees.value[0] = deg0
+        degrees.value[1] = deg1
+        minutes.value[0] = min0
+        minutes.value[1] = min1
+        seconds.value[0] = sec0
+        seconds.value[1] = sec1
       }
     }
     onMounted(() => {
@@ -332,13 +317,24 @@ export default {
             .then(res => res.json())
             .then(data => data[0].adgangsadresse.vejpunkt.koordinater)
             .then(coords => {
-              store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0]).then(() => {
-                const output = store.state.trans.data
-                inputCoords.value[0] = output.v1
-                inputCoords.value[1] = output.v2
-                setInput()
-                context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1]])
-              })
+              if (is3D.value) {
+                store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0] + ',' + meters.value).then(() => {
+                  const output = store.state.trans.data
+                  inputCoords.value[0] = output.v1
+                  inputCoords.value[1] = output.v2
+                  inputCoords.value[2] = output.v3
+                  setInput()
+                  context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
+                })
+              } else {
+                store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0]).then(() => {
+                  const output = store.state.trans.data
+                  inputCoords.value[0] = output.v1
+                  inputCoords.value[1] = output.v2
+                  setInput()
+                  context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1]])
+                })
+              }
             })
             .catch(err => {
               this.$emit('error-occurred', true, err)
@@ -356,20 +352,22 @@ export default {
     })
     watch([degrees.value, minutes.value, seconds.value], () => {
       if (degreesChecked.value) {
-        const val = [degrees.value[0], degrees.value[1], degrees.value[2]]
+        const val = [degrees.value[0], degrees.value[1], meters.value]
+        // const val = [degrees.value[0], degrees.value[1], degrees.value[2]]
         inputCoords.value = val
       } else if (minutesChecked.value) {
-        const val = [degrees.value[0] + minutes.value[0] / 60, degrees.value[1] + minutes.value[1] / 60]
+        const val = [degrees.value[0] + minutes.value[0] / 60, degrees.value[1] + minutes.value[1] / 60, meters.value]
         inputCoords.value = val
       } else if (secondsChecked.value) {
         const val1 = degrees.value[0] + minutes.value[0] / 60 + seconds.value[0] / 3600
         const val2 = degrees.value[1] + minutes.value[1] / 60 + seconds.value[1] / 3600
-        const val = [val1, val2]
+        const val = [val1, val2, meters.value]
         inputCoords.value = val
       }
     })
     onUpdated(() => {
-      context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
+      // context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
+      context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], meters.value])
       context.emit('is-3d-changed', is3D.value)
     })
     return {
@@ -386,6 +384,7 @@ export default {
       seconds,
       is3D,
       isDegrees,
+      meters,
       selected
     }
   }
@@ -488,7 +487,7 @@ input[type=radio] {
   margin-top: 1rem;
 }
 .degreesInput {
-  width: 90%;
+  width: 88%;
 }
 .metresInput {
   width: 43%;

@@ -122,7 +122,6 @@ export default {
             layer: 'topo_skaermkort_daempet',
             matrixSet: 'View1'
           })
-          // console.log(options)
           olMap.value = new OlMap({
             target: 'map',
             controls: defaultControls({
@@ -167,21 +166,14 @@ export default {
           olMap.value.on('click', function (e) {
             let mpos = document.getElementById('mouse-position')
             mpos = mpos.textContent.split(', ')
-            // console.log('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1])
             if (mapProjection !== inputEPSG.value) {
               store.dispatch('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1])
                 .then(() => {
                   const output = store.state.trans.data
-                  // console.log('output', output)
                   inputCoords.value = [output.v1, output.v2, output.v3]
                 })
-                // .catch(err => {
-                //   console.log('olMap onCLick')
-                //   console.log(err)
-                // })
             } else {
-              const output = [parseFloat(mpos[0]), parseFloat(mpos[1]), 0]
-              // console.log('output', output)
+              const output = [parseFloat(mpos[0]), parseFloat(mpos[1]), inputCoords.value[2]]
               inputCoords.value = output
             }
             const pinnedMarker = document.getElementById('pinned-marker')
@@ -210,7 +202,7 @@ export default {
 
 <style scoped>
 #mouse-position {
-  /* display: none; */
+  display: none;
 }
 #pinned-marker {
   position: absolute;

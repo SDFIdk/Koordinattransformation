@@ -188,7 +188,6 @@ export default {
     display: none;
   }
 }
-
 @media screen and (max-width: 703px) {
   .output {
     border-radius: 0 0 0 0;

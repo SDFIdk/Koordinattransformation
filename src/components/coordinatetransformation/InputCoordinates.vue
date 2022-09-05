@@ -195,7 +195,7 @@ export default {
   methods: {
     inputEPSGChanged (code) {
       this.$emit('input-epsg-changed', code)
-      console.log('code', code)
+      // console.log('code', code)
       // console.log('v3', code.v3)
       // console.log('v3_short', code.v3_short)
       // console.log('v3_unit', code.v3_unit)

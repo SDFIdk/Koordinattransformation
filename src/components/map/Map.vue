@@ -12,6 +12,14 @@
 </template>
 
 <script>
+// WMNTS
+import WMTS, { optionsFromCapabilities } from 'ol/source/WMTS'
+import WMTSCapabilities from 'ol/format/WMTSCapabilities'
+// import { get as getProjection } from 'ol/proj'
+import { register } from 'ol/proj/proj4'
+import proj4 from 'proj4'
+import { epsg25832proj } from 'skraafoto-saul'
+// OL
 import 'ol/ol.css'
 import { onMounted, ref, defineAsyncComponent, inject, provide } from 'vue'
 import OlMap from 'ol/Map'
@@ -43,17 +51,27 @@ export default {
   },
   methods: {
     inputCoordsChanged (coords) {
-      this.store.dispatch('trans/get', this.inputEPSG + '/' + this.mapProjection + '/' + coords[0] + ',' + coords[1])
-        .then(() => {
-          const output = this.store.state.trans.data
-          const pinnedMarker = document.getElementById('pinned-marker')
-          const overlay = new Overlay({
-            element: pinnedMarker,
-            positioning: 'center-center'
+      if (this.inputEPSG !== this.mapProjection) {
+        this.store.dispatch('trans/get', this.inputEPSG + '/' + this.mapProjection + '/' + coords[0] + ',' + coords[1])
+          .then(() => {
+            const output = this.store.state.trans.data
+            const pinnedMarker = document.getElementById('pinned-marker')
+            const overlay = new Overlay({
+              element: pinnedMarker,
+              positioning: 'center-center'
+            })
+            overlay.setPosition([output.v1, output.v2])
+            this.olMap.addOverlay(overlay)
           })
-          overlay.setPosition([output.v1, output.v2])
-          this.olMap.addOverlay(overlay)
+      } else {
+        const pinnedMarker = document.getElementById('pinned-marker')
+        const overlay = new Overlay({
+          element: pinnedMarker,
+          positioning: 'center-center'
         })
+        overlay.setPosition([coords[0], coords[1]])
+        this.olMap.addOverlay(overlay)
+      }
     },
     inputEPSGChanged (epsg) {
       this.inputEPSG = epsg
@@ -64,13 +82,15 @@ export default {
     const olView = ref({})
     const olMap = ref({})
     let mousePositionControl = ref({})
-    const center = props.isDenmark ? [1313559.7686000003, 7448691.317399999] : [-5758833.2009, 9393681.2087]
-    const inputCoords = ref(props.isDenmark ? [677093.7465413888, 6147863.846297142, 0] : [1611279.4886776865, 7323246.570397905, 0])
+    const center = props.isDenmark ? [677_555, 61_481_00] : [-5758833.2009, 9393681.2087]
+    const inputCoords = ref([center[0], center[1], 0])
+    provide('inputCoords', inputCoords)
     const colors = inject('themeColors')
-    const mapProjection = 'EPSG:3857'
+    epsg25832proj(proj4)
+    register(proj4)
+    const mapProjection = props.isDenmark ? 'EPSG:25832' : 'EPSG:3857'
     const inputEPSG = ref(props.isDenmark ? 'EPSG:25832' : 'EPSG:3178')
     const timeout = 500
-    provide('inputCoords', inputCoords)
     provide('inputEPSG', inputEPSG.value)
     onMounted(() => {
       mousePositionControl = new MousePosition({
@@ -84,60 +104,95 @@ export default {
         zoom: 9,
         minZoom: 4,
         maxZoom: 20,
-        showFullExtent: true,
+        extent: props.isDenmark
+          ? [
+              120_000, 5_900_000, 1_000_000, 6_600_000
+            ]
+          : [
+              -8_500_000, 8_200_000, 1_100_000, 20_000_000
+            ],
+        showFullExtent: false,
         projection: mapProjection
       })
-      olMap.value = new OlMap({
-        target: 'map',
-        controls: defaultControls({
-          zoom: false,
-          attribution: false,
-          rotate: false
-        }).extend([mousePositionControl, new FullScreen()]),
-        zoom: new Zoom({
-          duration: 700,
-          className: 'custom-zoom',
-          zoomInClassName: '-in',
-          zoomOutClassName: '-out',
-          zoomInLabel: 'Zoom ind2',
-          zoomOutLabel: 'Zoom ud2',
-          zoomInTipLabel: 'Zoom2',
-          zoomOutTipLabel: 'Zoom2'
-        }),
-        view: olView.value,
-        layers: [
-          new TileLayer({
-            source: new OSM()
+      fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${process.env.VUE_APP_TOKEN}`)
+        .then(res => res.text())
+        .then(xml => {
+          const res = new WMTSCapabilities().read(xml)
+          const options = optionsFromCapabilities(res, {
+            layer: 'topo_skaermkort_daempet',
+            matrixSet: 'View1'
           })
-        ]
-      })
-      // set inital map marker
-      setTimeout(() => {
-        const pinnedMarker = document.getElementById('pinned-marker')
-        const overlay = new Overlay({
-          element: pinnedMarker,
-          positioning: 'center-center'
-        })
-        overlay.setPosition([center[0], center[1]])
-        olMap.value.addOverlay(overlay)
-      }, timeout)
-      // on click listener
-      olMap.value.on('click', function (e) {
-        let mpos = document.getElementById('mouse-position')
-        mpos = mpos.textContent.split(', ')
-        store.dispatch('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1])
-          .then(() => {
-            const output = store.state.trans.data
-            inputCoords.value = [output.v1, output.v2, output.v3]
+          // console.log(options)
+          olMap.value = new OlMap({
+            target: 'map',
+            controls: defaultControls({
+              zoom: false,
+              attribution: false,
+              rotate: false
+            }).extend([mousePositionControl, new FullScreen()]),
+            zoom: new Zoom({
+              duration: 700,
+              className: 'custom-zoom',
+              zoomInClassName: '-in',
+              zoomOutClassName: '-out',
+              zoomInLabel: 'Zoom ind2',
+              zoomOutLabel: 'Zoom ud2',
+              zoomInTipLabel: 'Zoom2',
+              zoomOutTipLabel: 'Zoom2'
+            }),
+            view: olView.value,
+            layers: props.isDenmark
+              ? [
+                  new TileLayer({
+                    opacity: 1,
+                    source: new WMTS(options)
+                  })]
+              : [
+                  new TileLayer({
+                    source: new OSM()
+                  })
+                ]
           })
-        const pinnedMarker = document.getElementById('pinned-marker')
-        const overlay = new Overlay({
-          element: pinnedMarker,
-          positioning: 'center-center'
+          // set inital map marker
+          setTimeout(() => {
+            const pinnedMarker = document.getElementById('pinned-marker')
+            const overlay = new Overlay({
+              element: pinnedMarker,
+              positioning: 'center-center'
+            })
+            overlay.setPosition([center[0], center[1]])
+            olMap.value.addOverlay(overlay)
+          }, timeout)
+          // on click listener
+          olMap.value.on('click', function (e) {
+            let mpos = document.getElementById('mouse-position')
+            mpos = mpos.textContent.split(', ')
+            // console.log('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1])
+            if (mapProjection !== inputEPSG.value) {
+              store.dispatch('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1])
+                .then(() => {
+                  const output = store.state.trans.data
+                  // console.log('output', output)
+                  inputCoords.value = [output.v1, output.v2, output.v3]
+                })
+                // .catch(err => {
+                //   console.log('olMap onCLick')
+                //   console.log(err)
+                // })
+            } else {
+              const output = [parseFloat(mpos[0]), parseFloat(mpos[1]), 0]
+              // console.log('output', output)
+              inputCoords.value = output
+            }
+            const pinnedMarker = document.getElementById('pinned-marker')
+            const overlay = new Overlay({
+              element: pinnedMarker,
+              positioning: 'center-center'
+            })
+            overlay.setPosition([parseFloat(mpos[0]), parseFloat(mpos[1])])
+            olMap.value.addOverlay(overlay)
+          })
         })
-        overlay.setPosition([mpos[0], mpos[1]])
-        olMap.value.addOverlay(overlay)
-      })
     })
     return {
       olMap,
@@ -155,7 +210,7 @@ export default {
 
 <style scoped>
 #mouse-position {
-  display: none;
+  /* display: none; */
 }
 #pinned-marker {
   position: absolute;

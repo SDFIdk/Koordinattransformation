@@ -55,9 +55,9 @@
         />
         <span class="chosen-coordinates">
           <input
-              :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=degrees[1]
-              type="number"
+            type="number"
             step="any"
           />
           <span class="degrees" v-show="isDegrees"> °</span>
@@ -93,9 +93,9 @@
         />
         <span class="chosen-coordinates">
         <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+          :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
           v-model=degrees[2]
-            type="number"
+          type="number"
           step="any"
         />
         <span class="degrees" v-show="isDegrees"> °</span>
@@ -106,7 +106,6 @@
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[2]
             type="number"
-            step="any"
           />
           <span class="degrees">'</span>
         </span>

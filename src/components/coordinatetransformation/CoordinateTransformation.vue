@@ -7,7 +7,7 @@
     </article>
     <div v-if="popupVisible" class="message">Koordinater kopieret</div>
     <div v-if="errorVisible" class="message">
-      Ups, du har valgt to inkompatible EPSG-koder eller et koordinat, der er uden for rækkevidde.
+      Ups. Du har valgt to inkompatible EPSG-koder eller et koordinat, der er uden for rækkevidde.
     </div>
   </section>
   <menu-closer v-show="menuClosed && window.width < 703" @handle-close="closeMenu" class="menu-closed"/>

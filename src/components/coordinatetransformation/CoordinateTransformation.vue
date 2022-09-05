@@ -33,7 +33,6 @@ export default {
       this.$emit('input-coords-changed', coords)
     },
     is3DChanged (state) {
-      // console.log('is3DChanged', state)
       this.is3D = state
     },
     errorOccurred (state) {

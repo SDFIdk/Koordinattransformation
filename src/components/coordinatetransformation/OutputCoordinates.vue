@@ -1,4 +1,4 @@
-<template>
+lear<template>
   <section class="output-coordinate">
     <h3>Output</h3>
     <section class="coordinate-selection-wrapper">
@@ -84,9 +84,7 @@
         />
         <div class="info-text-container">
           <Transition>
-            <!-- <p class="info-text" v-if="hover">Formatknapperne virker kun for EPSG-koder, hvis enhed er i grader.</p> -->
             <p class="info-text" v-if="hover">Repræsentation af geografiske koordinater, vælg mellem decimalgrader, grader og decimalminutter eller grader, minutter og sekunder.</p>
-            <!-- <p class="info-text" v-if="hover">Repræsentation.</p> -->
           </Transition>
         </div>
       </div>
@@ -216,27 +214,24 @@ export default {
       if (isMetres.value) {
         const d1 = outputCoords.value[0].toFixed(4)
         const d2 = outputCoords.value[1].toFixed(4)
-        let res = d1 + ' mN,\t' + d2 + ' mE'
-        if (props.is3D) res += ',\t' + d3 + ' m'
+        let res = d1 + ' mN, ' + d2 + ' mE'
+        if (props.is3D) res += ', ' + d3 + ' m'
         output.value = res
-        // output.value = d1 + ' N, ' + d2 + ' E'
       } else {
         if (degreesChecked.value) {
           const d1 = outputCoords.value[0].toFixed(4)
           const d2 = outputCoords.value[1].toFixed(4)
-          let res = d1 + ' °N,\t' + d2 + ' °E'
-          if (props.is3D) res += ', \t' + d3 + ' m'
+          let res = d1 + ' °N, ' + d2 + ' °E'
+          if (props.is3D) res += ', ' + d3 + ' m'
           output.value = res
-          // output.value = d1 + '° N, ' + d2 + '° E'
         } else if (minutesChecked.value) {
           const d1 = Math.floor(outputCoords.value[0])
           const d2 = Math.floor(outputCoords.value[1])
           const m1 = ((outputCoords.value[0] - d1) * 60).toFixed(4)
           const m2 = ((outputCoords.value[1] - d2) * 60).toFixed(4)
-          let res = d1 + ' ° ' + m1 + '\' N,\t' + d2 + ' ° ' + m2 + ' \' E'
-          if (props.is3D) res += ', \t' + d3 + ' m'
+          let res = d1 + ' ° ' + m1 + '\' N, ' + d2 + ' ° ' + m2 + ' \' E'
+          if (props.is3D) res += ', ' + d3 + ' m'
           output.value = res
-          // output.value = d1 + '° ' + m1 + '\' N, ' + d2 + '° ' + m2 + '\' E'
         } else {
           const d1 = Math.floor(outputCoords.value[0])
           const d2 = Math.floor(outputCoords.value[1])
@@ -245,9 +240,8 @@ export default {
           const s1 = ((outputCoords.value[0] - d1 - m1 / 60) * 3600).toFixed(4)
           const s2 = ((outputCoords.value[1] - d2 - m2 / 60) * 3600).toFixed(4)
           let res = d1 + '° ' + m1 + '\' ' + s1 + '" N, ' + d2 + '° ' + m2 + '\' ' + s2 + '" E'
-          if (props.is3D) res += ', \t' + d3 + ' m'
+          if (props.is3D) res += ', ' + d3 + ' m'
           output.value = res
-          // output.value = d1 + '° ' + m1 + '\' ' + s1 + '" N, ' + d2 + '° ' + m2 + '\' ' + s2 + '" E'
         }
       }
     }
@@ -256,7 +250,6 @@ export default {
       hasTransformed.value = true
       setTimeout(() => {
         isLoading.value = false
-        // if (props.is3D) {
         store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
           .then(() => {
             outputCoords.value[0] = parseFloat(store.state.trans.data.v1)
@@ -270,20 +263,6 @@ export default {
               emit('error-occurred', false)
             }, 5000)
           })
-        // } else {
-        //   store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
-        //     .then(() => {
-        //       outputCoords.value[0] = parseFloat(store.state.trans.data.v1)
-        //       outputCoords.value[1] = parseFloat(store.state.trans.data.v2)
-        //       setOutput()
-        //     })
-        //     .catch(err => {
-        //       emit('error-occurred', true, err)
-        //       window.setTimeout(() => {
-        //         emit('error-occurred', false)
-        //       }, 5000)
-        //     })
-        // }
       }, 500)
     }
     return {
@@ -410,19 +389,16 @@ input[type=radio]:checked {
 .copy-icon {
   margin-left: 0.75rem;
 }
-
 @media screen and (max-width: 904px) {
   .transformed-coordinates {
     height: 2.5rem;
   }
 }
-
 @media screen and (max-width: 828px) {
   .info-icon {
     display: none;
   }
 }
-
 @media screen and (max-width: 703px) {
   .info-icon {
     display: block;

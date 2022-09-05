@@ -86,11 +86,6 @@
           class="arrow-icon-z-coordinate"
         />
         <span class="chosen-coordinates">
-        <!-- <input
-          :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
-          v-model=degrees[2]
-          type="number"
-        /> -->
         <input
           :class="{degreesInput: true}"
           v-model=meters
@@ -98,22 +93,6 @@
         />
         <span class="degrees">m</span>
         </span>
-        <!-- <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
-          <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
-            v-model=minutes[2]
-            type="number"
-          />
-          <span class="degrees">'</span>
-        </span>
-        <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
-          <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
-            v-model=seconds[2]
-            type="number"
-          />
-         <span class="degrees">"</span>
-        </span> -->
       </span>
     </div>
     <div class="footer">
@@ -200,10 +179,6 @@ export default {
   methods: {
     inputEPSGChanged (code) {
       this.$emit('input-epsg-changed', code)
-      // console.log('code', code)
-      // console.log('v3', code.v3)
-      // console.log('v3_short', code.v3_short)
-      // console.log('v3_unit', code.v3_unit)
       if (code.v1_unit === 'degree') {
         this.isDegrees = true
         this.checkDegrees()
@@ -212,15 +187,6 @@ export default {
         this.disableRadioButtons()
       }
       this.is3D = code.v3 !== null
-      // console.log('is3D', this.is3D)
-      // this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1])
-      //   .then(() => {
-      //     const output = this.store.state.trans.data
-      //     this.inputEPSG = code.srid
-      //     this.inputCoords[0] = output.v1
-      //     this.inputCoords[1] = output.v2
-      //     this.setInput()
-      //   })
       this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1] + ',' + this.inputCoords[2])
         .then(() => {
           const output = this.store.state.trans.data
@@ -353,7 +319,6 @@ export default {
     watch([degrees.value, minutes.value, seconds.value], () => {
       if (degreesChecked.value) {
         const val = [degrees.value[0], degrees.value[1], meters.value]
-        // const val = [degrees.value[0], degrees.value[1], degrees.value[2]]
         inputCoords.value = val
       } else if (minutesChecked.value) {
         const val = [degrees.value[0] + minutes.value[0] / 60, degrees.value[1] + minutes.value[1] / 60, meters.value]
@@ -366,7 +331,6 @@ export default {
       }
     })
     onUpdated(() => {
-      // context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
       context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], meters.value])
       context.emit('is-3d-changed', is3D.value)
     })

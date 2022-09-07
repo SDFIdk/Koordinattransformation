@@ -256,7 +256,7 @@ export default {
     const isDegrees = ref(false)
     const selected = ref('')
     const setInput = () => {
-      meters.value = inputCoords.value[2] || meters.value
+      // meters.value = inputCoords.value[2] || meters.value
       if (isDegrees.value || degreesChecked.value) {
         const deg0 = parseFloat(inputCoords.value[0].toFixed(4))
         const deg1 = parseFloat(inputCoords.value[1].toFixed(4))

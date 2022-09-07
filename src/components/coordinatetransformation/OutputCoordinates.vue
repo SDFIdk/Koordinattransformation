@@ -133,7 +133,7 @@ export default {
     inputCoords: {
       type: Array,
       default () {
-        return [0, 0, 0]
+        return inject('mapMarkerInputCoords').value
       }
     }
   },
@@ -188,7 +188,7 @@ export default {
     }
   },
   watch: {
-    inputCoords (after, before) {
+    inputCoords (_after, _before) {
       if (this.outputSelected) {
         this.transform()
       }
@@ -202,6 +202,7 @@ export default {
     const minutesChecked = ref(false)
     const secondsChecked = ref(false)
     const outputSelected = ref(false)
+    // const outputCoords = ref(props.isDenmark ? [677_555, 61_481_00, 0] : [-5758833.2009, 9393681.2087, 0])
     const outputCoords = ref([0, 0, 0])
     const output = ref('')
     const hasTransformed = ref(false)
@@ -210,7 +211,7 @@ export default {
     const hover = ref(false)
     const setOutput = () => {
       if (!hasTransformed.value) return
-      const d3 = outputCoords.value[2].toFixed(4)
+      const d3 = outputCoords.value[2].toFixed(2)
       if (isMetres.value) {
         const d1 = outputCoords.value[0].toFixed(4)
         const d2 = outputCoords.value[1].toFixed(4)
@@ -251,6 +252,10 @@ export default {
       setTimeout(() => {
         isLoading.value = false
         if (props.is3D) {
+          if (props.inputEPSG === outputEPSG.value) {
+            outputCoords.value = props.inputCoords
+            setOutput()
+          }
           store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
             .then(() => {
               outputCoords.value[0] = parseFloat(store.state.trans.data.v1)

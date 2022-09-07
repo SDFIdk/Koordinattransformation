@@ -6,10 +6,9 @@
       <menu-closer @handle-close="closeMenu" class="menu-closer"/>
     </article>
     <div v-if="popupVisible" class="message">Koordinater kopieret</div>
-    <div v-if="errorVisible" class="message">
-      <!-- Ups. Du har valgt to inkompatible EPSG-koder eller et koordinat, der er uden for rækkevidde. -->
+    <!-- <div v-if="errorVisible" class="message">
       Ups. Har du valgt den samme EPSG-kode to gange?
-    </div>
+    </div> -->
   </section>
   <menu-closer v-show="menuClosed && window.width < 703" @handle-close="closeMenu" class="menu-closed"/>
 </template>

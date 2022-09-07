@@ -214,7 +214,7 @@ export default {
       if (isMetres.value) {
         const d1 = outputCoords.value[0].toFixed(4)
         const d2 = outputCoords.value[1].toFixed(4)
-        let res = d1 + ' mN, ' + d2 + ' mE'
+        let res = d1 + ' N, ' + d2 + ' E'
         if (props.is3D) res += ', ' + d3 + ' m'
         output.value = res
       } else {

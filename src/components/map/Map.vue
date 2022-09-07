@@ -84,7 +84,7 @@ export default {
     let mousePositionControl = ref({})
     const center = props.isDenmark ? [677_555, 61_481_00] : [-5758833.2009, 9393681.2087]
     const inputCoords = ref([center[0], center[1], 0])
-    provide('inputCoords', inputCoords)
+    provide('mapMarkerInputCoords', inputCoords)
     const colors = inject('themeColors')
     epsg25832proj(proj4)
     register(proj4)
@@ -163,14 +163,15 @@ export default {
             olMap.value.addOverlay(overlay)
           }, timeout)
           // on click listener
-          olMap.value.on('click', function (e) {
+          olMap.value.on('click', () => {
             let mpos = document.getElementById('mouse-position')
             mpos = mpos.textContent.split(', ')
             if (mapProjection !== inputEPSG.value) {
               store.dispatch('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1])
                 .then(() => {
                   const output = store.state.trans.data
-                  inputCoords.value = [output.v1, output.v2, output.v3]
+                  const height = output.v3 || inputCoords.value[2]
+                  inputCoords.value = [output.v1, output.v2, height]
                 })
             } else {
               const output = [parseFloat(mpos[0]), parseFloat(mpos[1]), inputCoords.value[2]]

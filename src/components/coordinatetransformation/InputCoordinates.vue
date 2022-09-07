@@ -178,7 +178,6 @@ export default {
   },
   methods: {
     inputEPSGChanged (code) {
-      this.$emit('input-epsg-changed', code)
       if (code.v1_unit === 'degree') {
         this.isDegrees = true
         this.checkDegrees()
@@ -187,15 +186,28 @@ export default {
         this.disableRadioButtons()
       }
       this.is3D = code.v3 !== null
-      this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1] + ',' + this.inputCoords[2])
-        .then(() => {
-          const output = this.store.state.trans.data
-          this.inputEPSG = code.srid
-          this.inputCoords[0] = output.v1
-          this.inputCoords[1] = output.v2
-          this.inputCoords[2] = output.v3
-          this.setInput()
-        })
+      if (this.is3D) {
+        this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1] + ',' + this.inputCoords[2])
+          .then(() => {
+            const output = this.store.state.trans.data
+            this.inputEPSG = code.srid
+            this.inputCoords[0] = output.v1
+            this.inputCoords[1] = output.v2
+            this.inputCoords[2] = output.v3
+            this.setInput()
+            this.$emit('input-epsg-changed', code)
+          })
+      } else {
+        this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1])
+          .then(() => {
+            const output = this.store.state.trans.data
+            this.inputEPSG = code.srid
+            this.inputCoords[0] = output.v1
+            this.inputCoords[1] = output.v2
+            this.$emit('input-epsg-changed', code)
+            this.setInput()
+          })
+      }
     },
     disableRadioButtons () {
       this.degreesChecked = false
@@ -227,10 +239,10 @@ export default {
       }
     }
   },
-  setup (props, context) {
-    const mapMarkerInputCoords = inject('inputCoords')
-    const inputEPSG = ref('')
+  setup (_props, context) {
+    const mapMarkerInputCoords = inject('mapMarkerInputCoords')
     const inputCoords = ref(mapMarkerInputCoords.value)
+    const inputEPSG = ref('')
     const colors = inject('themeColors')
     const store = useStore()
     const degreesChecked = ref(false)
@@ -244,10 +256,12 @@ export default {
     const isDegrees = ref(false)
     const selected = ref('')
     const setInput = () => {
-      meters.value = inputCoords.value[2]
+      meters.value = inputCoords.value[2] || meters.value
       if (isDegrees.value || degreesChecked.value) {
-        degrees.value[0] = parseFloat(inputCoords.value[0].toFixed(4))
-        degrees.value[1] = parseFloat(inputCoords.value[1].toFixed(4))
+        const deg0 = parseFloat(inputCoords.value[0].toFixed(4))
+        const deg1 = parseFloat(inputCoords.value[1].toFixed(4))
+        degrees.value[0] = deg0
+        degrees.value[1] = deg1
       } else if (minutesChecked.value) {
         const deg0 = Math.floor(inputCoords.value[0])
         const deg1 = Math.floor(inputCoords.value[1])
@@ -298,7 +312,7 @@ export default {
                   inputCoords.value[0] = output.v1
                   inputCoords.value[1] = output.v2
                   setInput()
-                  context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1]])
+                  context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
                 })
               }
             })
@@ -313,26 +327,31 @@ export default {
     })
     setInput()
     watch(mapMarkerInputCoords, () => {
+      // console.log('mapMarker', mapMarkerInputCoords.value)
       inputCoords.value = mapMarkerInputCoords.value
       setInput()
     })
     watch([degrees.value, minutes.value, seconds.value], () => {
-      if (degreesChecked.value) {
-        const val = [degrees.value[0], degrees.value[1], meters.value]
-        inputCoords.value = val
-      } else if (minutesChecked.value) {
-        const val = [degrees.value[0] + minutes.value[0] / 60, degrees.value[1] + minutes.value[1] / 60, meters.value]
-        inputCoords.value = val
+      let input = []
+      if (minutesChecked.value) {
+        const val1 = degrees.value[0] + minutes.value[0] / 60
+        const val2 = degrees.value[1] + minutes.value[1] / 60
+        input = [val1, val2, meters.value]
       } else if (secondsChecked.value) {
         const val1 = degrees.value[0] + minutes.value[0] / 60 + seconds.value[0] / 3600
         const val2 = degrees.value[1] + minutes.value[1] / 60 + seconds.value[1] / 3600
-        const val = [val1, val2, meters.value]
-        inputCoords.value = val
+        input = [val1, val2, meters.value]
+      } else {
+        input = [degrees.value[0], degrees.value[1], meters.value]
       }
+      inputCoords.value = input
+    })
+    watch(meters, () => {
+      inputCoords.value = [inputCoords.value[0], inputCoords.value[1], meters.value]
     })
     onUpdated(() => {
-      context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], meters.value])
       context.emit('is-3d-changed', is3D.value)
+      context.emit('input-coords-changed', inputCoords.value)
     })
     return {
       inputCoords,

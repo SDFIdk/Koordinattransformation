@@ -50,7 +50,7 @@ export default {
     }
   },
   setup () {
-    const inputCoords = inject('inputCoords')
+    const inputCoords = ref(inject('inputCoords'))
     const is3D = ref(true)
     const colors = inject('themeColors')
     const inputEPSG = inject('inputEPSG')

@@ -202,7 +202,7 @@ export default {
     const minutesChecked = ref(false)
     const secondsChecked = ref(false)
     const outputSelected = ref(false)
-    const outputCoords = ref([0, 0])
+    const outputCoords = ref([0, 0, 0])
     const output = ref('')
     const hasTransformed = ref(false)
     const isLoading = ref(false)
@@ -250,19 +250,34 @@ export default {
       hasTransformed.value = true
       setTimeout(() => {
         isLoading.value = false
-        store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
-          .then(() => {
-            outputCoords.value[0] = parseFloat(store.state.trans.data.v1)
-            outputCoords.value[1] = parseFloat(store.state.trans.data.v2)
-            outputCoords.value[2] = parseFloat(store.state.trans.data.v3)
-            setOutput()
-          })
-          .catch(err => {
-            emit('error-occurred', true, err)
-            window.setTimeout(() => {
-              emit('error-occurred', false)
-            }, 5000)
-          })
+        if (props.is3D) {
+          store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
+            .then(() => {
+              outputCoords.value[0] = parseFloat(store.state.trans.data.v1)
+              outputCoords.value[1] = parseFloat(store.state.trans.data.v2)
+              outputCoords.value[2] = parseFloat(store.state.trans.data.v3)
+              setOutput()
+            })
+            .catch(err => {
+              emit('error-occurred', true, err)
+              window.setTimeout(() => {
+                emit('error-occurred', false)
+              }, 5000)
+            })
+        } else {
+          store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
+            .then(() => {
+              outputCoords.value[0] = parseFloat(store.state.trans.data.v1)
+              outputCoords.value[1] = parseFloat(store.state.trans.data.v2)
+              setOutput()
+            })
+            .catch(err => {
+              emit('error-occurred', true, err)
+              window.setTimeout(() => {
+                emit('error-occurred', false)
+              }, 5000)
+            })
+        }
       }, 500)
     }
     return {

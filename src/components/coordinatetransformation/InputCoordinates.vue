@@ -23,7 +23,7 @@
             type="number"
           />
           <span class="degrees" v-show="isDegrees">°N</span>
-        <span class="degrees" v-show="!isDegrees">N</span>
+        <span class="degrees" v-show="!isDegrees">m</span>
         </span>
         <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
           <input
@@ -57,7 +57,7 @@
             type="number"
           />
           <span class="degrees" v-show="isDegrees">°E</span>
-        <span class="degrees" v-show="!isDegrees">E</span>
+        <span class="degrees" v-show="!isDegrees">m</span>
         </span>
         <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
           <input

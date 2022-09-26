@@ -1,7 +1,14 @@
 <template>
   <div id="map" class="olmap" ref="map">
     <section class="transform-container">
-      <CoordinateTransformation @input-epsg-changed="inputEPSGChanged" @input-coords-changed="inputCoordsChanged" :inputCoords=inputCoords id="coordinate-transform" />
+      <CoordinateTransformation
+        @input-epsg-changed="inputEPSGChanged"
+        @input-coords-changed="inputCoordsChanged"
+        :inputCoords=inputCoords
+        id="coordinate-transform"
+        :mapError="error"
+        :mapErrorVisible="errorVisible"
+      />
       <div id="mouse-position"></div>
     </section>
     <Icon
@@ -91,6 +98,8 @@ export default {
     const mapProjection = props.isDenmark ? 'EPSG:25832' : 'EPSG:3857'
     const inputEPSG = ref(props.isDenmark ? 'EPSG:25832' : 'EPSG:3178')
     const timeout = 500
+    const error = ref('')
+    const errorVisible = ref(false)
     provide('inputEPSG', inputEPSG.value)
     onMounted(() => {
       mousePositionControl = new MousePosition({
@@ -170,6 +179,14 @@ export default {
               store.dispatch('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1])
                 .then(() => {
                   const output = store.state.trans.data
+                  if (output.message !== undefined) {
+                    error.value = output.message
+                    errorVisible.value = true
+                    window.setTimeout(() => {
+                      errorVisible.value = false
+                    }, 5000)
+                    return
+                  }
                   const height = output.v3 || inputCoords.value[2]
                   inputCoords.value = [output.v1, output.v2, height]
                 })
@@ -195,6 +212,8 @@ export default {
       store,
       mapProjection,
       timeout,
+      error,
+      errorVisible,
       inputEPSG
     }
   }

@@ -190,6 +190,10 @@ export default {
         this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1] + ',' + this.inputCoords[2])
           .then(() => {
             const output = this.store.state.trans.data
+            if (output.message !== undefined) {
+              this.error(output.message)
+              return
+            }
             this.inputEPSG = code.srid
             this.inputCoords[0] = output.v1
             this.inputCoords[1] = output.v2
@@ -201,6 +205,10 @@ export default {
         this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1])
           .then(() => {
             const output = this.store.state.trans.data
+            if (output.message !== undefined) {
+              this.error(output.message)
+              return
+            }
             this.inputEPSG = code.srid
             this.inputCoords[0] = output.v1
             this.inputCoords[1] = output.v2
@@ -239,7 +247,7 @@ export default {
       }
     }
   },
-  setup (_props, context) {
+  setup (_props, { emit }) {
     const mapMarkerInputCoords = inject('mapMarkerInputCoords')
     const inputCoords = ref(mapMarkerInputCoords.value)
     const inputEPSG = ref('')
@@ -286,9 +294,9 @@ export default {
       }
     }
     const error = err => {
-      this.$emit('error-occurred', true, err)
+      emit('error-occurred', true, err)
       window.setTimeout(() => {
-        this.$emit('error-occurred', false)
+        emit('error-occurred', false)
       }, 3000)
     }
     onMounted(() => {
@@ -305,19 +313,27 @@ export default {
               if (is3D.value) {
                 store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0] + ',' + meters.value).then(() => {
                   const output = store.state.trans.data
+                  if (output.message !== undefined) {
+                    error(output.message)
+                    return
+                  }
                   inputCoords.value[0] = output.v1
                   inputCoords.value[1] = output.v2
                   inputCoords.value[2] = output.v3
                   setInput()
-                  context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
+                  emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
                 }).catch(err => error(err))
               } else {
                 store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0]).then(() => {
                   const output = store.state.trans.data
+                  if (output.message !== undefined) {
+                    error(output.message)
+                    return
+                  }
                   inputCoords.value[0] = output.v1
                   inputCoords.value[1] = output.v2
                   setInput()
-                  context.emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
+                  emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
                 }).catch(err => error(err))
               }
             }).catch(err => error(err))
@@ -326,7 +342,6 @@ export default {
     })
     setInput()
     watch(mapMarkerInputCoords, () => {
-      // console.log('mapMarker', mapMarkerInputCoords.value)
       inputCoords.value = mapMarkerInputCoords.value
       setInput()
     })
@@ -349,8 +364,8 @@ export default {
       inputCoords.value = [inputCoords.value[0], inputCoords.value[1], meters.value]
     })
     onUpdated(() => {
-      context.emit('is-3d-changed', is3D.value)
-      context.emit('input-coords-changed', inputCoords.value)
+      emit('is-3d-changed', is3D.value)
+      emit('input-coords-changed', inputCoords.value)
     })
     return {
       inputCoords,
@@ -367,6 +382,7 @@ export default {
       is3D,
       isDegrees,
       meters,
+      error,
       selected
     }
   }

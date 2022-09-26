@@ -6,6 +6,8 @@
       <menu-closer @handle-close="closeMenu" class="menu-closer"/>
     </article>
     <div v-if="popupVisible" class="message">Koordinater kopieret</div>
+    <div v-if="mapErrorVisible" class="message">{{ mapError }}</div>
+    <div v-if="errorVisible" class="message">{{ error }}</div>
   </section>
   <menu-closer v-show="menuClosed && window.width < 703" @handle-close="closeMenu" class="menu-closed"/>
 </template>
@@ -20,6 +22,20 @@ export default {
     OutputCoordinates: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCoordinates')),
     MenuCloser: defineAsyncComponent(() => import('@/components/coordinatetransformation/MenuCloser'))
   },
+  props: {
+    mapError: {
+      type: String,
+      default () {
+        return ''
+      }
+    },
+    mapErrorVisible: {
+      type: Boolean,
+      default () {
+        return false
+      }
+    }
+  },
   methods: {
     inputEPSGChanged (code) {
       this.inputEPSG = code.srid
@@ -32,7 +48,8 @@ export default {
     is3DChanged (state) {
       this.is3D = state
     },
-    errorOccurred (state) {
+    errorOccurred (state, err) {
+      this.error = err
       this.errorVisible = state
     },
     coordinatesCopied (state) {
@@ -55,6 +72,7 @@ export default {
     const menuClosed = ref(false)
     const window = ref({ width: 0, height: 0 })
     const errorVisible = ref('')
+    const error = ref('')
     return {
       inputCoords,
       colors,
@@ -62,8 +80,9 @@ export default {
       popupVisible,
       menuClosed,
       window,
-      is3D,
-      errorVisible
+      error,
+      errorVisible,
+      is3D
     }
   },
   created () {

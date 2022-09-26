@@ -246,12 +246,6 @@ export default {
         }
       }
     }
-    const error = err => {
-      emit('error-occurred', true, err)
-      window.setTimeout(() => {
-        emit('error-occurred', false)
-      }, 5000)
-    }
     const transform = () => {
       isLoading.value = true
       hasTransformed.value = true
@@ -268,14 +262,14 @@ export default {
               outputCoords.value[1] = parseFloat(store.state.trans.data.v2)
               outputCoords.value[2] = parseFloat(store.state.trans.data.v3)
               setOutput()
-            }).catch(err => error(err))
+            })
         } else {
           store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
             .then(() => {
               outputCoords.value[0] = parseFloat(store.state.trans.data.v1)
               outputCoords.value[1] = parseFloat(store.state.trans.data.v2)
               setOutput()
-            }).catch(err => error(err))
+            })
         }
       }, 500)
     }

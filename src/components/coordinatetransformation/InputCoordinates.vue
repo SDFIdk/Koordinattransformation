@@ -322,7 +322,7 @@ export default {
                   inputCoords.value[2] = output.v3
                   setInput()
                   emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
-                }).catch(err => error(err))
+                })
               } else {
                 store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0]).then(() => {
                   const output = store.state.trans.data
@@ -334,9 +334,9 @@ export default {
                   inputCoords.value[1] = output.v2
                   setInput()
                   emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
-                }).catch(err => error(err))
+                })
               }
-            }).catch(err => error(err))
+            })
         }
       })
     })

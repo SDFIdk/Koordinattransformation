@@ -1,8 +1,18 @@
 <template>
   <section v-show="!menuClosed || window.width > 703" class="container">
     <article class="coordinate-transformation-box" ref="mother">
-      <InputCoordinates class="input" @input-epsg-changed="inputEPSGChanged" @error-occurred="errorOccurred" @input-coords-changed="inputCoordsChanged" @is-3d-changed="is3DChanged"/>
-      <OutputCoordinates class="output" :inputEPSG=inputEPSG :inputCoords=inputCoords @error-occurred="errorOccurred" @coordinates-copied="coordinatesCopied" :is3D=is3D />
+      <InputCoordinates class="input"
+        @input-epsg-changed="inputEPSGChanged"
+        @error-occurred="errorOccurred"
+        @input-coords-changed="inputCoordsChanged"
+        @is-3d-changed="is3DChanged"
+      />
+      <OutputCoordinates class="output"
+        :inputEPSG=inputEPSG
+        :inputCoords=inputCoords
+        @coordinates-copied="coordinatesCopied"
+        :is3D=is3D
+      />
       <menu-closer @handle-close="closeMenu" class="menu-closer"/>
     </article>
     <div v-if="popupVisible" class="message">Koordinater kopieret</div>

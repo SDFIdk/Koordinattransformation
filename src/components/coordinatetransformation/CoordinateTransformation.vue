@@ -6,9 +6,6 @@
       <menu-closer @handle-close="closeMenu" class="menu-closer"/>
     </article>
     <div v-if="popupVisible" class="message">Koordinater kopieret</div>
-    <!-- <div v-if="errorVisible" class="message">
-      Ups. Har du valgt den samme EPSG-kode to gange?
-    </div> -->
   </section>
   <menu-closer v-show="menuClosed && window.width < 703" @handle-close="closeMenu" class="menu-closed"/>
 </template>
@@ -94,7 +91,7 @@ export default {
   align-self: center;
   text-align: center;
   margin: 1rem 0 0 0;
-  padding: 0.5rem;
+  padding: 1rem;
   background: var(--lightSteel);
   border-radius: 18px;
 }

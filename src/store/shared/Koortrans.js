@@ -19,7 +19,7 @@ export class Koortrans {
     }
 
     this.actions = {
-      get ({ commit, dispatch }, crsParameter) {
+      get ({ commit }, crsParameter) {
         return new Promise((resolve, reject) => {
           commit('request')
           fetch(environmentAPIDomains[process.env.VUE_APP_NODE_ENV] + path + crsParameter + '?token=' + tokens.get[process.env.VUE_APP_NODE_ENV])
@@ -34,8 +34,7 @@ export class Koortrans {
             })
         })
       },
-
-      clear ({ commit, dispatch }) {
+      clear ({ commit }) {
         commit('clear')
       }
     }

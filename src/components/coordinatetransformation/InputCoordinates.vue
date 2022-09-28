@@ -346,26 +346,26 @@ export default {
       setInput()
     })
     watch([degrees.value, minutes.value, seconds.value], () => {
-      degrees.value[0] = degrees.value[0] || 0
-      degrees.value[1] = degrees.value[1] || 0
+      degrees.value[0] -= 0
+      degrees.value[1] -= 0
       let v1 = degrees.value[0]
       let v2 = degrees.value[1]
       if (minutesChecked.value || secondsChecked.value) {
-        minutes.value[0] = minutes.value[0] || 0
-        minutes.value[1] = minutes.value[1] || 0
+        minutes.value[0] -= 0
+        minutes.value[1] -= 0
         v1 += minutes.value[0] / 60
         v2 += minutes.value[1] / 60
       }
       if (secondsChecked.value) {
-        seconds.value[0] = seconds.value[0] || 0
-        seconds.value[1] = seconds.value[1] || 0
+        seconds.value[0] -= 0
+        seconds.value[1] -= 0
         v1 += seconds.value[0] / 3600
         v2 += seconds.value[1] / 3600
       }
       inputCoords.value = [v1, v2, meters.value]
     })
     watch(meters, () => {
-      meters.value = meters.value || 0
+      meters.value -= 0
       inputCoords.value = [inputCoords.value[0], inputCoords.value[1], meters.value]
     })
     onUpdated(() => {

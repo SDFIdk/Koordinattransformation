@@ -24,6 +24,13 @@
 </template>
 
 <script>
+/**
+ * CoordinateTransformation er foreældre til input- og outputkomponenterne samt barn til Map-komponentet.
+ * Den er bindeled og står for koordinering mellem de tre komponenter:
+ * Når brugeren klikker på kortet i Map, skal både Input og Output vide det.
+ * Og når en EPSG-koden eller koordinatsættet ændres i Input, skal Output vide dette for at
+ * Komponentet står også for at vise fejlmeddelelser, men (på trods af navnet) ikke for nogen af transformationerne
+ */
 import { defineAsyncComponent, ref, inject } from 'vue'
 
 export default {

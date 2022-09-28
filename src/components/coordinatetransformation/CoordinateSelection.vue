@@ -60,6 +60,9 @@
 </template>
 
 <script>
+/**
+ * CoordinateSelection er drop-down menuen af EPSG-koder i både input- og outputkomponenterne
+ */
 import { onMounted, ref, inject } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
@@ -67,7 +70,7 @@ import { useRoute } from 'vue-router'
 export default {
   name: 'CoordinateSelectionComponent',
   props: {
-    // Check if the selection is input or output selection
+    // Er vi i input- eller outputkomponentet?
     isOutput: {
       type: Boolean,
       default () {
@@ -77,10 +80,13 @@ export default {
   },
   methods: {
     outputSelected (code) {
+      // Der styles forskelligt alt efter om en EPSG-kode i outputmenuen er valgt, eller ej
+      // I første instans er der ikke valgt nogen, men når først den er valgt, vil den blive ved med at være valgt.
       this.outputNotSelected = false
       this.$emit('output-selected', code)
     },
     epsgChanged (code) {
+      // Hvis af en EPSG-koderne ændres, skal der foretages en passende ændring af input- og/eller outputkoordinaterne
       this.$emit('epsg-changed', code)
     }
   },
@@ -94,6 +100,7 @@ export default {
     const inputActive = ref(false)
     const outputNotSelected = ref(true)
     onMounted(() => {
+      // Vi genererer listen af EPSG-koder
       store.dispatch('CRS/clear')
       store.dispatch('CRS/get', '').then(() => {
         crs.value = store.state.CRS.data
@@ -102,6 +109,7 @@ export default {
     })
     const makeCRSList = async () => {
       const tempCRS = []
+      // Der er forskellige lister for Danmark og Grøndland
       if (route.name === 'Denmark' && crs.value.length !== 0) {
         for (let i = 0, iEnd = crs.value.DK.length; i < iEnd; ++i) {
           await store

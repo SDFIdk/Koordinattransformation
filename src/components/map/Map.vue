@@ -19,14 +19,18 @@
 </template>
 
 <script>
-// WMNTS
+/**
+ * Map.vue er kortet
+ * Det står for at holde øje med brugerklik på kortet med kortmarkøren
+ * og for at opdatere markørens placering, hvis inputkoordinaterne er ændret ved manuel indtastning eller via DAWA
+ */
+// WMNTS-ting
 import WMTS, { optionsFromCapabilities } from 'ol/source/WMTS'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
-// import { get as getProjection } from 'ol/proj'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
 import { epsg25832proj } from 'skraafoto-saul'
-// OL
+// OpenLayers-ting
 import 'ol/ol.css'
 import { onMounted, ref, defineAsyncComponent, inject, provide } from 'vue'
 import OlMap from 'ol/Map'
@@ -57,6 +61,7 @@ export default {
     }
   },
   methods: {
+    // Hvis inputkoordinaterne ændres, skal markøren også flyttes
     inputCoordsChanged (coords) {
       if (this.inputEPSG !== this.mapProjection) {
         this.store.dispatch('trans/get', this.inputEPSG + '/' + this.mapProjection + '/' + coords[0] + ',' + coords[1])
@@ -80,6 +85,7 @@ export default {
         this.olMap.addOverlay(overlay)
       }
     },
+    // Holder øje med hvilken input EPSG-kode vi bruger i øjeblikket
     inputEPSGChanged (epsg) {
       this.inputEPSG = epsg
     }
@@ -89,7 +95,7 @@ export default {
     const olView = ref({})
     const olMap = ref({})
     let mousePositionControl = ref({})
-    const center = props.isDenmark ? [677_555, 61_481_00] : [-5758833.2009, 9393681.2087]
+    const center = props.isDenmark ? [587135, 6140617] : [-5758833.2009, 9393681.2087]
     const inputCoords = ref([center[0], center[1], 0])
     provide('mapMarkerInputCoords', inputCoords)
     const colors = inject('themeColors')
@@ -112,7 +118,7 @@ export default {
         center: center,
         zoom: 9,
         minZoom: 4,
-        maxZoom: 20,
+        maxZoom: 100,
         extent: props.isDenmark
           ? [
               200_000, 5_900_000, 1_005_000, 6_620_000
@@ -123,6 +129,7 @@ export default {
         showFullExtent: false,
         projection: mapProjection
       })
+      // Vores eget kort (hvis Danmmark)
       fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${process.env.VUE_APP_TOKEN}`)
         .then(res => res.text())
         .then(xml => {
@@ -161,7 +168,7 @@ export default {
                   })
                 ]
           })
-          // set inital map marker
+          // Kortmarkøren skal sættes, når applikationen første gang er loadet
           setTimeout(() => {
             const pinnedMarker = document.getElementById('pinned-marker')
             const overlay = new Overlay({
@@ -171,25 +178,29 @@ export default {
             overlay.setPosition([center[0], center[1]])
             olMap.value.addOverlay(overlay)
           }, timeout)
-          // on click listener
+          // Lyt efter brugerklik på kortet med kortmarkøren og foretag evt. transformation
           olMap.value.on('click', () => {
             let mpos = document.getElementById('mouse-position')
             mpos = mpos.textContent.split(', ')
+            // Transformér kun hvis EPSG-koderne er forskellige
             if (mapProjection !== inputEPSG.value) {
               store.dispatch('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1])
                 .then(() => {
                   const output = store.state.trans.data
+                  // Abort hvis fejl
                   if (output.message !== undefined) {
                     error.value = output.message
                     errorVisible.value = true
                     window.setTimeout(() => {
                       errorVisible.value = false
-                    }, 5000)
+                    }, 4000)
                     return
                   }
-                  const height = output.v3 || inputCoords.value[2]
-                  inputCoords.value = [output.v1, output.v2, height]
+                  // Vi lader korttransformationer med markøren være udelukkende 2D-transformationer.
+                  // Brugeren må selv indstaste en højdemeter manuelt, hvis de vil have det.
+                  inputCoords.value = [output.v1, output.v2, inputCoords.value[2]]
                 })
+            // Ellers er koordinaterne ens
             } else {
               const output = [parseFloat(mpos[0]), parseFloat(mpos[1]), inputCoords.value[2]]
               inputCoords.value = output

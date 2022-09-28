@@ -112,6 +112,9 @@ lear<template>
 </template>
 
 <script>
+/**
+ * Ouput foretager den reelle transformation - den er vi er interesseret i
+ */
 import { defineAsyncComponent, inject, ref } from 'vue'
 import { useStore } from 'vuex'
 
@@ -142,6 +145,8 @@ export default {
     Loader: defineAsyncComponent(() => import('@/components/shared/Loader'))
   },
   methods: {
+    // En output-EPSG er valgt: Der skal foretages transformation,
+    // og brugergrænsefladen opdateres ift. om output EPSG-koden er i meter eller DMS og 2D eller 3D
     outputSelectedMethod (code) {
       if (code.v1_unit === 'metre') {
         this.isMetres = true
@@ -155,6 +160,7 @@ export default {
       this.hasTransformed = true
       this.transform()
     },
+    // Mulighed for at kopiere outputtet efter transformation
     copyCoordinates () {
       if (this.outputSelected && !this.isLoading) {
         navigator.clipboard.writeText(this.output)
@@ -164,6 +170,8 @@ export default {
         }, 3333)
       }
     },
+    // Formatknapperne skal kun være aktive,
+    // hvis EPSG-enheden også er i decimalgrader - ikke meter
     disableRadioButtons () {
       this.degreesChecked = false
       this.minutesChecked = false
@@ -189,7 +197,10 @@ export default {
     }
   },
   watch: {
-    inputCoords (_after, _before) {
+    // Holder øje med inputkoordinaterne og transformerer kun,
+    // hvis der også er valgt en EPSG-kode for outputtet.
+    // Når først det er valgt én gang, transformerer den derefter frit.
+    inputCoords () {
       if (this.outputSelected) {
         this.transform()
       }
@@ -209,6 +220,7 @@ export default {
     const isLoading = ref(false)
     const isMetres = ref(true)
     const hover = ref(false)
+    // Smuksering af outputtet
     const setOutput = () => {
       let res = ''
       const d3 = outputCoords.value[2].toFixed(2)
@@ -241,6 +253,8 @@ export default {
           if (props.is3D) res += ', ' + d3 + ' m'
         }
       }
+      // Et lille "loader"-icon, der skal gøre brugeren opmærksom på,
+      // at der altså fortages en transformation.
       isLoading.value = true
       setTimeout(() => {
         isLoading.value = false

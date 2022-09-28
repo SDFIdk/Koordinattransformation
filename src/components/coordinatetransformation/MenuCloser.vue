@@ -5,6 +5,10 @@
 </template>
 
 <script>
+/**
+ * Dette er blot til at lukke/åbne menuen,
+ * når applikationen er i på mobil
+ */
 export default {
   name: 'MenuCloser',
   methods: {

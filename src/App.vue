@@ -6,6 +6,13 @@
 </template>
 
 <script>
+/**
+ * Familietræet af forældrekomponenter og deres børn er som følgende:
+ * Map -> CoordinateTransformation
+ * CoordinateTransformation -> InputCoordinates -> CoordinateSelection
+ * CoordinateTransformation -> OutputCoordinates -> CoordinateSelection
+ * CoordinateTransformation -> MenuCloser
+ */
 import { onErrorCaptured, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { isConsole, isIE, isSmartTV, isWearable } from 'mobile-device-detect'

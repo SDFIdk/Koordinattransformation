@@ -295,7 +295,7 @@ export default {
     }
     const error = err => {
       emit('error-occurred', true, err)
-      window.setTimeout(() => {
+      setTimeout(() => {
         emit('error-occurred', false)
       }, 3000)
     }

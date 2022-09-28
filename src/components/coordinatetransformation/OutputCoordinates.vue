@@ -152,6 +152,7 @@ export default {
       }
       this.outputSelected = true
       this.outputEPSG = code.srid
+      this.hasTransformed = true
       this.transform()
     },
     copyCoordinates () {
@@ -209,7 +210,6 @@ export default {
     const isMetres = ref(true)
     const hover = ref(false)
     const setOutput = () => {
-      if (!hasTransformed.value) return
       let res = ''
       const d3 = outputCoords.value[2].toFixed(2)
       if (isMetres.value) {
@@ -241,50 +241,50 @@ export default {
           if (props.is3D) res += ', ' + d3 + ' m'
         }
       }
-      output.value = res
+      isLoading.value = true
+      setTimeout(() => {
+        isLoading.value = false
+        output.value = res
+      }, 500)
     }
     const error = err => {
       emit('error-occurred', true, err)
-      window.setTimeout(() => {
+      setTimeout(() => {
         emit('error-occurred', false)
-      }, 3000)
+      }, 4000)
     }
     const transform = () => {
-      isLoading.value = true
-      hasTransformed.value = true
-      setTimeout(() => {
-        isLoading.value = false
-        if (props.is3D) {
-          if (props.inputEPSG === outputEPSG.value) {
-            outputCoords.value = props.inputCoords
-            setOutput()
-          }
-          store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
-            .then(() => {
-              const output = store.state.trans.data
-              if (output.message !== undefined) {
-                error(output.message)
-                return
-              }
-              outputCoords.value[0] = parseFloat(output.v1)
-              outputCoords.value[1] = parseFloat(output.v2)
-              outputCoords.value[2] = parseFloat(output.v3)
-              setOutput()
-            })
-        } else {
-          store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
-            .then(() => {
-              const output = store.state.trans.data
-              if (output.message !== undefined) {
-                error(output.message)
-                return
-              }
-              outputCoords.value[0] = parseFloat(output.v1)
-              outputCoords.value[1] = parseFloat(output.v2)
-              setOutput()
-            })
+      if (!hasTransformed.value) return
+      if (props.is3D) {
+        if (props.inputEPSG === outputEPSG.value) {
+          outputCoords.value = props.inputCoords
+          setOutput()
         }
-      }, 500)
+        store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
+          .then(() => {
+            const output = store.state.trans.data
+            if (output.message !== undefined) {
+              error(output.message)
+              return
+            }
+            outputCoords.value[0] = parseFloat(output.v1)
+            outputCoords.value[1] = parseFloat(output.v2)
+            outputCoords.value[2] = parseFloat(output.v3)
+            setOutput()
+          })
+      } else {
+        store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
+          .then(() => {
+            const output = store.state.trans.data
+            if (output.message !== undefined) {
+              error(output.message)
+              return
+            }
+            outputCoords.value[0] = parseFloat(output.v1)
+            outputCoords.value[1] = parseFloat(output.v2)
+            setOutput()
+          })
+      }
     }
     return {
       store,

@@ -10,6 +10,7 @@
       <OutputCoordinates class="output"
         :inputEPSG=inputEPSG
         :inputCoords=inputCoords
+        @error-occurred="errorOccurred"
         @coordinates-copied="coordinatesCopied"
         :is3D=is3D
       />

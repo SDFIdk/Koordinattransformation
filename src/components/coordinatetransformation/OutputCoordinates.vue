@@ -202,7 +202,6 @@ export default {
     const minutesChecked = ref(false)
     const secondsChecked = ref(false)
     const outputSelected = ref(false)
-    // const outputCoords = ref(props.isDenmark ? [677_555, 61_481_00, 0] : [-5758833.2009, 9393681.2087, 0])
     const outputCoords = ref([0, 0, 0])
     const output = ref('')
     const hasTransformed = ref(false)
@@ -211,28 +210,26 @@ export default {
     const hover = ref(false)
     const setOutput = () => {
       if (!hasTransformed.value) return
+      let res = ''
       const d3 = outputCoords.value[2].toFixed(2)
       if (isMetres.value) {
         const d1 = outputCoords.value[0].toFixed(4)
         const d2 = outputCoords.value[1].toFixed(4)
-        let res = d1 + ' m, ' + d2 + ' m'
+        res = d1 + ' m, ' + d2 + ' m'
         if (props.is3D) res += ', ' + d3 + ' m'
-        output.value = res
       } else {
         if (degreesChecked.value) {
           const d1 = outputCoords.value[0].toFixed(4)
           const d2 = outputCoords.value[1].toFixed(4)
-          let res = d1 + ' °N, ' + d2 + ' °E'
+          res = d1 + ' °N, ' + d2 + ' °E'
           if (props.is3D) res += ', ' + d3 + ' m'
-          output.value = res
         } else if (minutesChecked.value) {
           const d1 = Math.floor(outputCoords.value[0])
           const d2 = Math.floor(outputCoords.value[1])
           const m1 = ((outputCoords.value[0] - d1) * 60).toFixed(4)
           const m2 = ((outputCoords.value[1] - d2) * 60).toFixed(4)
-          let res = d1 + ' ° ' + m1 + '\' N, ' + d2 + ' ° ' + m2 + ' \' E'
+          res = d1 + ' ° ' + m1 + '\' N, ' + d2 + ' ° ' + m2 + ' \' E'
           if (props.is3D) res += ', ' + d3 + ' m'
-          output.value = res
         } else {
           const d1 = Math.floor(outputCoords.value[0])
           const d2 = Math.floor(outputCoords.value[1])
@@ -240,11 +237,17 @@ export default {
           const m2 = Math.floor((outputCoords.value[1] - d2) * 60)
           const s1 = ((outputCoords.value[0] - d1 - m1 / 60) * 3600).toFixed(4)
           const s2 = ((outputCoords.value[1] - d2 - m2 / 60) * 3600).toFixed(4)
-          let res = d1 + '° ' + m1 + '\' ' + s1 + '" N, ' + d2 + '° ' + m2 + '\' ' + s2 + '" E'
+          res = d1 + '° ' + m1 + '\' ' + s1 + '" N, ' + d2 + '° ' + m2 + '\' ' + s2 + '" E'
           if (props.is3D) res += ', ' + d3 + ' m'
-          output.value = res
         }
       }
+      output.value = res
+    }
+    const error = err => {
+      emit('error-occurred', true, err)
+      window.setTimeout(() => {
+        emit('error-occurred', false)
+      }, 3000)
     }
     const transform = () => {
       isLoading.value = true
@@ -258,16 +261,26 @@ export default {
           }
           store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
             .then(() => {
-              outputCoords.value[0] = parseFloat(store.state.trans.data.v1)
-              outputCoords.value[1] = parseFloat(store.state.trans.data.v2)
-              outputCoords.value[2] = parseFloat(store.state.trans.data.v3)
+              const output = store.state.trans.data
+              if (output.message !== undefined) {
+                error(output.message)
+                return
+              }
+              outputCoords.value[0] = parseFloat(output.v1)
+              outputCoords.value[1] = parseFloat(output.v2)
+              outputCoords.value[2] = parseFloat(output.v3)
               setOutput()
             })
         } else {
           store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
             .then(() => {
-              outputCoords.value[0] = parseFloat(store.state.trans.data.v1)
-              outputCoords.value[1] = parseFloat(store.state.trans.data.v2)
+              const output = store.state.trans.data
+              if (output.message !== undefined) {
+                error(output.message)
+                return
+              }
+              outputCoords.value[0] = parseFloat(output.v1)
+              outputCoords.value[1] = parseFloat(output.v2)
               setOutput()
             })
         }

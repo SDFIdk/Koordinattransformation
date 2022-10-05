@@ -260,7 +260,7 @@ expand-icon {
   position: sticky;
   top: 0;
   z-index: 0;
-  overflow: hidden;
+  overflow: auto;
 }
 #coordinate-transform {
   width: 100%;

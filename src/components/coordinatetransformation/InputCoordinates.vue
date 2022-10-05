@@ -8,7 +8,7 @@
     </section>
     <div class="input">
       <!-- <div class="first-input"> -->
-        <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
+        <span class="first-input" :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
           <Icon
             icon="ArrowIcon"
             :width="2"
@@ -285,7 +285,7 @@ export default {
     const seconds = ref([0, 0])
     const meters = ref(0)
     const is3D = ref(true)
-    const isDegrees = ref(true)
+    const isDegrees = ref(false)
     const selected = ref('')
     // Smuksering af inputkoordinaterne i de tre til syv tastefelter
     const setInput = () => {
@@ -534,10 +534,16 @@ input[type=radio] {
   width: 100%;
   align-items: center;
 }
+.first-input, .second-input, .third-input {
+  width: 100%;
+  flex-grow: 1;
+}
+.input .isMetresInput {
+  flex-grow: 1;
+}
 .isMetresInput {
   margin-top: 0.25rem;
   display: inline-flex;
-  width: 33.33%;
   align-items: center;
 }
 @media screen and (max-width: 1180px) {

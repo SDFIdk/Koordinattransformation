@@ -253,11 +253,12 @@ expand-icon {
 }
 .olmap {
   width: 100%;
-  height: 90vh;
+  height: 93.5vh;
+  box-sizing: border-box;
   position: sticky;
   top: 0;
   z-index: 0;
-  overflow-y: scroll;
+  overflow: hidden;
 }
 #coordinate-transform {
   width: 100%;

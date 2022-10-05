@@ -180,10 +180,7 @@ export default {
           }, timeout)
           // Lyt efter brugerklik på kortet med kortmarkøren og foretag evt. transformation
           olMap.value.on('click', e => {
-            let mpos = document.getElementById('mouse-position')
-            console.log(e)
-            console.log('mpos.textContent', mpos.textContent)
-            mpos = mpos.textContent.split(', ')
+            const mpos = olMap.value.getEventCoordinate(e.originalEvent)
             // Transformér kun hvis EPSG-koderne er forskellige
             if (mapProjection !== inputEPSG.value) {
               store.dispatch('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1])

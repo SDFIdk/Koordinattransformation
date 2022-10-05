@@ -1,0 +1,17 @@
+.DS_Store
+/dist
+
+# Editor directories and files
+.idea/
+node_modules/
+
+package-lock.json
+
+.env*
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets

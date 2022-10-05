@@ -341,7 +341,7 @@ export default {
   border: var(--darkSteel) solid 1px;
   border-radius: 25px;
   background: var(--white);
-  margin: 0 0 0 0.5rem;
+  margin-left: 0.5rem;
 }
 .info-text-container {
   position: relative;
@@ -349,6 +349,7 @@ export default {
 }
 .info-text {
   position: absolute;
+  width: 20vw;
   padding: 10px;
   border: 1px solid var(--darkSteel);
   border-radius: 10px;
@@ -436,10 +437,15 @@ input[type=radio]:checked {
 }
 @media screen and (max-width: 703px) {
   .info-icon {
-    display: block;
+    display: inline;
   }
   .transformed-coordinates {
     height: 2rem;
+  }
+}
+@media screen and (max-width: 410px) {
+  .info-icon {
+    display: none;
   }
 }
 </style>

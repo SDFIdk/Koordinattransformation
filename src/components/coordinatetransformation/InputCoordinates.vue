@@ -7,76 +7,84 @@
       <CoordinateSelection :isOutput="false" @epsg-changed="inputEPSGChanged"/>
     </section>
     <div class="input">
-      <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
-        <Icon
-          icon="ArrowIcon"
-          :width="2"
-          :height="2"
-          :color="colors.turquoise"
-          :stroke-width="0"
-          class="arrow-icon-x-coordinate"
-        />
-        <span class="chosen-coordinates">
-          <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
-            v-model=degrees[0]
-            type="number"
+      <!-- <div class="first-input"> -->
+        <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
+          <Icon
+            icon="ArrowIcon"
+            :width="2"
+            :height="2"
+            :color="colors.turquoise"
+            :stroke-width="0"
+            class="arrow-icon arrow-icon-x-coordinate"
           />
-          <span class="degrees" v-show="isDegrees">°N</span>
-        <span class="degrees" v-show="!isDegrees">m</span>
+          <span class="chosen-coordinates">
+            <input
+              class="coordinates"
+              :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+              type="number"
+              v-model=degrees[0]
+            />
+            <span class="unit" v-show="isDegrees">°N</span>
+          <span class="unit" v-show="!isDegrees">m</span>
+          </span>
+          <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
+            <input
+              class="coordinates"
+              :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+              v-model=minutes[0]
+              type="number"
+            />
+            <span class="degrees">'</span>
+          </span>
+          <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
+            <input
+              class="coordinates"
+              :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+              v-model=seconds[0]
+              type="number"
+            />
+            <span class="degrees">"</span>
+          </span>
         </span>
-        <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
-          <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
-            v-model=minutes[0]
-            type="number"
+      <!-- </div>
+      <div class="second-input"> -->
+        <span class="second-input" :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
+          <Icon
+            icon="ArrowIcon"
+            :width="2"
+            :height="2"
+            :color="colors.turquoise"
+            :stroke-width="0"
           />
-          <span class="degrees">'</span>
+          <span class="chosen-coordinates">
+            <input
+              :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+              v-model=degrees[1]
+              type="number"
+            />
+            <span class="degrees" v-show="isDegrees">°E</span>
+          <span class="degrees" v-show="!isDegrees">m</span>
+          </span>
+          <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
+            <input
+              :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+              v-model=minutes[1]
+              type="number"
+            />
+            <span class="degrees">'</span>
+          </span>
+          <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
+            <input
+              :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+              v-model=seconds[1]
+              type="number"
+            />
+            <span class="degrees">"</span>
+          </span>
         </span>
-        <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
-          <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
-            v-model=seconds[0]
-            type="number"
-          />
-          <span class="degrees">"</span>
-        </span>
-      </span>
-      <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
-        <Icon
-          icon="ArrowIcon"
-          :width="2"
-          :height="2"
-          :color="colors.turquoise"
-          :stroke-width="0"
-        />
-        <span class="chosen-coordinates">
-          <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
-            v-model=degrees[1]
-            type="number"
-          />
-          <span class="degrees" v-show="isDegrees">°E</span>
-        <span class="degrees" v-show="!isDegrees">m</span>
-        </span>
-        <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
-          <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
-            v-model=minutes[1]
-            type="number"
-          />
-          <span class="degrees">'</span>
-        </span>
-        <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
-          <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
-            v-model=seconds[1]
-            type="number"
-          />
-          <span class="degrees">"</span>
-        </span>
-      </span>
-      <span :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}" v-show = "is3D">
+      <!-- </div>
+      <div class="first-input"> -->
+      <span class="third-input" :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}" v-show = "is3D">
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -277,7 +285,7 @@ export default {
     const seconds = ref([0, 0])
     const meters = ref(0)
     const is3D = ref(true)
-    const isDegrees = ref(false)
+    const isDegrees = ref(true)
     const selected = ref('')
     // Smuksering af inputkoordinaterne i de tre til syv tastefelter
     const setInput = () => {
@@ -466,19 +474,20 @@ ul {
 }
 .chosen-coordinates {
   border-bottom: var(--action) solid 1px;
-  box-sizing: border-box;
-  margin: 0 0.5rem 0 0;
+  display: flex;
+  flex: 1;
+  margin-right: 1rem;
   padding-bottom: 0.25rem;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
-  margin: 0;
 }
 input {
   -moz-appearance: textfield;
   border: none;
-  width: 88%;
+  display: flex;
+  flex: 1;
 }
 .arrow-icon-x-coordinate {
   transform: rotate(90deg);
@@ -519,49 +528,31 @@ input[type=radio] {
   width: 100%;
   margin-top: 1rem;
 }
-.degreesInput {
-  width: 88%;
-}
-.metresInput {
-  width: 43%;
-}
-.secondsInput {
-  width: 28%;
-}
 .isDegreesInput {
-  display: block;
+  margin-top: 0.25rem;
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
 }
 .isMetresInput {
   margin-top: 0.25rem;
   display: inline-flex;
-  width: 32.5%;
+  width: 33.33%;
   align-items: center;
 }
-.chosen-coordinates {
-  width: 100%;
-}
 @media screen and (max-width: 1180px) {
-  .degreesInput {
-    width: 80%;
-  }
   .metresInput {
-    width: 38%;
+    width: 1%;
   }
   .secondsInput {
-    width: 24%;
-  }
-  .first-input, .second-input, .third-input {
-    display: block;
+    width: 1%;
   }
   .footer {
-    display: block;
+    display: inline-block;
   }
   .searchbar {
     margin-bottom: 1.5rem;
     width: 100%;
-  }
-  input {
-    width: 78%;
   }
 }
 </style>

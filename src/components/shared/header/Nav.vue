@@ -1,20 +1,20 @@
 <template>
   <ul v-show="window.width > 770 || (burgerClicked && window.width < 770)" class="nav" :class="{'mobile-ul': burgerClicked}">
-    <li>
+    <li @click="handleClick">
       <router-link to="/Denmark">
         <h6>
           Danmark
         </h6>
       </router-link>
     </li>
-    <li>
+    <li @click="handleClick">
       <router-link to="/Greenland">
         <h6>
           Grønland
         </h6>
       </router-link>
     </li>
-    <li>
+    <li @click="handleClick">
       <router-link to="/About">
         <h6>
           Om Koordinattransformation
@@ -133,13 +133,6 @@ h6 {
     width: 100%;
     padding: 0;
     margin: 0.5rem 0.5rem 0.5rem 0;
-  }
-  li > a:hover {
-    color: var(--action);
-    box-shadow: 0 -4px 0 var(--action) inset;
-  }
-  .router-link-active {
-    box-shadow: none;
   }
   ul {
     display: none;

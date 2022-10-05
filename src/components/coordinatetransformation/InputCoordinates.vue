@@ -536,7 +536,7 @@ input[type=radio] {
 }
 .first-input, .second-input, .third-input {
   width: 100%;
-  flex-grow: 1;
+  /* flex-grow: 1; */
 }
 .input .isMetresInput {
   flex-grow: 1;

@@ -179,7 +179,7 @@ export default {
             olMap.value.addOverlay(overlay)
           }, timeout)
           // Lyt efter brugerklik på kortet med kortmarkøren og foretag evt. transformation
-          olMap.value.on('click', () => {
+          olMap.value.on(['click', 'ontouchstart'], () => {
             let mpos = document.getElementById('mouse-position')
             mpos = mpos.textContent.split(', ')
             // Transformér kun hvis EPSG-koderne er forskellige

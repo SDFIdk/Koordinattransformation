@@ -427,7 +427,7 @@ export default {
     })
     // Højdeparameteren til 3D-projektering er særskildt.
     watch(meters, () => {
-      meters.value -= 0
+      // meters.value -= 0
       inputCoords.value = [inputCoords.value[0], inputCoords.value[1], meters.value]
     })
     // Gør CoordinateTransformation opmærksom på ændringer i inputkoordinaterne,

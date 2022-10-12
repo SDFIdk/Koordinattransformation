@@ -368,7 +368,8 @@ label {
   padding-left: 0.5rem;
   width: 100%;
   height: 2.5rem;
-  display: inline-flex;
+  display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   background-color: var(--white);
   border: var(--darkSteel) solid 1px;

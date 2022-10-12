@@ -365,11 +365,11 @@ label {
 }
 .transformed-coordinates {
   margin-top: 0.5rem;
+  padding-left: 0.5rem;
   width: 100%;
   height: 2.5rem;
   display: inline-flex;
   align-items: center;
-  padding-left: 1rem;
   background-color: var(--white);
   border: var(--darkSteel) solid 1px;
 }

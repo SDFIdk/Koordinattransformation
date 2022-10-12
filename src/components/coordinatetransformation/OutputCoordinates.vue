@@ -12,7 +12,9 @@ lear<template>
         <Loader size="1.5" :isLoading=isLoading />
       </span>
       <span v-else>
-        {{ output }}
+        {{ output1 }}
+        {{ output2 }}
+        {{ output3 }}
       </span>
     </div>
     <article class="footer">
@@ -163,7 +165,7 @@ export default {
     // Mulighed for at kopiere outputtet efter transformation
     copyCoordinates () {
       if (this.outputSelected && !this.isLoading) {
-        navigator.clipboard.writeText(this.output)
+        navigator.clipboard.writeText(this.output1 + this.output2 + this.output3)
         this.$emit('coordinates-copied', true)
         window.setTimeout(() => {
           this.$emit('coordinates-copied', false)
@@ -215,33 +217,49 @@ export default {
     const secondsChecked = ref(false)
     const outputSelected = ref(false)
     const outputCoords = ref([0, 0, 0])
-    const output = ref('')
+    const output1 = ref('')
+    const output2 = ref('')
+    const output3 = ref('')
     const hasTransformed = ref(false)
     const isLoading = ref(false)
     const isMetres = ref(true)
     const hover = ref(false)
     // Smuksering af outputtet
     const setOutput = () => {
-      let res = ''
+      let res1 = ''
+      let res2 = ''
+      let res3 = ''
       const d3 = outputCoords.value[2].toFixed(2)
       if (isMetres.value) {
         const d1 = outputCoords.value[0].toFixed(4)
         const d2 = outputCoords.value[1].toFixed(4)
-        res = d1 + ' m, ' + d2 + ' m'
-        if (props.is3D) res += ', ' + d3 + ' m'
+        res1 = d1 + ' m, '
+        res2 = d2 + ' m'
+        if (props.is3D) {
+          res2 += ', '
+          res3 = d3 + ' m'
+        }
       } else {
         if (degreesChecked.value) {
           const d1 = outputCoords.value[0].toFixed(4)
           const d2 = outputCoords.value[1].toFixed(4)
-          res = d1 + ' °N, ' + d2 + ' °E'
-          if (props.is3D) res += ', ' + d3 + ' m'
+          res1 = d1 + ' °N, '
+          res2 = d2 + ' °E'
+          if (props.is3D) {
+            res2 += ', '
+            res3 = d3 + ' m'
+          }
         } else if (minutesChecked.value) {
           const d1 = Math.floor(outputCoords.value[0])
           const d2 = Math.floor(outputCoords.value[1])
           const m1 = ((outputCoords.value[0] - d1) * 60).toFixed(4)
           const m2 = ((outputCoords.value[1] - d2) * 60).toFixed(4)
-          res = d1 + ' ° ' + m1 + '\' N, ' + d2 + ' ° ' + m2 + ' \' E'
-          if (props.is3D) res += ', ' + d3 + ' m'
+          res1 = d1 + ' ° ' + m1 + '\' N, '
+          res2 = d2 + ' ° ' + m2 + ' \' E'
+          if (props.is3D) {
+            res2 += ', '
+            res3 = d3 + ' m'
+          }
         } else {
           const d1 = Math.floor(outputCoords.value[0])
           const d2 = Math.floor(outputCoords.value[1])
@@ -249,8 +267,12 @@ export default {
           const m2 = Math.floor((outputCoords.value[1] - d2) * 60)
           const s1 = ((outputCoords.value[0] - d1 - m1 / 60) * 3600).toFixed(4)
           const s2 = ((outputCoords.value[1] - d2 - m2 / 60) * 3600).toFixed(4)
-          res = d1 + '° ' + m1 + '\' ' + s1 + '" N, ' + d2 + '° ' + m2 + '\' ' + s2 + '" E'
-          if (props.is3D) res += ', ' + d3 + ' m'
+          res1 = d1 + '° ' + m1 + '\' ' + s1 + '" N, '
+          res2 = d2 + '° ' + m2 + '\' ' + s2 + '" E'
+          if (props.is3D) {
+            res2 += ', '
+            res3 = d3 + ' m'
+          }
         }
       }
       // Et lille "loader"-icon, der skal gøre brugeren opmærksom på,
@@ -258,7 +280,9 @@ export default {
       isLoading.value = true
       setTimeout(() => {
         isLoading.value = false
-        output.value = res
+        output1.value = res1
+        output2.value = res2
+        output3.value = res3
       }, 500)
     }
     const error = err => {
@@ -313,7 +337,9 @@ export default {
       isLoading,
       transform,
       setOutput,
-      output,
+      output1,
+      output2,
+      output3,
       hover,
       isMetres
     }
@@ -367,8 +393,8 @@ label {
   margin-top: 0.5rem;
   padding-left: 0.5rem;
   width: 100%;
-  height: 2.5rem;
-  display: flex;
+  height: 3rem;
+  display: inline-flex;
   flex-wrap: nowrap;
   align-items: center;
   background-color: var(--white);
@@ -426,11 +452,6 @@ input[type=radio]:checked {
 .copy-icon {
   margin-left: 0.75rem;
 }
-@media screen and (max-width: 904px) {
-  .transformed-coordinates {
-    /* height: 2.5rem; */
-  }
-}
 @media screen and (max-width: 828px) {
   .info-icon {
     display: none;
@@ -439,9 +460,6 @@ input[type=radio]:checked {
 @media screen and (max-width: 703px) {
   .info-icon {
     display: inline;
-  }
-  .transformed-coordinates {
-    /* height: 3rem; */
   }
 }
 @media screen and (max-width: 410px) {

@@ -9,7 +9,16 @@
     <div class="input">
       <!-- <div class="first-input"> -->
         <span class="first-input" :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
-          <Icon
+          <!-- Ombyt ikoner ved decimalgrader -->
+          <Icon v-if="isDegrees"
+            icon="ArrowIcon"
+            :width="2"
+            :height="2"
+            :color="colors.turquoise"
+            :stroke-width="0"
+            class="arrow-icon"
+          />
+          <Icon v-else
             icon="ArrowIcon"
             :width="2"
             :height="2"
@@ -22,6 +31,7 @@
               class="coordinates"
               :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
               type="number"
+              step="0.0001"
               v-model=degrees[0]
             />
             <span class="unit" v-show="isDegrees">°N</span>
@@ -33,6 +43,7 @@
               :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
               v-model=minutes[0]
               type="number"
+              step="0.0001"
             />
             <span class="degrees">'</span>
           </span>
@@ -42,6 +53,7 @@
               :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
               v-model=seconds[0]
               type="number"
+              step="0.0001"
             />
             <span class="degrees">"</span>
           </span>
@@ -49,18 +61,29 @@
       <!-- </div>
       <div class="second-input"> -->
         <span class="second-input" :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
-          <Icon
+          <!-- Ombyt ikoner ved decimalgrader -->
+          <Icon v-if="isDegrees"
             icon="ArrowIcon"
             :width="2"
             :height="2"
             :color="colors.turquoise"
             :stroke-width="0"
+            class="arrow-icon arrow-icon-x-coordinate"
+          />
+          <Icon v-else
+            icon="ArrowIcon"
+            :width="2"
+            :height="2"
+            :color="colors.turquoise"
+            :stroke-width="0"
+            class="arrow-icon"
           />
           <span class="chosen-coordinates">
             <input
               :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
               v-model=degrees[1]
               type="number"
+              step="0.0001"
             />
             <span class="degrees" v-show="isDegrees">°E</span>
           <span class="degrees" v-show="!isDegrees">m</span>
@@ -70,6 +93,7 @@
               :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
               v-model=minutes[1]
               type="number"
+              step="0.0001"
             />
             <span class="degrees">'</span>
           </span>
@@ -78,6 +102,7 @@
               :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
               v-model=seconds[1]
               type="number"
+              step="0.0001"
             />
             <span class="degrees">"</span>
           </span>
@@ -98,6 +123,7 @@
           :class="{degreesInput: true}"
           v-model=meters
           type="number"
+          step="0.0001"
         />
         <span class="degrees">m</span>
         </span>

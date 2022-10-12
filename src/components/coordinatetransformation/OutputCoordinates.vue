@@ -8,14 +8,14 @@ lear<template>
         @output-selected="outputSelectedMethod"/>
     </section>
     <div class="transformed-coordinates" :class="{ hasTransformed: hasTransformed}">
-      <span v-if="isLoading">
+      <div v-if="isLoading">
         <Loader size="1.5" :isLoading=isLoading />
-      </span>
-      <span v-else>
-        {{ output1 }}
-        {{ output2 }}
-        {{ output3 }}
-      </span>
+      </div>
+      <div v-else>
+        <div class="output-coordinates">{{ output1 }}</div>
+        <div class="output-coordinates">{{ output2 }} </div>
+        <div class="output-coordinates">{{ output3 }}</div>
+      </div>
     </div>
     <article class="footer">
       <div class="radio-and-info-group">
@@ -405,9 +405,8 @@ label {
   margin-top: 0.5rem;
   padding-left: 0.5rem;
   width: 100%;
-  height: 3rem;
-  display: inline-flex;
-  flex-wrap: nowrap;
+  height: 2.5rem;
+  display: flex;
   align-items: center;
   background-color: var(--white);
   border: var(--darkSteel) solid 1px;
@@ -418,6 +417,10 @@ label {
 }
 .transformed-coordinates::selection {
   background: var(--highlight2);
+}
+.output-coordinates {
+  display: inline-flex;
+  margin-right: 0.25rem;
 }
 .copy-btn {
   background-color: var(--lightSteel);

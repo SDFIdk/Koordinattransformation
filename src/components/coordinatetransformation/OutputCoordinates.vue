@@ -238,6 +238,8 @@ export default {
         if (props.is3D) {
           res2 += ', '
           res3 = d3 + ' m'
+        } else {
+          res3 = ''
         }
       } else {
         if (degreesChecked.value) {
@@ -248,6 +250,8 @@ export default {
           if (props.is3D) {
             res2 += ', '
             res3 = d3 + ' m'
+          } else {
+            res3 = ''
           }
         } else if (minutesChecked.value) {
           const d1 = Math.floor(outputCoords.value[0])
@@ -259,6 +263,8 @@ export default {
           if (props.is3D) {
             res2 += ', '
             res3 = d3 + ' m'
+          } else {
+            res3 = ''
           }
         } else {
           const d1 = Math.floor(outputCoords.value[0])
@@ -272,8 +278,14 @@ export default {
           if (props.is3D) {
             res2 += ', '
             res3 = d3 + ' m'
+          } else {
+            res3 = ''
           }
         }
+      }
+      // Opdater kun hvis der er sket noget nyt
+      if (output1.value === res1 && output2.value === res2 && output3.value === res3) {
+        return
       }
       // Et lille "loader"-icon, der skal gøre brugeren opmærksom på,
       // at der altså fortages en transformation.

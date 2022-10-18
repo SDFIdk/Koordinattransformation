@@ -27,10 +27,13 @@ ol > li {
     margin-left: 10px;
 }
 .container {
-  margin: 2rem 0 0 5rem;
+  margin: 2rem 0 0 2rem;
 }
 h1, h2, h3, h4, h5, h6 {
   margin: 1.25rem;
+}
+h1 {
+  font-size: 30px;
 }
 h3 {
   margin: 1.5rem 1.25rem;

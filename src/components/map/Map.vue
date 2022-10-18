@@ -179,9 +179,8 @@ export default {
             olMap.value.addOverlay(overlay)
           }, timeout)
           // Lyt efter brugerklik på kortet med kortmarkøren og foretag evt. transformation
-          olMap.value.on('click', () => {
-            let mpos = document.getElementById('mouse-position')
-            mpos = mpos.textContent.split(', ')
+          olMap.value.on('click', e => {
+            const mpos = olMap.value.getEventCoordinate(e.originalEvent)
             // Transformér kun hvis EPSG-koderne er forskellige
             if (mapProjection !== inputEPSG.value) {
               store.dispatch('trans/get', mapProjection + '/' + inputEPSG.value + '/' + mpos[0] + ',' + mpos[1])
@@ -253,11 +252,12 @@ expand-icon {
 }
 .olmap {
   width: 100%;
-  height: 90vh;
+  height: 93.5vh;
+  box-sizing: border-box;
   position: sticky;
   top: 0;
   z-index: 0;
-  overflow-y: scroll;
+  overflow: auto;
 }
 #coordinate-transform {
   width: 100%;

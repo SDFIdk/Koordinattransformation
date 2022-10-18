@@ -1,6 +1,6 @@
 # Koordinattransformation 
 
-Koordinattransformation Vue.js application.
+Koordinattransformation er en Vue.js applikation der gør det let at transformere koordinater mellem forskellige referencesystemer.
 
 ## Project setup
 ```

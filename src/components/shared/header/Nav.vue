@@ -1,5 +1,5 @@
 <template>
-  <ul v-show="window.width > 770 || (burgerClicked && window.width < 770)" class="nav" :class="{'mobile-ul': burgerClicked}">
+  <ul v-show="window.width > minWidth || (burgerClicked && window.width < minWidth)" class="nav" :class="{'mobile-ul': burgerClicked}">
     <li @click="handleClick">
       <router-link to="/Denmark">
         <h6>
@@ -22,7 +22,7 @@
       </router-link>
     </li>
   </ul>
-  <div v-show="window.width < 770" @click="handleClick">
+  <div v-show="window.width < minWidth" @click="handleClick">
     <Icon
       :width="3"
       :height="3"
@@ -51,7 +51,9 @@ export default {
       window: {
         width: 0,
         height: 0
-      }
+      },
+
+      minWidth: 880
     }
   },
   created () {
@@ -80,6 +82,7 @@ export default {
 }
 .burger-icon {
   margin: 0.5rem 0 0 0;
+  cursor: pointer;
 }
 .nav {
   margin: 0.5rem 0;

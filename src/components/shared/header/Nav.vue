@@ -125,7 +125,7 @@ h6 {
   padding: 0.5rem;
 }
 
-@media only screen and (max-width: 770px) {
+@media only screen and (max-width: 880px) {
   .menuDropDown {
     position: absolute;
     display: block;

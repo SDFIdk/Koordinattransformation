@@ -35,7 +35,7 @@
               v-model=degrees[0]
             />
             <span class="unit" v-show="isDegrees">°N</span>
-          <span class="unit" v-show="!isDegrees">m</span>
+            <span class="unit" v-show="!isDegrees">m</span>
           </span>
           <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
             <input
@@ -214,9 +214,11 @@ import { useStore } from 'vuex'
 
 export default {
   name: 'InputCoordinates',
+
   components: {
     CoordinateSelection: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateSelection'))
   },
+
   methods: {
     // UTranformation af inputkoordinaterne, når brugeren vælger ny EPSG
     inputEPSGChanged (code) {
@@ -264,12 +266,14 @@ export default {
           })
       }
     },
+
     // Formatknapperne virker kun ved DMS
     disableRadioButtons () {
       this.degreesChecked = false
       this.minutesChecked = false
       this.secondsChecked = false
     },
+
     checkDegrees () {
       if (!this.degreesChecked) {
         this.degreesChecked = true
@@ -278,6 +282,7 @@ export default {
         this.setInput()
       }
     },
+
     checkMinutes () {
       if (!this.minutesChecked) {
         this.degreesChecked = false
@@ -286,6 +291,7 @@ export default {
         this.setInput()
       }
     },
+
     checkSeconds () {
       if (!this.secondsChecked) {
         this.degreesChecked = false
@@ -295,6 +301,7 @@ export default {
       }
     }
   },
+
   setup (_props, { emit }) {
     const mapMarkerInputCoords = inject('mapMarkerInputCoords')
     const inputCoords = ref(mapMarkerInputCoords.value)
@@ -344,6 +351,7 @@ export default {
         seconds.value[1] = sec1
       }
     }
+
     // Beder CoordinateTransformation om at vise en fejlmeddelselse
     // med beskeden 'err' i tre sekunder.
     const error = err => {
@@ -352,6 +360,7 @@ export default {
         emit('error-occurred', false)
       }, 3000)
     }
+
     onMounted(() => {
       // Søgefeltet til indtastning af addresser (DAWA)
       inputEPSG.value = inject('inputEPSG')
@@ -397,12 +406,14 @@ export default {
       })
     })
     setInput()
+
     // Hold øje med kortmarkørens placering,
     // så inputkoordinaterne kan opdateres.
     watch(mapMarkerInputCoords, () => {
       inputCoords.value = mapMarkerInputCoords.value
       setInput()
     })
+
     // Hold øje med de tastefelterne til inputkoordinater,
     // skulle brugeren vælge at indtaste koordinaterne manuelt.
     watch([degrees.value, minutes.value, seconds.value], () => {
@@ -425,17 +436,20 @@ export default {
       }
       inputCoords.value = [v1, v2, meters.value]
     })
+
     // Højdeparameteren til 3D-projektering er særskildt.
     watch(meters, () => {
       // meters.value -= 0
       inputCoords.value = [inputCoords.value[0], inputCoords.value[1], meters.value]
     })
+
     // Gør CoordinateTransformation opmærksom på ændringer i inputkoordinaterne,
     // og om hvorvidt input EPGS-koden er i 3D eller 2D.
     onUpdated(() => {
       emit('is-3d-changed', is3D.value)
       emit('input-coords-changed', inputCoords.value)
     })
+
     return {
       inputCoords,
       colors,

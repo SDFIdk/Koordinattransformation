@@ -1,4 +1,4 @@
-lear<template>
+<template>
   <section class="output-coordinate">
     <h3>Output</h3>
     <section class="coordinate-selection-wrapper">
@@ -122,6 +122,7 @@ import { useStore } from 'vuex'
 
 export default {
   name: 'OutputCoordinates',
+
   props: {
     inputEPSG: {
       type: String,
@@ -129,12 +130,14 @@ export default {
         return ''
       }
     },
+
     is3D: {
       type: Boolean,
       default () {
         return true
       }
     },
+
     inputCoords: {
       type: Array,
       default () {
@@ -142,16 +145,19 @@ export default {
       }
     }
   },
+
   components: {
     CoordinateSelection: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateSelection')),
     Loader: defineAsyncComponent(() => import('@/components/shared/Loader'))
   },
+
   methods: {
     // En output-EPSG er valgt: Der skal foretages transformation,
     // og brugergrænsefladen opdateres ift. om output EPSG-koden er i meter eller DMS og 2D eller 3D
     outputSelectedMethod (code) {
       if (code.v1_unit === 'metre') {
         this.isMetres = true
+        // TODO: this should hide the radio buttons entirely
         this.disableRadioButtons()
       } else {
         this.isMetres = false
@@ -162,6 +168,7 @@ export default {
       this.hasTransformed = true
       this.transform()
     },
+
     // Mulighed for at kopiere outputtet efter transformation
     copyCoordinates () {
       if (this.outputSelected && !this.isLoading) {
@@ -172,6 +179,7 @@ export default {
         }, 3333)
       }
     },
+
     // Formatknapperne skal kun være aktive,
     // hvis EPSG-enheden også er i decimalgrader - ikke meter
     disableRadioButtons () {
@@ -179,18 +187,21 @@ export default {
       this.minutesChecked = false
       this.secondsChecked = false
     },
+
     checkDegrees () {
       this.degreesChecked = true
       this.minutesChecked = false
       this.secondsChecked = false
       this.setOutput()
     },
+
     checkMinutes () {
       this.degreesChecked = false
       this.minutesChecked = true
       this.secondsChecked = false
       this.setOutput()
     },
+
     checkSeconds () {
       this.degreesChecked = false
       this.minutesChecked = false
@@ -198,6 +209,7 @@ export default {
       this.setOutput()
     }
   },
+
   watch: {
     // Holder øje med inputkoordinaterne og transformerer kun,
     // hvis der også er valgt en EPSG-kode for outputtet.
@@ -208,6 +220,7 @@ export default {
       }
     }
   },
+
   setup (props, { emit }) {
     const store = useStore()
     const colors = inject('themeColors')
@@ -297,12 +310,14 @@ export default {
         output3.value = res3
       }, 500)
     }
+
     const error = err => {
       emit('error-occurred', true, err)
       setTimeout(() => {
         emit('error-occurred', false)
       }, 4000)
     }
+
     const transform = () => {
       if (!hasTransformed.value) return
       if (props.is3D) {
@@ -310,6 +325,7 @@ export default {
           outputCoords.value = props.inputCoords
           setOutput()
         }
+
         store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
           .then(() => {
             const output = store.state.trans.data
@@ -317,6 +333,7 @@ export default {
               error(output.message)
               return
             }
+
             outputCoords.value[0] = parseFloat(output.v1)
             outputCoords.value[1] = parseFloat(output.v2)
             outputCoords.value[2] = parseFloat(output.v3)
@@ -330,6 +347,7 @@ export default {
               error(output.message)
               return
             }
+
             outputCoords.value[0] = parseFloat(output.v1)
             outputCoords.value[1] = parseFloat(output.v2)
             setOutput()

@@ -14,18 +14,18 @@
         @coordinates-copied="coordinatesCopied"
         :is3D=is3D
       />
-      <menu-closer @handle-close="closeMenu" class="menu-closer"/>
+      <menu-closer class="menu-closer" @handle-close="closeMenu"/>
     </article>
     <div v-if="popupVisible" class="message">Koordinater kopieret</div>
     <div v-if="mapErrorVisible" class="message">{{ mapError }}</div>
     <div v-if="errorVisible" class="message">{{ error }}</div>
   </section>
-  <menu-closer v-show="menuClosed && window.width < 703" @handle-close="closeMenu" class="menu-closed"/>
+  <menu-closer class="menu-closed" v-show="menuClosed && window.width < 703" @handle-close="closeMenu" />
 </template>
 
 <script>
 /**
- * CoordinateTransformation er foreældre til input- og outputkomponenterne samt barn til Map-komponentet.
+ * CoordinateTransformation er forældre til input- og outputkomponenterne samt barn til Map-komponentet.
  * Den er bindeled og står for koordinering mellem de tre komponenter:
  * Når brugeren klikker på kortet i Map, skal både Input og Output vide det.
  * Og når en EPSG-koden eller koordinatsættet ændres i Input, skal Output vide dette for at

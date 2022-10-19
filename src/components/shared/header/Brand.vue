@@ -20,22 +20,12 @@
   </router-link>
 </template>
 
-<script>
-export default {
-  name: 'HeaderBrandComponent',
+<script setup>
+const isHovering = false
 
-  data () {
-    return {
-      isHovering: false
-    }
-  },
-
-  methods: {
-    clearFilters () {
-      window.location.replace(window.location.protocol + '//' + window.location.host)
-      // this.$store.dispatch('Filters/clear')
-    }
-  }
+function clearFilters () {
+  window.location.replace(window.location.protocol + '//' + window.location.host)
+  // this.$store.dispatch('Filters/clear')
 }
 </script>
 

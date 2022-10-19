@@ -1,36 +1,37 @@
 <template>
-  <ul v-show="window.width > minWidth || (burgerClicked && window.width < minWidth)" class="nav" :class="{'mobile-ul': burgerClicked}">
-    <li @click="handleClick">
-      <router-link to="/Denmark">
+  <ul
+    v-show='window.width > minWidth || (burgerClicked && window.width < minWidth)'
+    class='nav'
+    :class="{'menuDropDown': burgerClicked}">
+    <li @click='handleClick'>
+      <router-link to='/Denmark'>
         <h6>
           Danmark
         </h6>
       </router-link>
     </li>
-    <li @click="handleClick">
-      <router-link to="/Greenland">
+    <li @click='handleClick'>
+      <router-link to='/Greenland'>
         <h6>
           Grønland
         </h6>
       </router-link>
     </li>
-    <li @click="handleClick">
-      <router-link to="/About">
+    <li @click='handleClick'>
+      <router-link to='/About'>
         <h6>
           Om Koordinattransformation
         </h6>
       </router-link>
     </li>
   </ul>
-  <div v-show="window.width < minWidth" @click="handleClick">
-    <Icon
-      :width="3"
-      :height="3"
-      :color="colors.black"
-      icon="BurgerIcon"
-      class="burger-icon"
+    <Icon v-show='window.width < minWidth' @click='handleClick'
+      :width='3'
+      :height='3'
+      :color='colors.black'
+      icon='BurgerIcon'
+      class='burger-icon'
     />
-  </div>
 </template>
 
 <script>
@@ -38,6 +39,7 @@ import { inject, ref } from 'vue'
 
 export default {
   name: 'HeaderNavComponent',
+
   setup () {
     const colors = inject('themeColors')
     const burgerClicked = ref(false)
@@ -46,6 +48,7 @@ export default {
       burgerClicked
     }
   },
+
   data () {
     return {
       window: {
@@ -56,19 +59,23 @@ export default {
       minWidth: 880
     }
   },
+
   created () {
     window.addEventListener('resize', this.handleResize)
     this.handleResize()
   },
+
   methods: {
     handleResize () {
       this.window.width = window.innerWidth
       this.window.height = window.innerHeight
     },
+
     handleClick () {
       this.burgerClicked = !this.burgerClicked
     }
   },
+
   provide () {
     return window
   }
@@ -119,7 +126,7 @@ h6 {
 }
 
 @media only screen and (max-width: 770px) {
-  .mobile-ul {
+  .menuDropDown {
     position: absolute;
     display: block;
     overflow: auto;

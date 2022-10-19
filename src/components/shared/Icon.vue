@@ -28,44 +28,55 @@ import { defineAsyncComponent } from 'vue'
 
 export default {
   name: 'IconWrapperComponent',
+
   props: {
     width: {
       type: [Number, String],
       default: 3
     },
+
     height: {
       type: [Number, String],
       default: 3
     },
+
     color: {
       type: String,
       default: '#FFF'
     },
+
     strokeWidth: {
       type: [Number, String],
       default: 0.3
     },
+
     icon: {
       type: String,
       default: 'NoIcon'
     },
+
     borderColor: {
       type: String
     },
+
     borderFillColor: {
       type: String
     }
   },
+
   computed: {
     iconName () {
       return this.icon
     },
+
     rootFontSize () {
       return parseFloat(getComputedStyle(document.documentElement).fontSize) ?? 16
     },
+
     component () {
       return defineAsyncComponent(() => import('@/components/shared/icons/' + this.icon))
     },
+
     borderStyle () {
       return {
         'border-radius': (this.width * this.rootFontSize / 2) + 'px',
@@ -76,6 +87,7 @@ export default {
         height: (this.height * this.rootFontSize) + 'px'
       }
     },
+
     borderFillStyle () {
       return this.borderFillColor
         ? {

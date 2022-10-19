@@ -1,36 +1,37 @@
 <template>
-  <ul v-show="window.width > 770 || (burgerClicked && window.width < 770)" class="nav" :class="{'mobile-ul': burgerClicked}">
-    <li @click="handleClick">
-      <router-link to="/Denmark">
+  <ul
+    v-show='window.width > minWidth || (burgerClicked && window.width < minWidth)'
+    class='nav'
+    :class="{'menuDropDown': burgerClicked}">
+    <li @click='handleClick'>
+      <router-link to='/Denmark'>
         <h6>
           Danmark
         </h6>
       </router-link>
     </li>
-    <li @click="handleClick">
-      <router-link to="/Greenland">
+    <li @click='handleClick'>
+      <router-link to='/Greenland'>
         <h6>
           Grønland
         </h6>
       </router-link>
     </li>
-    <li @click="handleClick">
-      <router-link to="/About">
+    <li @click='handleClick'>
+      <router-link to='/About'>
         <h6>
           Om Koordinattransformation
         </h6>
       </router-link>
     </li>
   </ul>
-  <div v-show="window.width < 770" @click="handleClick">
-    <Icon
-      :width="3"
-      :height="3"
-      :color="colors.black"
-      icon="BurgerIcon"
-      class="burger-icon"
+    <Icon v-show='window.width < minWidth' @click='handleClick'
+      :width='3'
+      :height='3'
+      :color='colors.black'
+      icon='BurgerIcon'
+      class='burger-icon'
     />
-  </div>
 </template>
 
 <script>
@@ -38,6 +39,7 @@ import { inject, ref } from 'vue'
 
 export default {
   name: 'HeaderNavComponent',
+
   setup () {
     const colors = inject('themeColors')
     const burgerClicked = ref(false)
@@ -46,27 +48,34 @@ export default {
       burgerClicked
     }
   },
+
   data () {
     return {
       window: {
         width: 0,
         height: 0
-      }
+      },
+
+      minWidth: 880
     }
   },
+
   created () {
     window.addEventListener('resize', this.handleResize)
     this.handleResize()
   },
+
   methods: {
     handleResize () {
       this.window.width = window.innerWidth
       this.window.height = window.innerHeight
     },
+
     handleClick () {
       this.burgerClicked = !this.burgerClicked
     }
   },
+
   provide () {
     return window
   }
@@ -80,6 +89,7 @@ export default {
 }
 .burger-icon {
   margin: 0.5rem 0 0 0;
+  cursor: pointer;
 }
 .nav {
   margin: 0.5rem 0;
@@ -115,8 +125,8 @@ h6 {
   padding: 0.5rem;
 }
 
-@media only screen and (max-width: 770px) {
-  .mobile-ul {
+@media only screen and (max-width: 880px) {
+  .menuDropDown {
     position: absolute;
     display: block;
     overflow: auto;

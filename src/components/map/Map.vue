@@ -49,9 +49,11 @@ import { useStore } from 'vuex'
 
 export default {
   name: 'MapComponent',
+
   components: {
     CoordinateTransformation: defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateTransformation'))
   },
+
   props: {
     isDenmark: {
       type: Boolean,
@@ -60,9 +62,10 @@ export default {
       }
     }
   },
+
   methods: {
     // Hvis inputkoordinaterne ændres, skal markøren også flyttes
-    inputCoordsChanged (coords) {
+    OnInputCoordsChanged (coords) {
       if (this.inputEPSG !== this.mapProjection) {
         this.store.dispatch('trans/get', this.inputEPSG + '/' + this.mapProjection + '/' + coords[0] + ',' + coords[1])
           .then(() => {
@@ -81,15 +84,18 @@ export default {
           element: pinnedMarker,
           positioning: 'center-center'
         })
+
         overlay.setPosition([coords[0], coords[1]])
         this.olMap.addOverlay(overlay)
       }
     },
+
     // Holder øje med hvilken input EPSG-kode vi bruger i øjeblikket
-    inputEPSGChanged (epsg) {
+    OnInputEPSGChanged (epsg) {
       this.inputEPSG = epsg
     }
   },
+
   setup (props) {
     const store = useStore()
     const olView = ref({})
@@ -106,7 +112,9 @@ export default {
     const timeout = 500
     const error = ref('')
     const errorVisible = ref(false)
+
     provide('inputEPSG', inputEPSG.value)
+
     onMounted(() => {
       mousePositionControl = new MousePosition({
         coordinateFormat: createStringXY(4),
@@ -114,6 +122,7 @@ export default {
         className: 'custom-mouse-position',
         target: document.getElementById('mouse-position')
       })
+
       olView.value = new OlView({
         center: center,
         zoom: 9,
@@ -129,6 +138,7 @@ export default {
         showFullExtent: false,
         projection: mapProjection
       })
+
       // Vores eget kort (hvis Danmmark)
       fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${process.env.VUE_APP_TOKEN}`)
         .then(res => res.text())
@@ -145,6 +155,7 @@ export default {
               attribution: false,
               rotate: false
             }).extend([mousePositionControl, new FullScreen()]),
+
             zoom: new Zoom({
               duration: 700,
               className: 'custom-zoom',
@@ -155,7 +166,9 @@ export default {
               zoomInTipLabel: 'Zoom2',
               zoomOutTipLabel: 'Zoom2'
             }),
+
             view: olView.value,
+
             layers: props.isDenmark
               ? [
                   new TileLayer({
@@ -175,9 +188,12 @@ export default {
               element: pinnedMarker,
               positioning: 'center-center'
             })
+
             overlay.setPosition([center[0], center[1]])
+
             olMap.value.addOverlay(overlay)
           }, timeout)
+
           // Lyt efter brugerklik på kortet med kortmarkøren og foretag evt. transformation
           olMap.value.on('click', e => {
             const mpos = olMap.value.getEventCoordinate(e.originalEvent)
@@ -214,6 +230,7 @@ export default {
           })
         })
     })
+
     return {
       olMap,
       mousePositionControl,

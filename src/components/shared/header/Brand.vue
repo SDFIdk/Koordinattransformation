@@ -1,12 +1,11 @@
 <template>
-  <router-link @click="clearFilters"
-               to="/"
-               class="brand"
+  <router-link
+    @click="clearFilters"
+    to="/"
+    class="brand"
   >
     <Icon
         icon="KoorTransCrown"
-        :width="3"
-        :height="3"
         class="brand-logo cursor-point"
         @mouseenter.stop="isHovering = true"
         @mouseleave.stop="isHovering = false"
@@ -16,11 +15,7 @@
         @mouseenter.stop="isHovering = true"
         @mouseleave.stop="isHovering = false"
     >
-      <h5
-          class="cursor-point"
-      >
-        Koordinattransformation
-      </h5>
+      <h5 class="cursor-point">Koordinattransformation</h5>
     </div>
   </router-link>
 </template>
@@ -28,6 +23,7 @@
 <script>
 export default {
   name: 'HeaderBrandComponent',
+
   data () {
     return {
       isHovering: false
@@ -44,6 +40,7 @@ export default {
 </script>
 
 <style scoped>
+
 .brand {
   padding-top: 0.5rem;
   display: flex;
@@ -52,6 +49,8 @@ export default {
 }
 
 .brand-logo {
+  width: 3;
+  height: 3;
   flex-shrink: 0;
 }
 

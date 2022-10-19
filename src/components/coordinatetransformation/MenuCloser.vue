@@ -1,6 +1,6 @@
 <template>
   <div class="content" @click="handleClose">
-    <div class="lines"></div>
+    <div class="lines"></div> <!-- TODO: remake this into an icon? -->
   </div>
 </template>
 
@@ -8,6 +8,7 @@
 /**
  * Dette er blot til at lukke/åbne menuen,
  * når applikationen er i på mobil
+ * TODO: would like to have an animation
  */
 export default {
   name: 'MenuCloser',
@@ -34,5 +35,6 @@ export default {
     width: 3rem;
     border-bottom: 2px solid var(--action);
     border-top: 2px solid var(--action);
+    cursor: pointer;
   }
 </style>

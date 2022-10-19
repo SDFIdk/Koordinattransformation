@@ -69,6 +69,7 @@ import { useRoute } from 'vue-router'
 
 export default {
   name: 'CoordinateSelectionComponent',
+
   props: {
     // Er vi i input- eller outputkomponentet?
     isOutput: {
@@ -78,6 +79,7 @@ export default {
       }
     }
   },
+
   methods: {
     outputSelected (code) {
       // Der styles forskelligt alt efter om en EPSG-kode i outputmenuen er valgt, eller ej
@@ -85,11 +87,13 @@ export default {
       this.outputNotSelected = false
       this.$emit('output-selected', code)
     },
+
     epsgChanged (code) {
       // Hvis af en EPSG-koderne ændres, skal der foretages en passende ændring af input- og/eller outputkoordinaterne
       this.$emit('epsg-changed', code)
     }
   },
+
   setup (props) {
     const colors = inject('themeColors')
     const crs = ref([])
@@ -99,6 +103,7 @@ export default {
     const filteredCRS = ref([])
     const inputActive = ref(false)
     const outputNotSelected = ref(true)
+
     onMounted(() => {
       // Vi genererer listen af EPSG-koder
       store.dispatch('CRS/clear')
@@ -107,6 +112,7 @@ export default {
         makeCRSList()
       })
     })
+
     const makeCRSList = async () => {
       const tempCRS = []
       // Der er forskellige lister for Danmark og Grøndland
@@ -118,6 +124,7 @@ export default {
               tempCRS.push(store.state.CRSInformation.data)
             })
         }
+
         for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
           await store
             .dispatch('CRSInformation/get', crs.value.Global[i])
@@ -150,6 +157,7 @@ export default {
           : filteredCRS.value[0].title
       }
     }
+
     return {
       colors,
       filteredCRS,

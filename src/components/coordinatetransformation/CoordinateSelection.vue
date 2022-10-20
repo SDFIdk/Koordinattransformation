@@ -216,7 +216,7 @@ export default {
   position: relative;
 }
 .selection-list {
-  height: 60vh;
+  height: 63vh;
   width: 100%;
   background: var(--white);
   position: absolute;

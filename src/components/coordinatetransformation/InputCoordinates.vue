@@ -136,7 +136,7 @@
           :stroke-width="0.75"
         />
       </div>
-      <div class="radiogroup" :class="{radioGroupDisabled: !isDegrees}">
+      <div class="radiogroup" v-show="isDegrees" :class="{radioGroupDisabled: !isDegrees}">
         <label class="radio" @click="checkDegrees">
           <input type="radio" name="date-format">
           <Icon v-show="degreesChecked"

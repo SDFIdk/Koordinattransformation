@@ -17,9 +17,9 @@
         <div class="output-coordinates">{{ output3 }}</div>
       </div>
     </div>
-    <article class="footer">
-      <div class="radio-and-info-group">
-        <div class="radiogroup"  :class="{radioGroupDisabled: isMetres}">
+    <article class="footer" :class="{isMetres: isMetres}">
+      <div class="radio-and-info-group" v-show="!isMetres">
+        <div class="radiogroup" :class="{radioGroupDisabled: isMetres}">
           <label class="radio" @click="checkDegrees">
             <input type="radio" name="date-format">
             <Icon v-show="degreesChecked"
@@ -297,9 +297,9 @@ export default {
         }
       }
       // Opdater kun hvis der er sket noget nyt
-      if (output1.value === res1 && output2.value === res2 && output3.value === res3) {
-        return
-      }
+      // if (output1.value === res1 && output2.value === res2 && output3.value === res3) {
+      //   return
+      // }
       // Et lille "loader"-icon, der skal gøre brugeren opmærksom på,
       // at der altså fortages en transformation.
       isLoading.value = true
@@ -320,12 +320,13 @@ export default {
 
     const transform = () => {
       if (!hasTransformed.value) return
+      if (props.inputEPSG === outputEPSG.value) {
+        outputCoords.value = props.inputCoords
+        setOutput()
+        return
+      }
       if (props.is3D) {
-        if (props.inputEPSG === outputEPSG.value) {
-          outputCoords.value = props.inputCoords
-          setOutput()
-        }
-
+        console.log(props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
         store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
           .then(() => {
             const output = store.state.trans.data
@@ -333,7 +334,6 @@ export default {
               error(output.message)
               return
             }
-
             outputCoords.value[0] = parseFloat(output.v1)
             outputCoords.value[1] = parseFloat(output.v2)
             outputCoords.value[2] = parseFloat(output.v3)
@@ -473,6 +473,9 @@ input[type=radio]:checked {
   justify-content: space-between;
   width: 100%;
   flex-wrap: nowrap;
+}
+.isMetres {
+  justify-content: end;
 }
 .radio-and-info-group {
   display: inline-flex;

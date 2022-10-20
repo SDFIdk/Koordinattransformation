@@ -83,6 +83,7 @@ main {
     overflow-y: auto;
     box-sizing: border-box;
     width: 75%;
+    max-height: 30vh;
 }
 
 .dawa-autocomplete-suggestions .dawa-autocomplete-suggestion {

@@ -1,26 +1,30 @@
 <template>
-  <section v-show="!menuClosed || window.width > 703" class="container">
-    <article class="coordinate-transformation-box" ref="mother">
-      <InputCoordinates class="input"
-        @input-epsg-changed="inputEPSGChanged"
-        @error-occurred="errorOccurred"
-        @input-coords-changed="inputCoordsChanged"
-        @is-3d-changed="is3DChanged"
-      />
-      <OutputCoordinates class="output"
-        :inputEPSG=inputEPSG
-        :inputCoords=inputCoords
-        @error-occurred="errorOccurred"
-        @coordinates-copied="coordinatesCopied"
-        :is3D=is3D
-      />
-      <menu-closer class="menu-closer" @handle-close="closeMenu"/>
-    </article>
-    <div v-if="popupVisible" class="message">Koordinater kopieret</div>
-    <div v-if="mapErrorVisible" class="message">{{ mapError }}</div>
-    <div v-if="errorVisible" class="message">{{ error }}</div>
-  </section>
-  <menu-closer class="menu-closed" v-show="menuClosed && window.width < 703" @handle-close="closeMenu" />
+  <Transition name="close">
+    <section v-if="!menuClosed" class="container">
+      <article class="coordinate-transformation-box" ref="mother">
+        <InputCoordinates class="input"
+          @input-epsg-changed="inputEPSGChanged"
+          @error-occurred="errorOccurred"
+          @input-coords-changed="inputCoordsChanged"
+          @is-3d-changed="is3DChanged"
+        />
+        <OutputCoordinates class="output"
+          :inputEPSG=inputEPSG
+          :inputCoords=inputCoords
+          @error-occurred="errorOccurred"
+          @coordinates-copied="coordinatesCopied"
+          :is3D=is3D
+        />
+        <menu-closer class="menu-closer" @handle-close="this.menuClosed = true"/>
+      </article>
+      <div v-if="popupVisible" class="message">Koordinater kopieret</div>
+      <div v-if="mapErrorVisible" class="message">{{ mapError }}</div>
+      <div v-if="errorVisible" class="message">{{ error }}</div>
+    </section>
+  </Transition>
+  <Transition name="open">
+    <menu-closer class="menu-closed" v-if="this.menuClosed" @handle-close="this.menuClosed = false" />
+  </Transition>
 </template>
 
 <script>
@@ -73,9 +77,6 @@ export default {
     coordinatesCopied (state) {
       this.popupVisible = state
     },
-    closeMenu () {
-      this.menuClosed = !this.menuClosed
-    },
     handleResize () {
       this.window.width = window.innerWidth
       this.window.height = window.innerHeight
@@ -111,6 +112,24 @@ export default {
 </script>
 
 <style scoped>
+.close-enter-active,
+.close-leave-active {
+  transition: all 1s ease-in-out;
+}
+.close-enter-from,
+.close-leave-to {
+  transform: translateY(-50vh);
+}
+.open-enter-active {
+  transition: all 1s step-end;
+}
+.open-leave-active {
+  transition: all 1s step-start;
+}
+.open-enter-from,
+.open-leave-to {
+  opacity: 0;
+}
 .container {
   display: flex;
   flex-direction: column;
@@ -121,7 +140,6 @@ export default {
   border: 2px solid var(-darkSteel);
   outline: 4px solid rgba(191, 223, 227, 0.7);
   border-radius: 25px;
-  overflow: visible;
   z-index: 1;
 }
 .message {

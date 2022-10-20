@@ -175,7 +175,6 @@ export default {
   padding-left: 0.25rem;
 }
 .coordinate-selection {
-  overflow: visible;
   width: 100%;
 }
 .selected-input {
@@ -217,12 +216,19 @@ export default {
   position: relative;
 }
 .selection-list {
+  height: 63vh;
   width: 100%;
+  background: var(--white);
   position: absolute;
   border: var(--darkSteel) solid 1px;
   border-radius: 0 0 25px 25px;
   z-index: 4;
-  background: var(--white);
+  overflow-y: auto;
+}
+@media screen and (max-width: 44rem) {
+  .selection-list {
+    height: 30vh;
+  }
 }
 .selection-list.isOutput {
   background: var(--lightSteel);

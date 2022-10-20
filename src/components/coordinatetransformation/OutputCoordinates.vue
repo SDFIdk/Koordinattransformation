@@ -17,9 +17,9 @@
         <div class="output-coordinates">{{ output3 }}</div>
       </div>
     </div>
-    <article class="footer">
-      <div class="radio-and-info-group">
-        <div class="radiogroup"  :class="{radioGroupDisabled: isMetres}">
+    <article class="footer" :class="{isMetres: isMetres}">
+      <div class="radio-and-info-group" v-show="!isMetres">
+        <div class="radiogroup" :class="{radioGroupDisabled: isMetres}">
           <label class="radio" @click="checkDegrees">
             <input type="radio" name="date-format">
             <Icon v-show="degreesChecked"
@@ -297,9 +297,9 @@ export default {
         }
       }
       // Opdater kun hvis der er sket noget nyt
-      if (output1.value === res1 && output2.value === res2 && output3.value === res3) {
-        return
-      }
+      // if (output1.value === res1 && output2.value === res2 && output3.value === res3) {
+      //   return
+      // }
       // Et lille "loader"-icon, der skal gøre brugeren opmærksom på,
       // at der altså fortages en transformation.
       isLoading.value = true
@@ -320,12 +320,14 @@ export default {
 
     const transform = () => {
       if (!hasTransformed.value) return
+      if (props.inputEPSG === outputEPSG.value) {
+        outputCoords.value[0] = props.inputCoords[0]
+        outputCoords.value[1] = props.inputCoords[1]
+        outputCoords.value[2] = props.inputCoords[2]
+        setOutput()
+        return
+      }
       if (props.is3D) {
-        if (props.inputEPSG === outputEPSG.value) {
-          outputCoords.value = props.inputCoords
-          setOutput()
-        }
-
         store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
           .then(() => {
             const output = store.state.trans.data
@@ -333,7 +335,6 @@ export default {
               error(output.message)
               return
             }
-
             outputCoords.value[0] = parseFloat(output.v1)
             outputCoords.value[1] = parseFloat(output.v2)
             outputCoords.value[2] = parseFloat(output.v3)
@@ -347,7 +348,6 @@ export default {
               error(output.message)
               return
             }
-
             outputCoords.value[0] = parseFloat(output.v1)
             outputCoords.value[1] = parseFloat(output.v2)
             setOutput()
@@ -383,7 +383,7 @@ export default {
   padding: 0;
 }
 .coordinate-selection-wrapper {
-  margin: 1.4rem 0 0.75rem 0;
+  margin-top: 1.4rem;
 }
 .v-enter-active,
 .v-leave-active {
@@ -420,9 +420,9 @@ label {
   background-color: var(--lightSteel);
 }
 .transformed-coordinates {
-  margin-top: 0.5rem;
+  margin: 1rem 0 1rem 0.25rem;
   padding-left: 0.5rem;
-  width: 100%;
+  width: 98.75%;
   height: 2.5rem;
   display: flex;
   align-items: center;
@@ -467,12 +467,14 @@ input[type=radio]:checked {
   pointer-events: none;
 }
 .footer {
-  margin-top: 1.25rem;
   align-items: center;
   display: inline-flex;
   justify-content: space-between;
   width: 100%;
   flex-wrap: nowrap;
+}
+.isMetres {
+  justify-content: end;
 }
 .radio-and-info-group {
   display: inline-flex;

@@ -129,7 +129,6 @@ h6 {
   .menuDropDown {
     position: absolute;
     display: block;
-    overflow: auto;
     z-index: 3;
     background: white;
     margin: 3.5rem 0 0 0;

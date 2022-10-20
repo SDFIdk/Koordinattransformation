@@ -2,7 +2,7 @@
     height: 100%;
     box-sizing: border-box;
     font-size: 16px !important;
-    overflow-y: auto;
+    overflow-y: hidden;
 }
 
 body {

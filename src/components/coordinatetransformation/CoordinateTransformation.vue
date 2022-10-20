@@ -121,7 +121,6 @@ export default {
   border: 2px solid var(-darkSteel);
   outline: 4px solid rgba(191, 223, 227, 0.7);
   border-radius: 25px;
-  overflow: visible;
   z-index: 1;
 }
 .message {

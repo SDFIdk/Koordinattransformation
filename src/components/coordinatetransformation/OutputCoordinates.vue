@@ -321,12 +321,13 @@ export default {
     const transform = () => {
       if (!hasTransformed.value) return
       if (props.inputEPSG === outputEPSG.value) {
-        outputCoords.value = props.inputCoords
+        outputCoords.value[0] = props.inputCoords[0]
+        outputCoords.value[1] = props.inputCoords[1]
+        outputCoords.value[2] = props.inputCoords[2]
         setOutput()
         return
       }
       if (props.is3D) {
-        console.log(props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
         store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
           .then(() => {
             const output = store.state.trans.data
@@ -347,7 +348,6 @@ export default {
               error(output.message)
               return
             }
-
             outputCoords.value[0] = parseFloat(output.v1)
             outputCoords.value[1] = parseFloat(output.v2)
             setOutput()
@@ -383,7 +383,7 @@ export default {
   padding: 0;
 }
 .coordinate-selection-wrapper {
-  margin: 1.4rem 0 0.75rem 0;
+  margin-top: 1.4rem;
 }
 .v-enter-active,
 .v-leave-active {
@@ -420,9 +420,9 @@ label {
   background-color: var(--lightSteel);
 }
 .transformed-coordinates {
-  margin-top: 0.5rem;
+  margin: 1rem 0 1rem 0.25rem;
   padding-left: 0.5rem;
-  width: 100%;
+  width: 98.75%;
   height: 2.5rem;
   display: flex;
   align-items: center;
@@ -467,7 +467,6 @@ input[type=radio]:checked {
   pointer-events: none;
 }
 .footer {
-  margin-top: 1.25rem;
   align-items: center;
   display: inline-flex;
   justify-content: space-between;

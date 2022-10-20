@@ -65,7 +65,7 @@ export default {
 
   methods: {
     // Hvis inputkoordinaterne ændres, skal markøren også flyttes
-    OnInputCoordsChanged (coords) {
+    inputCoordsChanged (coords) {
       if (this.inputEPSG !== this.mapProjection) {
         this.store.dispatch('trans/get', this.inputEPSG + '/' + this.mapProjection + '/' + coords[0] + ',' + coords[1])
           .then(() => {
@@ -91,7 +91,7 @@ export default {
     },
 
     // Holder øje med hvilken input EPSG-kode vi bruger i øjeblikket
-    OnInputEPSGChanged (epsg) {
+    inputEPSGChanged (epsg) {
       this.inputEPSG = epsg
     }
   },

@@ -1,6 +1,6 @@
 <template>
   <Transition name="close">
-    <section v-show="!menuClosed" class="container">
+    <section v-show="!menuClosed || window.width > 704" class="container">
       <article class="coordinate-transformation-box" ref="mother">
         <InputCoordinates class="input"
           @input-epsg-changed="inputEPSGChanged"
@@ -23,7 +23,7 @@
     </section>
   </Transition>
   <Transition name="open">
-    <menu-closer class="menu-closed" v-show="this.menuClosed" @handle-close="this.menuClosed = false" />
+    <menu-closer class="menu-closed" v-show="this.menuClosed && window.width < 704" @handle-close="this.menuClosed = false" />
   </Transition>
 </template>
 

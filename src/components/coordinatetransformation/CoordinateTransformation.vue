@@ -138,10 +138,8 @@ export default {
   display: grid;
   width: 100%;
   border: 2px solid var(-darkSteel);
-  outline: 4px solid rgba(191, 223, 227, 0.7);
   border-radius: 25px;
-  -webkit-border-radius: 25px;
-  transform: translateZ(0);
+  box-shadow: 0 0 0 4px rgba(191,223,227,0.7);
   z-index: 1;
 }
 .message {
@@ -197,7 +195,7 @@ export default {
 .menu-closed {
   border-radius: 25px;
   border: 2px solid var(-darkSteel);
-  outline: 4px solid rgba(191, 223, 227, 0.7);
+  box-shadow: 0 0 0 4px rgba(191,223,227,0.7);
 }
 @media screen and (min-width: 44rem) {
   .coordinate-transformation-box {

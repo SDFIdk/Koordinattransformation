@@ -1,6 +1,6 @@
 <template>
   <Transition name="close">
-    <section v-if="!menuClosed" class="container">
+    <section v-show="!menuClosed" class="container">
       <article class="coordinate-transformation-box" ref="mother">
         <InputCoordinates class="input"
           @input-epsg-changed="inputEPSGChanged"
@@ -17,13 +17,13 @@
         />
         <menu-closer class="menu-closer" @handle-close="this.menuClosed = true"/>
       </article>
-      <div v-if="popupVisible" class="message">Koordinater kopieret</div>
-      <div v-if="mapErrorVisible" class="message">{{ mapError }}</div>
-      <div v-if="errorVisible" class="message">{{ error }}</div>
+      <div v-show="popupVisible" class="message">Koordinater kopieret</div>
+      <div v-show="mapErrorVisible" class="message">{{ mapError }}</div>
+      <div v-show="errorVisible" class="message">{{ error }}</div>
     </section>
   </Transition>
   <Transition name="open">
-    <menu-closer class="menu-closed" v-if="this.menuClosed" @handle-close="this.menuClosed = false" />
+    <menu-closer class="menu-closed" v-show="this.menuClosed" @handle-close="this.menuClosed = false" />
   </Transition>
 </template>
 

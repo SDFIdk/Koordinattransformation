@@ -2,13 +2,13 @@
   <Transition name="close">
     <section v-show="!menuClosed || window.width > 704" class="container">
       <article class="coordinate-transformation-box" ref="mother">
-        <InputCoordinates class="input"
+        <InputCard class="input"
           @input-epsg-changed="inputEPSGChanged"
           @error-occurred="errorOccurred"
           @input-coords-changed="inputCoordsChanged"
           @is-3d-changed="is3DChanged"
         />
-        <OutputCoordinates class="output"
+        <OutputCard class="output"
           :inputEPSG=inputEPSG
           :inputCoords=inputCoords
           @error-occurred="errorOccurred"
@@ -40,8 +40,8 @@ import { defineAsyncComponent, ref, inject } from 'vue'
 export default {
   name: 'CoordinateTransformation',
   components: {
-    InputCoordinates: defineAsyncComponent(() => import('@/components/coordinatetransformation/InputCoordinates')),
-    OutputCoordinates: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCoordinates')),
+    InputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/InputCard')),
+    OutputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCard')),
     MenuCloser: defineAsyncComponent(() => import('@/components/coordinatetransformation/MenuCloser'))
   },
   props: {

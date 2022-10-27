@@ -68,7 +68,7 @@ import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 
 export default {
-  name: 'CoordinateSelectionComponent',
+  name: 'EpsgSelectionComponent',
 
   props: {
     // Er vi i input- eller outputkomponentet?

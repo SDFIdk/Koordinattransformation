@@ -1,37 +1,41 @@
-# Koordinattransformation 
+# Koordinattransformation
 
 Koordinattransformation er en Vue.js applikation der gør det let at transformere koordinater mellem forskellige referencesystemer.
 
-## Project setup
+før projektet kan installeres, er det nødvendigt at installere
+npm version: >=8.5.2 og
+node version: >=17.6.0
+
+## setup a projektet
 ```
 npm install
 ```
 
-### Customize configuration
+### Tilpasning af konfiguration
 
-The application assumes you have some environment variables set. Those are:
+Applikationen kræver et par *environment variables* til stede i root folderen. Disse er som følger:
 ```
 VUE_APP_NODE_ENV = [production | development | staging]
 VUE_APP_TOKEN = [Dataforsyning token for authentification]
 VUE_APP_API_BASEURL = [Dataforsyning API URL]
 ```
-You can save these variables in .env files in your project's root directory **or in the parent directory** for advanced config.
+Du kan gemme disse variabler i .env filer i projektets root mappe **eller i parent directory** for avanceret konfiguration
 
-For other Vue.js specific configuration, see [Configuration Reference](https://cli.vuejs.org/config/).
+For anden specifik konfiguration af Vue.js, se: [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## Scripts
 
-### Start server with hot-reload for development
+### Start server med hot-reload til udvikling
 ```
 npm run serve
 ```
 
-### Compile and minify for production
+### Compile og minify til produktion
 ```
 npm run build
 ```
 
-### Lints and fixes files
+### Linter og fixer filer
 ```
 npm run lint
 ```

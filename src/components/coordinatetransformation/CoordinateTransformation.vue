@@ -18,7 +18,7 @@
         <menu-closer class="menu-closer" @handle-close="this.menuClosed = true"/>
       </article>
       <div v-show="popupVisible" class="message">Koordinater kopieret</div>
-      <div v-show="mapErrorVisible" class="message">{{ mapError }}</div>
+      <div v-show="mapErrorIsVisible" class="message">{{ mapError }}</div>
       <div v-show="errorVisible" class="message">{{ error }}</div>
     </section>
   </Transition>
@@ -51,7 +51,7 @@ export default {
         return ''
       }
     },
-    mapErrorVisible: {
+    mapErrorIsVisible: {
       type: Boolean,
       default () {
         return false
@@ -59,25 +59,56 @@ export default {
     }
   },
   methods: {
+    /**
+     * updates the input EPSG to the given EPSG code
+     * and emits an event input-epsg-changed
+     * @param code
+     */
     inputEPSGChanged (code) {
+      console.log('inputepsgchanged')
       this.inputEPSG = code.srid
       this.$emit('input-epsg-changed', code.srid)
     },
+
+    /**
+     * emits an event input-coord-changed
+     * run when the input coordinates in the input card is changed
+     * e.g. when choosing EPSG, when clicking map, when changed manually, when entering address
+     * @param coords
+     */
     inputCoordsChanged (coords) {
+      console.log('input coords changed')
       this.inputCoords = coords
       this.$emit('input-coords-changed', coords)
     },
+
+    /**
+     * updates the is3D variable according to the state
+     * @param state
+     */
     is3DChanged (state) {
+      console.log('is 3d changed')
       this.is3D = state
     },
     errorOccurred (state, err) {
+      console.log('error occured')
       this.error = err
       this.errorVisible = state
     },
+
+    /**
+     * updates the popupIsVisible according to the given state
+     * @param state
+     */
     coordinatesCopied (state) {
+      console.log('coordinates copied')
       this.popupVisible = state
     },
+    /**
+     * sets the dimensions of the components according to the width and height of the viewport
+     */
     handleResize () {
+      console.log('handle resize')
       this.window.width = window.innerWidth
       this.window.height = window.innerHeight
     }

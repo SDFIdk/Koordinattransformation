@@ -7,9 +7,9 @@
       <EpsgSelection :isOutput="false" @epsg-changed="inputEPSGChanged"/>
     </section>
     <div class="input">
-      <span class="first-input" :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
+      <span class="first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
-        <Icon v-if="isDegrees"
+        <Icon v-if="epsgIsDegrees"
           icon="ArrowIcon"
           :width="2"
           :height="2"
@@ -25,7 +25,7 @@
           :stroke-width="0"
           class="arrow-icon arrow-icon-x-coordinate"
         />
-        <span class="chosen-coordinates" :class="{degreesInput: isDegrees}">
+        <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}">
           <input
             class="coordinates"
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
@@ -33,10 +33,10 @@
             step="0.0001"
             v-model=degrees[0]
           />
-          <span class="unit" v-show="isDegrees">°N</span>
-          <span class="unit" v-show="!isDegrees">m</span>
+          <span class="unit" v-show="epsgIsDegrees">°N</span>
+          <span class="unit" v-show="!epsgIsDegrees">m</span>
         </span>
-        <span class="chosen-coordinates" :class="{degreesInput: isDegrees}" v-show="isDegrees && (minutesChecked || secondsChecked)">
+        <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}" v-show="epsgIsDegrees && (minutesChecked || secondsChecked)">
           <input
             class="coordinates"
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
@@ -46,7 +46,7 @@
           />
           <span class="degrees">'</span>
         </span>
-        <span class="chosen-coordinates" :class="{degreesInput: isDegrees}" v-show="isDegrees && secondsChecked">
+        <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}" v-show="epsgIsDegrees && secondsChecked">
           <input
             class="coordinates"
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
@@ -57,9 +57,9 @@
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="second-input" :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
+      <span class="second-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
-        <Icon v-if="isDegrees"
+        <Icon v-if="epsgIsDegrees"
           icon="ArrowIcon"
           :width="2"
           :height="2"
@@ -82,10 +82,10 @@
             type="number"
             step="0.0001"
           />
-          <span class="degrees" v-show="isDegrees">°E</span>
-        <span class="degrees" v-show="!isDegrees">m</span>
+          <span class="degrees" v-show="epsgIsDegrees">°E</span>
+        <span class="degrees" v-show="!epsgIsDegrees">m</span>
         </span>
-        <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
+        <span class="chosen-coordinates" v-show="epsgIsDegrees && (minutesChecked || secondsChecked)">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[1]
@@ -94,7 +94,7 @@
           />
           <span class="degrees">'</span>
         </span>
-        <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
+        <span class="chosen-coordinates" v-show="epsgIsDegrees && secondsChecked">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[1]
@@ -104,7 +104,7 @@
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="third-input" :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}" v-show = "is3D">
+      <span class="third-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}" v-show = "is3D">
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -124,6 +124,7 @@
         </span>
       </span>
     </div>
+
     <div class="footer">
       <div class="searchbar">
         <input class="searchbar-input" id="dawa-autocomplete-input"/>
@@ -136,7 +137,7 @@
           :stroke-width="0.75"
         />
       </div>
-      <div class="radiogroup" v-show="isDegrees" :class="{radioGroupDisabled: !isDegrees}">
+      <div class="radiogroup" v-show="epsgIsDegrees" :class="{radioGroupDisabled: !epsgIsDegrees}">
         <label class="radio" @click="checkDegrees">
           <input type="radio" name="date-format">
           <Icon v-show="degreesChecked"
@@ -205,45 +206,49 @@
  * eller hvis der er sket en transformationsfejl (f.eks. out-of-bounds)
  */
 import { ref, inject, onUpdated, watch, onMounted, defineEmits } from 'vue'
-import EpsgSelection from './EpsgSelection.vue'
 import { useStore } from 'vuex'
+import EpsgSelection from '@/components/coordinatetransformation/EpsgSelection'
 
-const store = useStore()
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
-const colors = inject('themeColors')
-
 const inputEPSG = ref('')
+const colors = inject('themeColors')
+const store = useStore()
 // Formatknapperne
 const degreesChecked = ref(false)
 const minutesChecked = ref(false)
 const secondsChecked = ref(false)
-
 // DMS
 const degrees = ref([0, 0])
 const minutes = ref([0, 0])
 const seconds = ref([0, 0])
 const meters = ref(0)
-let is3D = ref(true)
-let isDegrees = ref(false)
-// const selected = ref('')
+const is3D = ref(true)
+const epsgIsDegrees = ref(false)
+
+const locationSelected = ref('')
 
 const emit = defineEmits([
-  'error-occured', 'input-coords-changed', 'is-3d-changed', 'input-epsg-changed'
+  'input-epsg-changed',
+  'error-occurred',
+  'input-coords-changed',
+  'is-3d-changed'
 ])
-
-// UTranformation af inputkoordinaterne, når brugeren vælger ny EPSG
-function inputEPSGChanged (code) {
-  // Decimal degrees (DD), eller DMS?
+/**
+ * UTranformation af inputkoordinaterne, når brugeren vælger ny EPSG
+ * @param code
+ */
+const inputEPSGChanged = (code) => {
+  // check units. Er de grader eller meter
   if (code.v1_unit === 'degree') {
-    isDegrees = true
+    epsgIsDegrees.value = true
     checkDegrees()
   } else {
-    isDegrees = false
+    epsgIsDegrees.value = false
     disableRadioButtons()
   }
   // 3D eller 2D?
-  is3D = code.v3 !== null
+  is3D.value = code.v3 !== null
   if (is3D.value) {
     store.dispatch('trans/get', inputEPSG.value + '/' + code.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1] + ',' + inputCoords.value[2])
       .then(() => {
@@ -280,13 +285,14 @@ function inputEPSGChanged (code) {
 }
 
 // Formatknapperne virker kun ved DMS
-function disableRadioButtons () {
+// eslint-disable-next-line no-unused-vars
+const disableRadioButtons = () => {
   degreesChecked.value = false
   minutesChecked.value = false
   secondsChecked.value = false
 }
 
-function checkDegrees () {
+const checkDegrees = () => {
   if (!degreesChecked.value) {
     degreesChecked.value = true
     minutesChecked.value = false
@@ -295,7 +301,7 @@ function checkDegrees () {
   }
 }
 
-function checkMinutes () {
+const checkMinutes = () => {
   if (!minutesChecked.value) {
     degreesChecked.value = false
     minutesChecked.value = true
@@ -304,7 +310,7 @@ function checkMinutes () {
   }
 }
 
-function checkSeconds () {
+const checkSeconds = () => {
   if (!secondsChecked.value) {
     degreesChecked.value = false
     minutesChecked.value = false
@@ -313,8 +319,9 @@ function checkSeconds () {
   }
 }
 
-function setInput () {
-  if (!isDegrees.value || degreesChecked.value) {
+// Smuksering af inputkoordinaterne i de tre til syv tastefelter
+const setInput = () => {
+  if (!epsgIsDegrees.value || degreesChecked.value) {
     const deg0 = parseFloat(inputCoords.value[0].toFixed(4))
     const deg1 = parseFloat(inputCoords.value[1].toFixed(4))
     degrees.value[0] = deg0
@@ -358,11 +365,13 @@ onMounted(() => {
   inputEPSG.value = inject('inputEPSG')
   const dawaAutocomplete2 = require('dawa-autocomplete2')
   const inputElm = document.getElementById('dawa-autocomplete-input')
+
   dawaAutocomplete2.dawaAutocomplete(inputElm, {
-    select: function (selected) {
-      selected.value = selected.tekst
+    select: (selected) => {
+      console.log(`valgt adresse: ${selected.tekst}`)
+      locationSelected.value = selected.tekst
       // Tranformation efter valgt addresse
-      fetch('https://api.dataforsyningen.dk/adresser?q=' + selected.value)
+      fetch('https://api.dataforsyningen.dk/adresser?q=' + locationSelected.value)
         .then(res => res.json())
         .then(data => data[0].adgangsadresse.vejpunkt.koordinater)
         .then(coords => {
@@ -441,7 +450,6 @@ onUpdated(() => {
   emit('is-3d-changed', is3D.value)
   emit('input-coords-changed', inputCoords.value)
 })
-
 </script>
 
 <style scoped>

@@ -1,8 +1,7 @@
 <template>
   <section class="input-coordinate">
     <div class="title-bar">
-      <h3 id="title" >Input
-      </h3>
+      <h3>Input</h3>
     </div>
     <section class="coordinate-selection-wrapper">
       <EpsgSelection :isOutput="false" @epsg-changed="inputEPSGChanged"/>
@@ -415,7 +414,6 @@ onMounted(() => {
 
   dawaAutocomplete2.dawaAutocomplete(inputElm, {
     select: (selected) => {
-      console.log(`valgt adresse: ${selected.tekst}`)
       addressSelected.value = selected.tekst
       // Tranformation efter valgt addresse
       getCoordsFromAdress(addressSelected.value)

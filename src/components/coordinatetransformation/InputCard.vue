@@ -226,7 +226,7 @@ const meters = ref(0)
 const is3D = ref(true)
 const epsgIsDegrees = ref(false)
 
-const locationSelected = ref('')
+const addressSelected = ref('')
 
 const emit = defineEmits([
   'input-epsg-changed',
@@ -285,7 +285,6 @@ const inputEPSGChanged = (code) => {
 }
 
 // Formatknapperne virker kun ved DMS
-// eslint-disable-next-line no-unused-vars
 const disableRadioButtons = () => {
   degreesChecked.value = false
   minutesChecked.value = false
@@ -324,13 +323,16 @@ const setInput = () => {
   if (!epsgIsDegrees.value || degreesChecked.value) {
     const deg0 = parseFloat(inputCoords.value[0].toFixed(4))
     const deg1 = parseFloat(inputCoords.value[1].toFixed(4))
+
     degrees.value[0] = deg0
     degrees.value[1] = deg1
   } else if (minutesChecked.value) {
     const deg0 = Math.floor(inputCoords.value[0])
     const deg1 = Math.floor(inputCoords.value[1])
+
     const min0 = parseFloat(((inputCoords.value[0] - deg0) * 60).toFixed(4))
     const min1 = parseFloat(((inputCoords.value[1] - deg1) * 60).toFixed(4))
+
     degrees.value[0] = deg0
     degrees.value[1] = deg1
     minutes.value[0] = min0
@@ -338,10 +340,13 @@ const setInput = () => {
   } else {
     const deg0 = Math.floor(inputCoords.value[0])
     const deg1 = Math.floor(inputCoords.value[1])
+
     const min0 = Math.floor((inputCoords.value[0] - deg0) * 60)
     const min1 = Math.floor((inputCoords.value[1] - deg1) * 60)
+
     const sec0 = parseFloat(((inputCoords.value[0] - deg0 - min0 / 60) * 3600).toFixed(4))
     const sec1 = parseFloat(((inputCoords.value[1] - deg1 - min1 / 60) * 3600).toFixed(4))
+
     degrees.value[0] = deg0
     degrees.value[1] = deg1
     minutes.value[0] = min0
@@ -360,6 +365,47 @@ const error = err => {
   }, 3000)
 }
 
+/**
+ * Henter koordinaterne for en given adresse,
+ * sætter nålen på kortet
+ * og foretager en transformation
+ * @param url
+ */
+const getCoordsFromAdress = async (location) => {
+  return fetch('https://api.dataforsyningen.dk/adresser?q=' + location)
+    .then(res => res.json())
+    .then(data => data[0].adgangsadresse.vejpunkt.koordinater)
+    .then(coords => {
+      if (is3D.value) {
+        store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0] + ',' + meters.value).then(() => {
+          const output = store.state.trans.data
+          // Abort hvis fejl
+          if (output.message !== undefined) {
+            error(output.message)
+            return
+          }
+          inputCoords.value[0] = output.v1
+          inputCoords.value[1] = output.v2
+          inputCoords.value[2] = output.v3
+          setInput()
+          emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
+        })
+      } else {
+        store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0]).then(() => {
+          const output = store.state.trans.data
+          if (output.message !== undefined) {
+            error(output.message)
+            return
+          }
+          inputCoords.value[0] = output.v1
+          inputCoords.value[1] = output.v2
+          setInput()
+          emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
+        })
+      }
+    })
+}
+
 onMounted(() => {
   // Søgefeltet til indtastning af addresser (DAWA)
   inputEPSG.value = inject('inputEPSG')
@@ -369,40 +415,9 @@ onMounted(() => {
   dawaAutocomplete2.dawaAutocomplete(inputElm, {
     select: (selected) => {
       console.log(`valgt adresse: ${selected.tekst}`)
-      locationSelected.value = selected.tekst
+      addressSelected.value = selected.tekst
       // Tranformation efter valgt addresse
-      fetch('https://api.dataforsyningen.dk/adresser?q=' + locationSelected.value)
-        .then(res => res.json())
-        .then(data => data[0].adgangsadresse.vejpunkt.koordinater)
-        .then(coords => {
-          if (is3D.value) {
-            store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0] + ',' + meters.value).then(() => {
-              const output = store.state.trans.data
-              // Abort hvis fejl
-              if (output.message !== undefined) {
-                error(output.message)
-                return
-              }
-              inputCoords.value[0] = output.v1
-              inputCoords.value[1] = output.v2
-              inputCoords.value[2] = output.v3
-              setInput()
-              emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
-            })
-          } else {
-            store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0]).then(() => {
-              const output = store.state.trans.data
-              if (output.message !== undefined) {
-                error(output.message)
-                return
-              }
-              inputCoords.value[0] = output.v1
-              inputCoords.value[1] = output.v2
-              setInput()
-              emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
-            })
-          }
-        })
+      getCoordsFromAdress(addressSelected.value)
     }
   })
 })

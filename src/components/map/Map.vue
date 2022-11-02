@@ -32,7 +32,7 @@ import proj4 from 'proj4'
 import { epsg25832proj } from 'skraafoto-saul'
 // OpenLayers-ting
 import 'ol/ol.css'
-import { onMounted, ref, inject, provide, defineAsyncComponent } from 'vue'
+import { onMounted, ref, defineAsyncComponent, inject, provide } from 'vue'
 import OlMap from 'ol/Map'
 import OlView from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
@@ -46,7 +46,6 @@ import {
   FullScreen
 } from 'ol/control'
 import { useStore } from 'vuex'
-// const CoordinateTransformation = defineAsyncComponent()
 
 export default {
   name: 'MapComponent',
@@ -221,7 +220,6 @@ export default {
             } else {
               const output = [parseFloat(mpos[0]), parseFloat(mpos[1]), inputCoords.value[2]]
               inputCoords.value = output
-              console.log(`clicked at coordinates: ${mpos[0]},  ${mpos[1]}`)
             }
             const pinnedMarker = document.getElementById('pinned-marker')
             const overlay = new Overlay({

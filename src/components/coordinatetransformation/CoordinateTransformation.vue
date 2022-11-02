@@ -65,7 +65,6 @@ export default {
      * @param code
      */
     inputEPSGChanged (code) {
-      console.log('inputepsgchanged')
       this.inputEPSG = code.srid
       this.$emit('input-epsg-changed', code.srid)
     },
@@ -77,7 +76,6 @@ export default {
      * @param coords
      */
     inputCoordsChanged (coords) {
-      console.log('input coords changed')
       this.inputCoords = coords
       this.$emit('input-coords-changed', coords)
     },
@@ -87,11 +85,9 @@ export default {
      * @param state
      */
     is3DChanged (state) {
-      console.log('is 3d changed')
       this.is3D = state
     },
     errorOccurred (state, err) {
-      console.log('error occured')
       this.error = err
       this.errorVisible = state
     },
@@ -101,14 +97,12 @@ export default {
      * @param state
      */
     coordinatesCopied (state) {
-      console.log('coordinates copied')
       this.popupVisible = state
     },
     /**
      * sets the dimensions of the components according to the width and height of the viewport
      */
     handleResize () {
-      console.log('handle resize')
       this.window.width = window.innerWidth
       this.window.height = window.innerHeight
     }

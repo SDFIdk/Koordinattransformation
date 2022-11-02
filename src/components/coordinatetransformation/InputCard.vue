@@ -7,9 +7,9 @@
       <EpsgSelection :isOutput="false" @epsg-changed="inputEPSGChanged"/>
     </section>
     <div class="input">
-      <span class="first-input" :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
+      <span class="first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
-        <Icon v-if="isDegrees"
+        <Icon v-if="epsgIsDegrees"
           icon="ArrowIcon"
           :width="2"
           :height="2"
@@ -25,7 +25,7 @@
           :stroke-width="0"
           class="arrow-icon arrow-icon-x-coordinate"
         />
-        <span class="chosen-coordinates" :class="{degreesInput: isDegrees}">
+        <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}">
           <input
             class="coordinates"
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
@@ -33,10 +33,10 @@
             step="0.0001"
             v-model=degrees[0]
           />
-          <span class="unit" v-show="isDegrees">°N</span>
-          <span class="unit" v-show="!isDegrees">m</span>
+          <span class="unit" v-show="epsgIsDegrees">°N</span>
+          <span class="unit" v-show="!epsgIsDegrees">m</span>
         </span>
-        <span class="chosen-coordinates" :class="{degreesInput: isDegrees}" v-show="isDegrees && (minutesChecked || secondsChecked)">
+        <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}" v-show="epsgIsDegrees && (minutesChecked || secondsChecked)">
           <input
             class="coordinates"
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
@@ -46,7 +46,7 @@
           />
           <span class="degrees">'</span>
         </span>
-        <span class="chosen-coordinates" :class="{degreesInput: isDegrees}" v-show="isDegrees && secondsChecked">
+        <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}" v-show="epsgIsDegrees && secondsChecked">
           <input
             class="coordinates"
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
@@ -57,9 +57,9 @@
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="second-input" :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}">
+      <span class="second-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
-        <Icon v-if="isDegrees"
+        <Icon v-if="epsgIsDegrees"
           icon="ArrowIcon"
           :width="2"
           :height="2"
@@ -82,10 +82,10 @@
             type="number"
             step="0.0001"
           />
-          <span class="degrees" v-show="isDegrees">°E</span>
-        <span class="degrees" v-show="!isDegrees">m</span>
+          <span class="degrees" v-show="epsgIsDegrees">°E</span>
+        <span class="degrees" v-show="!epsgIsDegrees">m</span>
         </span>
-        <span class="chosen-coordinates" v-show="isDegrees && (minutesChecked || secondsChecked)">
+        <span class="chosen-coordinates" v-show="epsgIsDegrees && (minutesChecked || secondsChecked)">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[1]
@@ -94,7 +94,7 @@
           />
           <span class="degrees">'</span>
         </span>
-        <span class="chosen-coordinates" v-show="isDegrees && secondsChecked">
+        <span class="chosen-coordinates" v-show="epsgIsDegrees && secondsChecked">
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[1]
@@ -104,7 +104,7 @@
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="third-input" :class="{isDegreesInput: isDegrees, isMetresInput: !isDegrees}" v-show = "is3D">
+      <span class="third-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}" v-show = "is3D">
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -124,6 +124,7 @@
         </span>
       </span>
     </div>
+
     <div class="footer">
       <div class="searchbar">
         <input class="searchbar-input" id="dawa-autocomplete-input"/>
@@ -136,7 +137,7 @@
           :stroke-width="0.75"
         />
       </div>
-      <div class="radiogroup" v-show="isDegrees" :class="{radioGroupDisabled: !isDegrees}">
+      <div class="radiogroup" v-show="epsgIsDegrees" :class="{radioGroupDisabled: !epsgIsDegrees}">
         <label class="radio" @click="checkDegrees">
           <input type="radio" name="date-format">
           <Icon v-show="degreesChecked"
@@ -196,7 +197,7 @@
   </section>
 </template>
 
-<script>
+<script setup>
 /**
  * InputCoordinates er selvsagt komponentet, hvor brugeren vælger en input EPSG-kode og inputkoordinater.
  * Koordinaterne kan tastees manuelt, eller ved at indtaste en addresse i søgefeltet.
@@ -204,267 +205,258 @@
  * Det skal emitte til sin forældre CoordinateTransformation, hvis koordinaterne eller EPSG-koden ændres,
  * eller hvis der er sket en transformationsfejl (f.eks. out-of-bounds)
  */
-import { defineAsyncComponent, ref, inject, onUpdated, watch, onMounted } from 'vue'
+import { ref, inject, onUpdated, watch, onMounted, defineEmits } from 'vue'
 import { useStore } from 'vuex'
+import EpsgSelection from '@/components/coordinatetransformation/EpsgSelection'
 
-export default {
-  name: 'InputCardComponent',
+const mapMarkerInputCoords = inject('mapMarkerInputCoords')
+const inputCoords = ref(mapMarkerInputCoords.value)
+const inputEPSG = ref('')
+const colors = inject('themeColors')
+const store = useStore()
+// Formatknapperne
+const degreesChecked = ref(false)
+const minutesChecked = ref(false)
+const secondsChecked = ref(false)
+// DMS
+const degrees = ref([0, 0])
+const minutes = ref([0, 0])
+const seconds = ref([0, 0])
+const meters = ref(0)
+const is3D = ref(true)
+const epsgIsDegrees = ref(false)
 
-  components: {
-    EpsgSelection: defineAsyncComponent(() => import('@/components/coordinatetransformation/EpsgSelection'))
-  },
+const addressSelected = ref('')
 
-  methods: {
-    // UTranformation af inputkoordinaterne, når brugeren vælger ny EPSG
-    inputEPSGChanged (code) {
-      // Decimal degrees (DD), eller DMS?
-      if (code.v1_unit === 'degree') {
-        this.isDegrees = true
-        this.checkDegrees()
-      } else {
-        this.isDegrees = false
-        this.disableRadioButtons()
-      }
-      // 3D eller 2D?
-      this.is3D = code.v3 !== null
-      if (this.is3D) {
-        this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1] + ',' + this.inputCoords[2])
-          .then(() => {
-            const output = this.store.state.trans.data
-            if (output.message !== undefined) {
-              this.error(output.message)
-              return
-            }
-            this.inputEPSG = code.srid
-            this.inputCoords[0] = output.v1
-            this.inputCoords[1] = output.v2
-            this.inputCoords[2] = output.v3
-            // Vi formaterer inputtet, så det ser pænt ud,
-            // og gør CoordinateTransformation opmærksom på ændringen
-            // så den kan fortælle Map samt Output om den nye EPSG-kode.
-            this.setInput()
-            this.$emit('input-epsg-changed', code)
-          })
-      } else {
-        this.store.dispatch('trans/get', this.inputEPSG + '/' + code.srid + '/' + this.inputCoords[0] + ',' + this.inputCoords[1])
-          .then(() => {
-            const output = this.store.state.trans.data
-            if (output.message !== undefined) {
-              this.error(output.message)
-              return
-            }
-            this.inputEPSG = code.srid
-            this.inputCoords[0] = output.v1
-            this.inputCoords[1] = output.v2
-            this.$emit('input-epsg-changed', code)
-            this.setInput()
-          })
-      }
-    },
-
-    // Formatknapperne virker kun ved DMS
-    disableRadioButtons () {
-      this.degreesChecked = false
-      this.minutesChecked = false
-      this.secondsChecked = false
-    },
-
-    checkDegrees () {
-      if (!this.degreesChecked) {
-        this.degreesChecked = true
-        this.minutesChecked = false
-        this.secondsChecked = false
-        this.setInput()
-      }
-    },
-
-    checkMinutes () {
-      if (!this.minutesChecked) {
-        this.degreesChecked = false
-        this.minutesChecked = true
-        this.secondsChecked = false
-        this.setInput()
-      }
-    },
-
-    checkSeconds () {
-      if (!this.secondsChecked) {
-        this.degreesChecked = false
-        this.minutesChecked = false
-        this.secondsChecked = true
-        this.setInput()
-      }
-    }
-  },
-
-  setup (_props, { emit }) {
-    const mapMarkerInputCoords = inject('mapMarkerInputCoords')
-    const inputCoords = ref(mapMarkerInputCoords.value)
-    const inputEPSG = ref('')
-    const colors = inject('themeColors')
-    const store = useStore()
-    // Formatknapperne
-    const degreesChecked = ref(false)
-    const minutesChecked = ref(false)
-    const secondsChecked = ref(false)
-    // DMS
-    const degrees = ref([0, 0])
-    const minutes = ref([0, 0])
-    const seconds = ref([0, 0])
-    const meters = ref(0)
-    const is3D = ref(true)
-    const isDegrees = ref(false)
-    const selected = ref('')
-    // Smuksering af inputkoordinaterne i de tre til syv tastefelter
-    const setInput = () => {
-      if (!isDegrees.value || degreesChecked.value) {
-        const deg0 = parseFloat(inputCoords.value[0].toFixed(4))
-        const deg1 = parseFloat(inputCoords.value[1].toFixed(4))
-        degrees.value[0] = deg0
-        degrees.value[1] = deg1
-      } else if (minutesChecked.value) {
-        const deg0 = Math.floor(inputCoords.value[0])
-        const deg1 = Math.floor(inputCoords.value[1])
-        const min0 = parseFloat(((inputCoords.value[0] - deg0) * 60).toFixed(4))
-        const min1 = parseFloat(((inputCoords.value[1] - deg1) * 60).toFixed(4))
-        degrees.value[0] = deg0
-        degrees.value[1] = deg1
-        minutes.value[0] = min0
-        minutes.value[1] = min1
-      } else {
-        const deg0 = Math.floor(inputCoords.value[0])
-        const deg1 = Math.floor(inputCoords.value[1])
-        const min0 = Math.floor((inputCoords.value[0] - deg0) * 60)
-        const min1 = Math.floor((inputCoords.value[1] - deg1) * 60)
-        const sec0 = parseFloat(((inputCoords.value[0] - deg0 - min0 / 60) * 3600).toFixed(4))
-        const sec1 = parseFloat(((inputCoords.value[1] - deg1 - min1 / 60) * 3600).toFixed(4))
-        degrees.value[0] = deg0
-        degrees.value[1] = deg1
-        minutes.value[0] = min0
-        minutes.value[1] = min1
-        seconds.value[0] = sec0
-        seconds.value[1] = sec1
-      }
-    }
-
-    // Beder CoordinateTransformation om at vise en fejlmeddelselse
-    // med beskeden 'err' i tre sekunder.
-    const error = err => {
-      emit('error-occurred', true, err)
-      setTimeout(() => {
-        emit('error-occurred', false)
-      }, 3000)
-    }
-
-    onMounted(() => {
-      // Søgefeltet til indtastning af addresser (DAWA)
-      inputEPSG.value = inject('inputEPSG')
-      const dawaAutocomplete2 = require('dawa-autocomplete2')
-      const inputElm = document.getElementById('dawa-autocomplete-input')
-      dawaAutocomplete2.dawaAutocomplete(inputElm, {
-        select: function (selected) {
-          selected.value = selected.tekst
-          // Tranformation efter valgt addresse
-          fetch('https://api.dataforsyningen.dk/adresser?q=' + selected.value)
-            .then(res => res.json())
-            .then(data => data[0].adgangsadresse.vejpunkt.koordinater)
-            .then(coords => {
-              if (is3D.value) {
-                store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0] + ',' + meters.value).then(() => {
-                  const output = store.state.trans.data
-                  // Abort hvis fejl
-                  if (output.message !== undefined) {
-                    error(output.message)
-                    return
-                  }
-                  inputCoords.value[0] = output.v1
-                  inputCoords.value[1] = output.v2
-                  inputCoords.value[2] = output.v3
-                  setInput()
-                  emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
-                })
-              } else {
-                store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0]).then(() => {
-                  const output = store.state.trans.data
-                  if (output.message !== undefined) {
-                    error(output.message)
-                    return
-                  }
-                  inputCoords.value[0] = output.v1
-                  inputCoords.value[1] = output.v2
-                  setInput()
-                  emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
-                })
-              }
-            })
+const emit = defineEmits([
+  'input-epsg-changed',
+  'error-occurred',
+  'input-coords-changed',
+  'is-3d-changed'
+])
+/**
+ * UTranformation af inputkoordinaterne, når brugeren vælger ny EPSG
+ * @param code
+ */
+const inputEPSGChanged = (code) => {
+  // check units. Er de grader eller meter
+  if (code.v1_unit === 'degree') {
+    epsgIsDegrees.value = true
+    checkDegrees()
+  } else {
+    epsgIsDegrees.value = false
+    disableRadioButtons()
+  }
+  // 3D eller 2D?
+  is3D.value = code.v3 !== null
+  if (is3D.value) {
+    store.dispatch('trans/get', inputEPSG.value + '/' + code.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1] + ',' + inputCoords.value[2])
+      .then(() => {
+        const output = store.state.trans.data
+        if (output.message !== undefined) {
+          error(output.message)
+          return
         }
+        inputEPSG.value = code.srid
+        inputCoords.value[0] = output.v1
+        inputCoords.value[1] = output.v2
+        inputCoords.value[2] = output.v3
+        // Vi formaterer inputtet, så det ser pænt ud,
+        // og gør CoordinateTransformation opmærksom på ændringen
+        // så den kan fortælle Map samt Output om den nye EPSG-kode.
+        setInput()
+        emit('input-epsg-changed', code)
       })
-    })
-    setInput()
-
-    // Hold øje med kortmarkørens placering,
-    // så inputkoordinaterne kan opdateres.
-    watch(mapMarkerInputCoords, () => {
-      inputCoords.value = mapMarkerInputCoords.value
-      setInput()
-    })
-
-    // Hold øje med de tastefelterne til inputkoordinater,
-    // skulle brugeren vælge at indtaste koordinaterne manuelt.
-    watch([degrees.value, minutes.value, seconds.value], () => {
-      // Sørg for at lade koordinaterne være tal og aldrig bogstaver
-      // degrees.value[0] -= 0
-      // degrees.value[1] -= 0
-      let v1 = degrees.value[0]
-      let v2 = degrees.value[1]
-      if (minutesChecked.value || secondsChecked.value) {
-        // minutes.value[0] -= 0
-        // minutes.value[1] -= 0
-        v1 += minutes.value[0] / 60
-        v2 += minutes.value[1] / 60
-      }
-      if (secondsChecked.value) {
-        // seconds.value[0] -= 0
-        // seconds.value[1] -= 0
-        v1 += seconds.value[0] / 3600
-        v2 += seconds.value[1] / 3600
-      }
-      inputCoords.value = [v1, v2, meters.value]
-    })
-
-    // Højdeparameteren til 3D-projektering er særskildt.
-    watch(meters, () => {
-      // meters.value -= 0
-      inputCoords.value = [inputCoords.value[0], inputCoords.value[1], meters.value]
-    })
-
-    // Gør CoordinateTransformation opmærksom på ændringer i inputkoordinaterne,
-    // og om hvorvidt input EPGS-koden er i 3D eller 2D.
-    onUpdated(() => {
-      emit('is-3d-changed', is3D.value)
-      emit('input-coords-changed', inputCoords.value)
-    })
-
-    return {
-      inputCoords,
-      colors,
-      store,
-      inputEPSG,
-      minutesChecked,
-      secondsChecked,
-      degreesChecked,
-      setInput,
-      degrees,
-      minutes,
-      seconds,
-      is3D,
-      isDegrees,
-      meters,
-      error,
-      selected
-    }
+  } else {
+    store.dispatch('trans/get', inputEPSG.value + '/' + code.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1])
+      .then(() => {
+        const output = store.state.trans.data
+        if (output.message !== undefined) {
+          error(output.message)
+          return
+        }
+        inputEPSG.value = code.srid
+        inputCoords.value[0] = output.v1
+        inputCoords.value[1] = output.v2
+        emit('input-epsg-changed', code)
+        setInput()
+      })
   }
 }
+
+// Formatknapperne virker kun ved DMS
+const disableRadioButtons = () => {
+  degreesChecked.value = false
+  minutesChecked.value = false
+  secondsChecked.value = false
+}
+
+const checkDegrees = () => {
+  if (!degreesChecked.value) {
+    degreesChecked.value = true
+    minutesChecked.value = false
+    secondsChecked.value = false
+    setInput()
+  }
+}
+
+const checkMinutes = () => {
+  if (!minutesChecked.value) {
+    degreesChecked.value = false
+    minutesChecked.value = true
+    secondsChecked.value = false
+    setInput()
+  }
+}
+
+const checkSeconds = () => {
+  if (!secondsChecked.value) {
+    degreesChecked.value = false
+    minutesChecked.value = false
+    secondsChecked.value = true
+    setInput()
+  }
+}
+
+// Smuksering af inputkoordinaterne i de tre til syv tastefelter
+const setInput = () => {
+  if (!epsgIsDegrees.value || degreesChecked.value) {
+    const deg0 = parseFloat(inputCoords.value[0].toFixed(4))
+    const deg1 = parseFloat(inputCoords.value[1].toFixed(4))
+
+    degrees.value[0] = deg0
+    degrees.value[1] = deg1
+  } else if (minutesChecked.value) {
+    const deg0 = Math.floor(inputCoords.value[0])
+    const deg1 = Math.floor(inputCoords.value[1])
+
+    const min0 = parseFloat(((inputCoords.value[0] - deg0) * 60).toFixed(4))
+    const min1 = parseFloat(((inputCoords.value[1] - deg1) * 60).toFixed(4))
+
+    degrees.value[0] = deg0
+    degrees.value[1] = deg1
+    minutes.value[0] = min0
+    minutes.value[1] = min1
+  } else {
+    const deg0 = Math.floor(inputCoords.value[0])
+    const deg1 = Math.floor(inputCoords.value[1])
+
+    const min0 = Math.floor((inputCoords.value[0] - deg0) * 60)
+    const min1 = Math.floor((inputCoords.value[1] - deg1) * 60)
+
+    const sec0 = parseFloat(((inputCoords.value[0] - deg0 - min0 / 60) * 3600).toFixed(4))
+    const sec1 = parseFloat(((inputCoords.value[1] - deg1 - min1 / 60) * 3600).toFixed(4))
+
+    degrees.value[0] = deg0
+    degrees.value[1] = deg1
+    minutes.value[0] = min0
+    minutes.value[1] = min1
+    seconds.value[0] = sec0
+    seconds.value[1] = sec1
+  }
+}
+
+// Beder CoordinateTransformation om at vise en fejlmeddelselse
+// med beskeden 'err' i tre sekunder.
+const error = err => {
+  emit('error-occurred', true, err)
+  setTimeout(() => {
+    emit('error-occurred', false)
+  }, 3000)
+}
+
+/**
+ * Henter koordinaterne for en given adresse,
+ * sætter nålen på kortet
+ * og foretager en transformation
+ * @param url
+ */
+const getCoordsFromAdress = async (location) => {
+  return fetch('https://api.dataforsyningen.dk/adresser?q=' + location)
+    .then(res => res.json())
+    .then(data => data[0].adgangsadresse.vejpunkt.koordinater)
+    .then(coords => {
+      if (is3D.value) {
+        store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0] + ',' + meters.value).then(() => {
+          const output = store.state.trans.data
+          // Abort hvis fejl
+          if (output.message !== undefined) {
+            error(output.message)
+            return
+          }
+          inputCoords.value[0] = output.v1
+          inputCoords.value[1] = output.v2
+          inputCoords.value[2] = output.v3
+          setInput()
+          emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
+        })
+      } else {
+        store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0]).then(() => {
+          const output = store.state.trans.data
+          if (output.message !== undefined) {
+            error(output.message)
+            return
+          }
+          inputCoords.value[0] = output.v1
+          inputCoords.value[1] = output.v2
+          setInput()
+          emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
+        })
+      }
+    })
+}
+
+onMounted(() => {
+  // Søgefeltet til indtastning af addresser (DAWA)
+  inputEPSG.value = inject('inputEPSG')
+  const dawaAutocomplete2 = require('dawa-autocomplete2')
+  const inputElm = document.getElementById('dawa-autocomplete-input')
+
+  dawaAutocomplete2.dawaAutocomplete(inputElm, {
+    select: (selected) => {
+      addressSelected.value = selected.tekst
+      // Tranformation efter valgt addresse
+      getCoordsFromAdress(addressSelected.value)
+    }
+  })
+})
+setInput()
+
+// Hold øje med kortmarkørens placering,
+// så inputkoordinaterne kan opdateres.
+watch(mapMarkerInputCoords, () => {
+  inputCoords.value = mapMarkerInputCoords.value
+  setInput()
+})
+
+// Hold øje med de tastefelterne til inputkoordinater,
+// skulle brugeren vælge at indtaste koordinaterne manuelt.
+watch([degrees.value, minutes.value, seconds.value], () => {
+  // Sørg for at lade koordinaterne være tal og aldrig bogstaver
+  let v1 = degrees.value[0]
+  let v2 = degrees.value[1]
+  if (minutesChecked.value || secondsChecked.value) {
+    v1 += minutes.value[0] / 60
+    v2 += minutes.value[1] / 60
+  }
+  if (secondsChecked.value) {
+    v1 += seconds.value[0] / 3600
+    v2 += seconds.value[1] / 3600
+  }
+  inputCoords.value = [v1, v2, meters.value]
+})
+
+// Højdeparameteren til 3D-projektering er særskildt.
+watch(meters, () => {
+  inputCoords.value = [inputCoords.value[0], inputCoords.value[1], meters.value]
+})
+
+// Gør CoordinateTransformation opmærksom på ændringer i inputkoordinaterne,
+// og om hvorvidt input EPGS-koden er i 3D eller 2D.
+onUpdated(() => {
+  emit('is-3d-changed', is3D.value)
+  emit('input-coords-changed', inputCoords.value)
+})
 </script>
 
 <style scoped>

@@ -4,19 +4,12 @@
   </div>
 </template>
 
-<script>
-/**
- * Dette er blot til at lukke/åbne menuen,
- * når applikationen er i på mobil
- * TODO: would like to have an animation
- */
-export default {
-  name: 'MenuCloser',
-  methods: {
-    handleClose () {
-      this.$emit('handle-close')
-    }
-  }
+<script setup>
+import { defineEmits } from 'vue'
+const emit = defineEmits(['handle-close'])
+
+function handleClose () {
+  emit('handle-close')
 }
 </script>
 

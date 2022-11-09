@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve --mode development --open --modern --target web",
     "build-test": "vue-cli-service build --mode staging --dest dist --modern --no-unsafe-inline --target app --report-json --debug",
+    "build-prod": "vue-cli-service build --mode production --dest dist --modern --no-unsafe-inline --target app --report-json",
     "lint": "vue-cli-service lint"
   },
   "engines": {

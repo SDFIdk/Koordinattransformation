@@ -4,7 +4,7 @@
     <h3>Udviklet af <a href="https://sdfi.dk/" target="_blank">SDFI</a>.</h3>
     <h4>Muliggør transformation mellem forskellige aktuelle og historisk anvendte koordinatsystemer.</h4>
     <h4>
-      1. Vælg et input- og outputkoordinatsystem. Vælg derefter et sæt inputkoordinater for at fortage transformationen.
+      1. Vælg et input- og outputkoordinatsystem. Vælg derefter et sæt inputkoordinater for at foretage transformationen.
       <div><h4>Inputkoordinater vælges ved enten at indtaste dem selv, trykke på kortet, eller indtaste en addresse i søgefeltet.</h4></div>
     </h4>
     <h4>

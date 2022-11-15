@@ -2,13 +2,13 @@
   <Transition name="close">
     <section v-show="!menuClosed || window.width > 704" class="container">
       <article class="coordinate-transformation-box" ref="mother">
-        <InputCoordinates class="input"
+        <InputCard class="input"
           @input-epsg-changed="inputEPSGChanged"
           @error-occurred="errorOccurred"
           @input-coords-changed="inputCoordsChanged"
           @is-3d-changed="is3DChanged"
         />
-        <OutputCoordinates class="output"
+        <OutputCard class="output"
           :inputEPSG=inputEPSG
           :inputCoords=inputCoords
           @error-occurred="errorOccurred"
@@ -18,7 +18,7 @@
         <menu-closer class="menu-closer" @handle-close="this.menuClosed = true"/>
       </article>
       <div v-show="popupVisible" class="message">Koordinater kopieret</div>
-      <div v-show="mapErrorVisible" class="message">{{ mapError }}</div>
+      <div v-show="mapErrorIsVisible" class="message">{{ mapError }}</div>
       <div v-show="errorVisible" class="message">{{ error }}</div>
     </section>
   </Transition>
@@ -40,8 +40,8 @@ import { defineAsyncComponent, ref, inject } from 'vue'
 export default {
   name: 'CoordinateTransformation',
   components: {
-    InputCoordinates: defineAsyncComponent(() => import('@/components/coordinatetransformation/InputCoordinates')),
-    OutputCoordinates: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCoordinates')),
+    InputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/InputCard')),
+    OutputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCard')),
     MenuCloser: defineAsyncComponent(() => import('@/components/coordinatetransformation/MenuCloser'))
   },
   props: {
@@ -51,7 +51,7 @@ export default {
         return ''
       }
     },
-    mapErrorVisible: {
+    mapErrorIsVisible: {
       type: Boolean,
       default () {
         return false
@@ -59,14 +59,31 @@ export default {
     }
   },
   methods: {
+    /**
+     * updates the input EPSG to the given EPSG code
+     * and emits an event input-epsg-changed
+     * @param code
+     */
     inputEPSGChanged (code) {
       this.inputEPSG = code.srid
       this.$emit('input-epsg-changed', code.srid)
     },
+
+    /**
+     * emits an event input-coord-changed
+     * run when the input coordinates in the input card is changed
+     * e.g. when choosing EPSG, when clicking map, when changed manually, when entering address
+     * @param coords
+     */
     inputCoordsChanged (coords) {
       this.inputCoords = coords
       this.$emit('input-coords-changed', coords)
     },
+
+    /**
+     * updates the is3D variable according to the state
+     * @param state
+     */
     is3DChanged (state) {
       this.is3D = state
     },
@@ -74,9 +91,17 @@ export default {
       this.error = err
       this.errorVisible = state
     },
+
+    /**
+     * updates the popupIsVisible according to the given state
+     * @param state
+     */
     coordinatesCopied (state) {
       this.popupVisible = state
     },
+    /**
+     * sets the dimensions of the components according to the width and height of the viewport
+     */
     handleResize () {
       this.window.width = window.innerWidth
       this.window.height = window.innerHeight

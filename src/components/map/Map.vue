@@ -93,6 +93,10 @@ export default {
     // Holder øje med hvilken input EPSG-kode vi bruger i øjeblikket
     inputEPSGChanged (epsg) {
       this.inputEPSG = epsg
+    },
+
+    clearAddressField () {
+      console.log('clear the address field')
     }
   },
 
@@ -196,6 +200,8 @@ export default {
 
           // Lyt efter brugerklik på kortet med kortmarkøren og foretag evt. transformation
           olMap.value.on('click', e => {
+            // clear the address input field
+            document.getElementById('dawa-autocomplete-input').value = ''
             // TODO: this should trigger transform in outputCard.vue
             const mpos = olMap.value.getEventCoordinate(e.originalEvent)
             // Transformér kun hvis EPSG-koderne er forskellige

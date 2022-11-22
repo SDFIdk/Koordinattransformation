@@ -1,9 +1,12 @@
 <template>
   <article class="coordinate-selection">
     <section
-      @click="inputActive = !inputActive"
+      @click="toggleDropdown"
       class="selected-input"
-      :class="[{ inputActive: inputActive }, { isOutput: isOutput }, { outputNotSelected: outputNotSelected }]"
+      :class="[
+        { inputActive: inputActive },
+        { isOutput: isOutput },
+        { outputNotSelected: outputNotSelected }]"
     >
       <span class="input-crs">
         <Icon v-if="isOutput && outputNotSelected"
@@ -91,6 +94,11 @@ export default {
     epsgChanged (code) {
       // Hvis af en EPSG-koderne ændres, skal der foretages en passende ændring af input- og/eller outputkoordinaterne
       this.$emit('epsg-changed', code)
+    },
+
+    toggleDropdown () {
+      console.log('toggle dropdown')
+      this.inputActive = !this.inputActive
     }
   },
 

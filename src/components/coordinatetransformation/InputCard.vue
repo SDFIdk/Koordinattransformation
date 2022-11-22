@@ -4,7 +4,7 @@
       <h3>Input</h3>
     </div>
     <section class="coordinate-selection-wrapper">
-      <EpsgSelection :isOutput="false" @epsg-changed="inputEPSGChanged"/>
+      <EpsgSelection ref="epsgRef" @keyup.enter='enterKey' id="epsgID" tabindex="1" :isOutput="false" @epsg-changed="inputEPSGChanged"/>
     </section>
     <div class="input">
       <span class="first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
@@ -209,6 +209,7 @@ import { ref, inject, onUpdated, watch, onMounted, defineEmits } from 'vue'
 import { useStore } from 'vuex'
 import EpsgSelection from '@/components/coordinatetransformation/EpsgSelection'
 
+const epsgRef = ref(null)
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
 const inputEPSG = ref('')
@@ -225,6 +226,7 @@ const seconds = ref([0, 0])
 const meters = ref(0)
 const is3D = ref(true)
 const epsgIsDegrees = ref(false)
+const focusedElement = document.activeElement
 
 const addressSelected = ref('')
 
@@ -232,8 +234,13 @@ const emit = defineEmits([
   'input-epsg-changed',
   'error-occurred',
   'input-coords-changed',
-  'is-3d-changed'
+  'is-3d-changed',
+  'toggled-dropdown'
 ])
+
+const enterKey = () => {
+  epsgRef.value.toggleDropdown()
+}
 /**
  * UTranformation af inputkoordinaterne, når brugeren vælger ny EPSG
  * @param code
@@ -427,6 +434,12 @@ setInput()
 watch(mapMarkerInputCoords, () => {
   inputCoords.value = mapMarkerInputCoords.value
   setInput()
+})
+
+watch(focusedElement, () => {
+  if (focusedElement === document.getElementsByClassName('epsgID')) {
+    print('epsg has focus')
+  }
 })
 
 // Hold øje med de tastefelterne til inputkoordinater,

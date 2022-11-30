@@ -5,11 +5,10 @@
     </div>
     <section class="coordinate-selection-wrapper">
       <select id="epsg-select" @change="inputEPSGChanged">
-        <option v-for="(code, index) in filteredCRS" :key="index" :value='code' >
+        <option class="epsg-option" v-for="(code, index) in filteredCRS" :key="index" :value='code' >
             {{ code.title_short }}
         </option>
       </select>
-      <EpsgSelection ref="epsgRef" @keyup.enter='enterKey' id="epsgID" tabindex="1" :isOutput="false" @epsg-changed="inputEPSGChanged"/>
     </section>
     <div class="input">
       <span class="first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
@@ -204,8 +203,8 @@
 
 <script setup>
 /**
- * InputCoordinates er selvsagt komponentet, hvor brugeren vælger en input EPSG-kode og inputkoordinater.
- * Koordinaterne kan tastees manuelt, eller ved at indtaste en addresse i søgefeltet.
+ * InputCard er selvsagt komponentet, hvor brugeren vælger en input EPSG-kode og inputkoordinater.
+ * Koordinaterne kan tastes manuelt, eller ved at indtaste en addresse i søgefeltet.
  * De kan også nedarves fra Map.vue (og kaldes her 'mapMarkerInputCoords') via inject
  * Det skal emitte til sin forældre CoordinateTransformation, hvis koordinaterne eller EPSG-koden ændres,
  * eller hvis der er sket en transformationsfejl (f.eks. out-of-bounds)
@@ -214,17 +213,18 @@ import { ref, inject, onUpdated, watch, onMounted, defineEmits } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 
-const epsgRef = ref(null)
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
 const inputEPSG = ref('')
 const colors = inject('themeColors')
 const store = useStore()
 const route = useRoute()
+
 // Formatknapperne
 const degreesChecked = ref(false)
 const minutesChecked = ref(false)
 const secondsChecked = ref(false)
+
 // DMS
 const degrees = ref([0, 0])
 const minutes = ref([0, 0])
@@ -523,6 +523,15 @@ onUpdated(() => {
   margin: 0;
   box-sizing: border-box;
 }
+
+#epsg-select {
+  padding-left: 20px;
+  width: 100%;
+  height: 2.5rem;
+  border-radius: 30px;
+  border-color: var(--darkSteel);
+}
+
 .coordinate-selection-wrapper {
   margin: 1rem 0;
 }

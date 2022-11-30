@@ -41,8 +41,7 @@ export default {
   name: 'CoordinateTransformation',
   components: {
     InputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/InputCard')),
-    OutputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCard')),
-    MenuCloser: defineAsyncComponent(() => import('@/components/coordinatetransformation/MenuCloser'))
+    OutputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCard'))
   },
   props: {
     mapError: {

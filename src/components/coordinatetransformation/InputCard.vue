@@ -4,6 +4,11 @@
       <h3>Input</h3>
     </div>
     <section class="coordinate-selection-wrapper">
+      <select id="epsg-select" @change="inputEPSGChanged">
+        <option v-for="(code, index) in filteredCRS" :key="index" :value='code' >
+            {{ code.title_short }}
+        </option>
+      </select>
       <EpsgSelection ref="epsgRef" @keyup.enter='enterKey' id="epsgID" tabindex="1" :isOutput="false" @epsg-changed="inputEPSGChanged"/>
     </section>
     <div class="input">
@@ -207,7 +212,7 @@
  */
 import { ref, inject, onUpdated, watch, onMounted, defineEmits } from 'vue'
 import { useStore } from 'vuex'
-import EpsgSelection from '@/components/coordinatetransformation/EpsgSelection'
+import { useRoute } from 'vue-router'
 
 const epsgRef = ref(null)
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
@@ -215,6 +220,7 @@ const inputCoords = ref(mapMarkerInputCoords.value)
 const inputEPSG = ref('')
 const colors = inject('themeColors')
 const store = useStore()
+const route = useRoute()
 // Formatknapperne
 const degreesChecked = ref(false)
 const minutesChecked = ref(false)
@@ -226,8 +232,8 @@ const seconds = ref([0, 0])
 const meters = ref(0)
 const is3D = ref(true)
 const epsgIsDegrees = ref(false)
-const focusedElement = document.activeElement
-
+const crs = ref([])
+const filteredCRS = ref([])
 const addressSelected = ref('')
 
 const emit = defineEmits([
@@ -238,14 +244,53 @@ const emit = defineEmits([
   'toggled-dropdown'
 ])
 
-const enterKey = () => {
-  epsgRef.value.toggleDropdown()
+const getEpsgCodes = async () => {
+  const tempCRS = []
+  // Der er forskellige lister for Danmark og Grøndland
+  if (route.name === 'Denmark' && crs.value.length !== 0) {
+    for (let i = 0, iEnd = crs.value.DK.length; i < iEnd; ++i) {
+      await store
+        .dispatch('CRSInformation/get', crs.value.DK[i])
+        .then(() => {
+          tempCRS.push(store.state.CRSInformation.data)
+        })
+    }
+
+    for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
+      await store
+        .dispatch('CRSInformation/get', crs.value.Global[i])
+        .then(() => {
+          tempCRS.push(store.state.CRSInformation.data)
+        })
+    }
+    filteredCRS.value = tempCRS
+    document.getElementById('epsg-select').value = filteredCRS.value[0].title
+  } else if (route.name === 'Greenland') {
+    for (let i = 0, iEnd = crs.value.GL.length; i < iEnd; ++i) {
+      await store
+        .dispatch('CRSInformation/get', crs.value.GL[i])
+        .then(() => {
+          tempCRS.push(store.state.CRSInformation.data)
+        })
+    }
+    for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
+      await store
+        .dispatch('CRSInformation/get', crs.value.Global[i])
+        .then(() => {
+          tempCRS.push(store.state.CRSInformation.data)
+        })
+    }
+    filteredCRS.value = tempCRS
+    document.getElementById('epsg-select').value = filteredCRS.value[0].title
+  }
 }
+
 /**
  * UTranformation af inputkoordinaterne, når brugeren vælger ny EPSG
  * @param code
  */
-const inputEPSGChanged = (code) => {
+const inputEPSGChanged = (event) => {
+  const code = event.target.selectedOptions[0]._value
   // check units. Er de grader eller meter
   if (code.v1_unit === 'degree') {
     epsgIsDegrees.value = true
@@ -257,7 +302,8 @@ const inputEPSGChanged = (code) => {
   // 3D eller 2D?
   is3D.value = code.v3 !== null
   if (is3D.value) {
-    store.dispatch('trans/get', inputEPSG.value + '/' + code.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1] + ',' + inputCoords.value[2])
+    console.log('srid: ', code.srid)
+    store.dispatch('trans/get', inputEPSG.value + '/' + code.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1])
       .then(() => {
         const output = store.state.trans.data
         if (output.message !== undefined) {
@@ -426,6 +472,11 @@ onMounted(() => {
       getCoordsFromAdress(addressSelected.value)
     }
   })
+  store.dispatch('CRS/clear')
+  store.dispatch('CRS/get', '').then(() => {
+    crs.value = store.state.CRS.data
+    getEpsgCodes()
+  })
 })
 setInput()
 
@@ -434,12 +485,6 @@ setInput()
 watch(mapMarkerInputCoords, () => {
   inputCoords.value = mapMarkerInputCoords.value
   setInput()
-})
-
-watch(focusedElement, () => {
-  if (focusedElement === document.getElementsByClassName('epsgID')) {
-    print('epsg has focus')
-  }
 })
 
 // Hold øje med de tastefelterne til inputkoordinater,

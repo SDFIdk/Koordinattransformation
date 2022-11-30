@@ -67,8 +67,8 @@
  * CoordinateSelection er drop-down menuen af EPSG-koder i både input- og outputkomponenterne
  */
 import { onMounted, ref, inject } from 'vue'
-import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
+// import { useStore } from 'vuex'
+// import { useRoute } from 'vue-router'
 
 export default {
   name: 'EpsgSelectionComponent',
@@ -104,71 +104,64 @@ export default {
 
   setup (props) {
     const colors = inject('themeColors')
-    const crs = ref([])
-    const store = useStore()
-    const route = useRoute()
+    // const store = useStore()
+    // const route = useRoute()
     const chosenInput = ref('')
-    const filteredCRS = ref([])
     const inputActive = ref(false)
     const outputNotSelected = ref(true)
 
     onMounted(() => {
       // Vi genererer listen af EPSG-koder
-      store.dispatch('CRS/clear')
-      store.dispatch('CRS/get', '').then(() => {
-        crs.value = store.state.CRS.data
-        makeCRSList()
-      })
     })
 
-    const makeCRSList = async () => {
-      const tempCRS = []
-      // Der er forskellige lister for Danmark og Grøndland
-      if (route.name === 'Denmark' && crs.value.length !== 0) {
-        for (let i = 0, iEnd = crs.value.DK.length; i < iEnd; ++i) {
-          await store
-            .dispatch('CRSInformation/get', crs.value.DK[i])
-            .then(() => {
-              tempCRS.push(store.state.CRSInformation.data)
-            })
-        }
+    // const makeCRSList = async () => {
+    //   const tempCRS = []
+    //   // Der er forskellige lister for Danmark og Grøndland
+    //   if (route.name === 'Denmark' && crs.value.length !== 0) {
+    //     for (let i = 0, iEnd = crs.value.DK.length; i < iEnd; ++i) {
+    //       await store
+    //         .dispatch('CRSInformation/get', crs.value.DK[i])
+    //         .then(() => {
+    //           tempCRS.push(store.state.CRSInformation.data)
+    //         })
+    //     }
 
-        for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
-          await store
-            .dispatch('CRSInformation/get', crs.value.Global[i])
-            .then(() => {
-              tempCRS.push(store.state.CRSInformation.data)
-            })
-        }
-        filteredCRS.value = tempCRS
-        chosenInput.value = props.isOutput
-          ? 'Vælg koordinatsystem'
-          : filteredCRS.value[0].title
-      } else if (route.name === 'Greenland') {
-        for (let i = 0, iEnd = crs.value.GL.length; i < iEnd; ++i) {
-          await store
-            .dispatch('CRSInformation/get', crs.value.GL[i])
-            .then(() => {
-              tempCRS.push(store.state.CRSInformation.data)
-            })
-        }
-        for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
-          await store
-            .dispatch('CRSInformation/get', crs.value.Global[i])
-            .then(() => {
-              tempCRS.push(store.state.CRSInformation.data)
-            })
-        }
-        filteredCRS.value = tempCRS
-        chosenInput.value = props.isOutput
-          ? 'Vælg koordinatsystem'
-          : filteredCRS.value[0].title
-      }
-    }
+    //     for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
+    //       await store
+    //         .dispatch('CRSInformation/get', crs.value.Global[i])
+    //         .then(() => {
+    //           tempCRS.push(store.state.CRSInformation.data)
+    //         })
+    //     }
+    //     filteredCRS.value = tempCRS
+    //     chosenInput.value = props.isOutput
+    //       ? 'Vælg koordinatsystem'
+    //       : filteredCRS.value[0].title
+    //   } else if (route.name === 'Greenland') {
+    //     for (let i = 0, iEnd = crs.value.GL.length; i < iEnd; ++i) {
+    //       await store
+    //         .dispatch('CRSInformation/get', crs.value.GL[i])
+    //         .then(() => {
+    //           tempCRS.push(store.state.CRSInformation.data)
+    //         })
+    //     }
+    //     for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
+    //       await store
+    //         .dispatch('CRSInformation/get', crs.value.Global[i])
+    //         .then(() => {
+    //           tempCRS.push(store.state.CRSInformation.data)
+    //         })
+    //     }
+    //     filteredCRS.value = tempCRS
+    //     chosenInput.value = props.isOutput
+    //       ? 'Vælg koordinatsystem'
+    //       : filteredCRS.value[0].title
+    //   }
+    // }
 
     return {
       colors,
-      filteredCRS,
+      // filteredCRS,
       chosenInput,
       inputActive,
       outputNotSelected

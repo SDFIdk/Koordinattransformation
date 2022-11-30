@@ -2,10 +2,15 @@
   <section class="output-coordinate">
     <h3>Output</h3>
     <section class="coordinate-selection-wrapper">
-      <EpsgSelection
+      <select id='epsg-output-select' @change="onEpsgSelect">
+        <option v-for="(code, index) in filteredOutputCodes" :key="index" :value='code' >
+            {{ code.title_short }}
+        </option>
+      </select>
+      <!-- <EpsgSelection
         :isOutput="true"
         :outputSelected="!outputSelected"
-        @output-selected="outputSelectedMethod"/>
+        @output-selected="outputSelectedMethod"/> -->
     </section>
     <div class="transformed-coordinates" :class="{ hasTransformed: hasTransformed}">
       <div v-if="isLoading">
@@ -117,8 +122,9 @@
 /**
  * Ouput foretager den reelle transformation - den er vi er interesseret i
  */
-import { defineAsyncComponent, inject, ref } from 'vue'
+import { defineAsyncComponent, inject, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
 
 export default {
   name: 'OutputCoordinates',
@@ -126,27 +132,20 @@ export default {
   props: {
     inputEPSG: {
       type: String,
-      default () {
-        return ''
-      }
+      default () { return '' }
     },
 
     is3D: {
-      type: Boolean,
-      default () {
-        return true
-      }
+      type: Boolean, default () { return true }
     },
 
     inputCoords: {
-      type: Array,
-      default () {
-        return inject('mapMarkerInputCoords').value
-      }
+      type: Array, default () { return inject('mapMarkerInputCoords').value }
     }
   },
 
   components: {
+    // eslint-disable-next-line vue/no-unused-components
     EpsgSelection: defineAsyncComponent(() => import('@/components/coordinatetransformation/EpsgSelection')),
     Loader: defineAsyncComponent(() => import('@/components/shared/Loader'))
   },
@@ -154,7 +153,8 @@ export default {
   methods: {
     // En output-EPSG er valgt: Der skal foretages transformation,
     // og brugergrænsefladen opdateres ift. om output EPSG-koden er i meter eller DMS og 2D eller 3D
-    outputSelectedMethod (code) {
+    onEpsgSelect (event) {
+      const code = event.target.selectedOptions[0]._value
       if (code.v1_unit === 'metre') {
         this.isMetres = true
         // TODO: this should hide the radio buttons entirely
@@ -169,6 +169,82 @@ export default {
       this.transform()
     },
 
+    disableRadioButtons () {
+      this.degreesChecked = false
+      this.minutesChecked = false
+      this.secondsChecked = false
+    },
+
+    checkDegrees () {
+      console.log('check degrees')
+      if (!this.degreesChecked) {
+        this.degreesChecked = true
+        this.minutesChecked = false
+        this.secondsChecked = false
+        this.setTransformInput()
+      }
+    },
+
+    checkMinutes () {
+      console.log('check minutes')
+      if (!this.minutesChecked) {
+        this.degreesChecked = false
+        this.minutesChecked = true
+        this.secondsChecked = false
+        this.setTransformInput()
+      }
+    },
+
+    checkSeconds () {
+      console.log('check seconds')
+      if (!this.secondsChecked) {
+        this.degreesChecked = false
+        this.minutesChecked = false
+        this.secondsChecked = true
+        this.setTransformInput()
+      }
+    },
+
+    setTransformInput () {
+      if (!this.epsgIsDegrees || this.degreesChecked.value) {
+        console.log('first loop')
+        const deg0 = parseFloat(this.inputCoords[0].toFixed(4))
+        const deg1 = parseFloat(this.inputCoords[1].toFixed(4))
+
+        this.degrees[0] = deg0
+        this.degrees[1] = deg1
+      } else if (this.minutesChecked.value) {
+        console.log('second loop')
+        const deg0 = Math.floor(this.inputCoords[0])
+        const deg1 = Math.floor(this.inputCoords[1])
+
+        const min0 = parseFloat(((this.inputCoords.value[0] - deg0) * 60).toFixed(4))
+        const min1 = parseFloat(((this.inputCoords.value[1] - deg1) * 60).toFixed(4))
+
+        this.degrees.value[0] = deg0
+        this.degrees.value[1] = deg1
+        this.minutes.value[0] = min0
+        this.minutes.value[1] = min1
+      } else {
+        console.log('third loop')
+        const deg0 = Math.floor(this.inputCoords.value[0])
+        const deg1 = Math.floor(this.inputCoords.value[1])
+
+        const min0 = Math.floor((this.inputCoords.value[0] - deg0) * 60)
+        const min1 = Math.floor((this.inputCoords.value[1] - deg1) * 60)
+
+        const sec0 = parseFloat(((this.inputCoords.value[0] - deg0 - min0 / 60) * 3600).toFixed(4))
+        const sec1 = parseFloat(((this.inputCoords.value[1] - deg1 - min1 / 60) * 3600).toFixed(4))
+
+        this.degrees.value[0] = deg0
+        this.degrees.value[1] = deg1
+        this.minutes.value[0] = min0
+        this.minutes.value[1] = min1
+        this.seconds.value[0] = sec0
+        this.seconds.value[1] = sec1
+      }
+    },
+
     // Mulighed for at kopiere outputtet efter transformation
     copyCoordinates () {
       if (this.outputSelected && !this.isLoading) {
@@ -178,35 +254,6 @@ export default {
           this.$emit('coordinates-copied', false)
         }, 3333)
       }
-    },
-
-    // Formatknapperne skal kun være aktive,
-    // hvis EPSG-enheden også er i decimalgrader - ikke meter
-    disableRadioButtons () {
-      this.degreesChecked = false
-      this.minutesChecked = false
-      this.secondsChecked = false
-    },
-
-    checkDegrees () {
-      this.degreesChecked = true
-      this.minutesChecked = false
-      this.secondsChecked = false
-      this.setOutput()
-    },
-
-    checkMinutes () {
-      this.degreesChecked = false
-      this.minutesChecked = true
-      this.secondsChecked = false
-      this.setOutput()
-    },
-
-    checkSeconds () {
-      this.degreesChecked = false
-      this.minutesChecked = false
-      this.secondsChecked = true
-      this.setOutput()
     }
   },
 
@@ -218,6 +265,16 @@ export default {
       if (this.outputSelected) {
         this.transform()
       }
+    },
+
+    minutesChecked () {
+      this.setOutput()
+    },
+    secondsChecked () {
+      this.setOutput()
+    },
+    degreesChecked () {
+      this.setOutput()
     }
   },
 
@@ -225,9 +282,12 @@ export default {
     const store = useStore()
     const colors = inject('themeColors')
     const outputEPSG = ref('')
+
     const degreesChecked = ref(false)
     const minutesChecked = ref(false)
     const secondsChecked = ref(false)
+
+    const degrees = ref([0, 0])
     const outputSelected = ref(false)
     const outputCoords = ref([0, 0, 0])
     const output1 = ref('')
@@ -237,47 +297,52 @@ export default {
     const isLoading = ref(false)
     const isMetres = ref(true)
     const hover = ref(false)
-    // Smuksering af outputtet
+    const crs = ref([])
+    // const EpsgCodes = ref([])
+    const filteredOutputCodes = ref([])
+    const route = useRoute()
+
+    // a whole lot of math
     const setOutput = () => {
-      let res1 = ''
-      let res2 = ''
-      let res3 = ''
+      let result1 = ''
+      let result2 = ''
+      let result3 = ''
       const d3 = outputCoords.value[2].toFixed(2)
       if (isMetres.value) {
         const d1 = outputCoords.value[0].toFixed(4)
         const d2 = outputCoords.value[1].toFixed(4)
-        res1 = d1 + ' m, '
-        res2 = d2 + ' m'
+        result1 = d1 + ' m, '
+        result2 = d2 + ' m'
         if (props.is3D) {
-          res2 += ', '
-          res3 = d3 + ' m'
+          result2 += ', '
+          result3 = d3 + ' m'
         } else {
-          res3 = ''
+          result3 = ''
         }
       } else {
         if (degreesChecked.value) {
           const d1 = outputCoords.value[0].toFixed(4)
           const d2 = outputCoords.value[1].toFixed(4)
-          res1 = d1 + ' °N, '
-          res2 = d2 + ' °E'
+          result1 = d1 + ' °N, '
+          result2 = d2 + ' °E'
           if (props.is3D) {
-            res2 += ', '
-            res3 = d3 + ' m'
+            result2 += ', '
+            result3 = d3 + ' m'
           } else {
-            res3 = ''
+            result3 = ''
           }
         } else if (minutesChecked.value) {
           const d1 = Math.floor(outputCoords.value[0])
           const d2 = Math.floor(outputCoords.value[1])
           const m1 = ((outputCoords.value[0] - d1) * 60).toFixed(4)
           const m2 = ((outputCoords.value[1] - d2) * 60).toFixed(4)
-          res1 = d1 + ' ° ' + m1 + '\' N, '
-          res2 = d2 + ' ° ' + m2 + ' \' E'
+          result1 = d1 + ' ° ' + m1 + '\' N, '
+          result2 = d2 + ' ° ' + m2 + ' \' E'
           if (props.is3D) {
-            res2 += ', '
-            res3 = d3 + ' m'
+            result2 += ', '
+            result3 = d3 + ' m'
           } else {
-            res3 = ''
+            result3 = ''
           }
         } else {
           const d1 = Math.floor(outputCoords.value[0])
@@ -286,13 +351,13 @@ export default {
           const m2 = Math.floor((outputCoords.value[1] - d2) * 60)
           const s1 = ((outputCoords.value[0] - d1 - m1 / 60) * 3600).toFixed(4)
           const s2 = ((outputCoords.value[1] - d2 - m2 / 60) * 3600).toFixed(4)
-          res1 = d1 + '° ' + m1 + '\' ' + s1 + '" N, '
-          res2 = d2 + '° ' + m2 + '\' ' + s2 + '" E'
+          result1 = d1 + '° ' + m1 + '\' ' + s1 + '" N, '
+          result2 = d2 + '° ' + m2 + '\' ' + s2 + '" E'
           if (props.is3D) {
-            res2 += ', '
-            res3 = d3 + ' m'
+            result2 += ', '
+            result3 = d3 + ' m'
           } else {
-            res3 = ''
+            result3 = ''
           }
         }
       }
@@ -305,10 +370,51 @@ export default {
       isLoading.value = true
       setTimeout(() => {
         isLoading.value = false
-        output1.value = res1
-        output2.value = res2
-        output3.value = res3
+        output1.value = result1
+        output2.value = result2
+        output3.value = result3
       }, 500)
+    }
+
+    const getEpsgCodes = async () => {
+      const tempCodes = []
+      // Der er forskellige lister for Danmark og Grøndland
+      if (route.name === 'Denmark' && crs.value.length !== 0) {
+        for (let i = 0; i < crs.value.DK.length; ++i) {
+          await store
+            .dispatch('CRSInformation/get', crs.value.DK[i])
+            .then(() => {
+              tempCodes.push(store.state.CRSInformation.data)
+            })
+        }
+
+        for (let i = 0; i < crs.value.Global.length; ++i) {
+          await store
+            .dispatch('CRSInformation/get', crs.value.Global[i])
+            .then(() => {
+              tempCodes.push(store.state.CRSInformation.data)
+            })
+        }
+        filteredOutputCodes.value = tempCodes
+        document.getElementById('epsg-output-select').value = filteredOutputCodes.value[0].title
+      } else if (route.name === 'Greenland') {
+        for (let i = 0; i < crs.value.GL.length; ++i) {
+          await store
+            .dispatch('CRSInformation/get', crs.value.GL[i])
+            .then(() => {
+              tempCodes.push(store.state.CRSInformation.data)
+            })
+        }
+        for (let i = 0; i < crs.value.Global.length; ++i) {
+          await store
+            .dispatch('CRSInformation/get', crs.value.Global[i])
+            .then(() => {
+              tempCodes.push(store.state.CRSInformation.data)
+            })
+        }
+        filteredOutputCodes.value = tempCodes
+        document.getElementById('epsg-output-select').value = 'Vælg koordinatsystem'
+      }
     }
 
     const error = err => {
@@ -319,7 +425,9 @@ export default {
     }
 
     const transform = () => {
-      if (!hasTransformed.value) return
+      if (!hasTransformed.value) {
+        return
+      }
       if (props.inputEPSG === outputEPSG.value) {
         outputCoords.value[0] = props.inputCoords[0]
         outputCoords.value[1] = props.inputCoords[1]
@@ -354,7 +462,19 @@ export default {
           })
       }
     }
+
+    onMounted(() => {
+      store.dispatch('CRS/clear')
+      store.dispatch('CRS/get', '').then(() => {
+        crs.value = store.state.CRS.data
+        getEpsgCodes()
+      })
+    })
+
     return {
+      degrees,
+      filteredOutputCodes,
+      getEpsgCodes,
       store,
       colors,
       degreesChecked,

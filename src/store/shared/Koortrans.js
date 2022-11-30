@@ -34,6 +34,7 @@ export class Koortrans {
             })
         })
       },
+
       clear ({ commit }) {
         commit('clear')
       }
@@ -43,13 +44,16 @@ export class Koortrans {
       request (state) {
         state.status = 'loading'
       },
+
       success (state, data) {
         state.data = parseData(data)
         state.status = 'success'
       },
+
       error (state) {
         state.status = 'error'
       },
+
       clear (state) {
         state.data = []
       }

@@ -25,27 +25,11 @@ import { createPopper } from '@popperjs/core'
 export default {
   name: 'TooltipComponent',
   props: {
-    placement: {
-      type: String,
-      default: 'top'
-    },
-    arrow: {
-      type: String,
-      default: ''
-    },
-    mother: {
-      type: HTMLElement,
-      default () {
-        return document.body
-      }
-    },
-    isVisible: {
-      type: Boolean,
-      default: false
-    },
-    backgroundColor: {
-      type: String
-    }
+    placement: { type: String, default: 'top' },
+    arrow: { type: String, default: '' },
+    mother: { type: HTMLElement, default () { return document.body } },
+    isVisible: { type: Boolean, default: false },
+    backgroundColor: { type: String }
   },
   data () {
     return {

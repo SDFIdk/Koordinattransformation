@@ -95,7 +95,6 @@ export default {
     },
 
     toggleDropdown () {
-      console.log('toggle dropdown')
       this.inputActive = !this.inputActive
     }
   },

@@ -171,7 +171,6 @@ export default {
     },
 
     checkDegrees () {
-      console.log('check degrees')
       if (!this.degreesChecked) {
         this.degreesChecked = true
         this.minutesChecked = false
@@ -181,7 +180,6 @@ export default {
     },
 
     checkMinutes () {
-      console.log('check minutes')
       if (!this.minutesChecked) {
         this.degreesChecked = false
         this.minutesChecked = true
@@ -191,7 +189,6 @@ export default {
     },
 
     checkSeconds () {
-      console.log('check seconds')
       if (!this.secondsChecked) {
         this.degreesChecked = false
         this.minutesChecked = false
@@ -202,14 +199,12 @@ export default {
 
     setTransformInput () {
       if (!this.epsgIsDegrees || this.degreesChecked.value) {
-        console.log('first loop')
-        const deg0 = parseFloat(this.inputCoords[0].toFixed(4))
-        const deg1 = parseFloat(this.inputCoords[1].toFixed(4))
+        const deg0 = parseFloat(this.inputCoords[0]).toFixed(4)
+        const deg1 = parseFloat(this.inputCoords[1]).toFixed(4)
 
         this.degrees[0] = deg0
         this.degrees[1] = deg1
       } else if (this.minutesChecked.value) {
-        console.log('second loop')
         const deg0 = Math.floor(this.inputCoords[0])
         const deg1 = Math.floor(this.inputCoords[1])
 
@@ -221,7 +216,6 @@ export default {
         this.minutes.value[0] = min0
         this.minutes.value[1] = min1
       } else {
-        console.log('third loop')
         const deg0 = Math.floor(this.inputCoords.value[0])
         const deg1 = Math.floor(this.inputCoords.value[1])
 
@@ -329,8 +323,8 @@ export default {
         } else if (minutesChecked.value) {
           const d1 = Math.floor(outputCoords.value[0])
           const d2 = Math.floor(outputCoords.value[1])
-          const m1 = ((outputCoords.value[0] - d1) * 60).toFixed(4)
-          const m2 = ((outputCoords.value[1] - d2) * 60).toFixed(4)
+          const m1 = (parseFloat(outputCoords.value[0] - d1) * 60).toFixed(4)
+          const m2 = (parseFloat(outputCoords.value[1] - d2) * 60).toFixed(4)
           result1 = d1 + ' ° ' + m1 + '\' N, '
           result2 = d2 + ' ° ' + m2 + ' \' E'
           if (props.is3D) {

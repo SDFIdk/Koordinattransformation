@@ -33,7 +33,6 @@
           <input
             class="coordinates"
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
-            type="number"
             step="0.0001"
             v-model=degrees[0]
           />
@@ -45,7 +44,6 @@
             class="coordinates"
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[0]
-            type="number"
             step="0.0001"
           />
           <span class="degrees">'</span>
@@ -55,7 +53,6 @@
             class="coordinates"
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[0]
-            type="number"
             step="0.0001"
           />
           <span class="degrees">"</span>
@@ -83,7 +80,6 @@
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=degrees[1]
-            type="number"
             step="0.0001"
           />
           <span class="degrees" v-show="epsgIsDegrees">°E</span>
@@ -93,7 +89,6 @@
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[1]
-            type="number"
             step="0.0001"
           />
           <span class="degrees">'</span>
@@ -102,7 +97,6 @@
           <input
             :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[1]
-            type="number"
             step="0.0001"
           />
           <span class="degrees">"</span>
@@ -121,7 +115,6 @@
         <input
           :class="{degreesInput: true}"
           v-model=meters
-          type="number"
           step="0.0001"
         />
         <span class="degrees">m</span>
@@ -302,7 +295,6 @@ const inputEPSGChanged = (event) => {
   // 3D eller 2D?
   is3D.value = code.v3 !== null
   if (is3D.value) {
-    console.log('srid: ', code.srid)
     store.dispatch('trans/get', inputEPSG.value + '/' + code.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1])
       .then(() => {
         const output = store.state.trans.data
@@ -329,8 +321,8 @@ const inputEPSGChanged = (event) => {
           return
         }
         inputEPSG.value = code.srid
-        inputCoords.value[0] = output.v1
-        inputCoords.value[1] = output.v2
+        inputCoords.value[0] = output.v1.toString().replace(',', '.')
+        inputCoords.value[1] = output.v2.toString().replace(',', '.')
         emit('input-epsg-changed', code)
         setInput()
       })
@@ -374,31 +366,31 @@ const checkSeconds = () => {
 // Smuksering af inputkoordinaterne i de tre til syv tastefelter
 const setInput = () => {
   if (!epsgIsDegrees.value || degreesChecked.value) {
-    const deg0 = parseFloat(inputCoords.value[0].toFixed(4))
-    const deg1 = parseFloat(inputCoords.value[1].toFixed(4))
+    const deg0 = parseFloat(inputCoords.value[0]).toFixed(4)
+    const deg1 = parseFloat(inputCoords.value[1]).toFixed(4)
 
     degrees.value[0] = deg0
     degrees.value[1] = deg1
   } else if (minutesChecked.value) {
-    const deg0 = Math.floor(inputCoords.value[0])
-    const deg1 = Math.floor(inputCoords.value[1])
+    const deg0 = Math.floor(inputCoords.value[0]).toString().replace(',', '.')
+    const deg1 = Math.floor(inputCoords.value[1]).toString().replace(',', '.')
 
-    const min0 = parseFloat(((inputCoords.value[0] - deg0) * 60).toFixed(4))
-    const min1 = parseFloat(((inputCoords.value[1] - deg1) * 60).toFixed(4))
+    const min0 = parseFloat(((inputCoords.value[0] - deg0) * 60)).toFixed(4).toString().replace(',', '.')
+    const min1 = parseFloat(((inputCoords.value[1] - deg1) * 60)).toFixed(4).toString().replace(',', '.')
 
     degrees.value[0] = deg0
     degrees.value[1] = deg1
     minutes.value[0] = min0
     minutes.value[1] = min1
   } else {
-    const deg0 = Math.floor(inputCoords.value[0])
-    const deg1 = Math.floor(inputCoords.value[1])
+    const deg0 = Math.floor(inputCoords.value[0]).toString().replace(',', '.')
+    const deg1 = Math.floor(inputCoords.value[1]).toString().replace(',', '.')
 
-    const min0 = Math.floor((inputCoords.value[0] - deg0) * 60)
-    const min1 = Math.floor((inputCoords.value[1] - deg1) * 60)
+    const min0 = Math.floor((inputCoords.value[0] - deg0) * 60).toString().replace(',', '.')
+    const min1 = Math.floor((inputCoords.value[1] - deg1) * 60).toString().replace(',', '.')
 
-    const sec0 = parseFloat(((inputCoords.value[0] - deg0 - min0 / 60) * 3600).toFixed(4))
-    const sec1 = parseFloat(((inputCoords.value[1] - deg1 - min1 / 60) * 3600).toFixed(4))
+    const sec0 = parseFloat(((inputCoords.value[0] - deg0 - min0 / 60) * 3600)).toFixed(4).toString().replace(',', '.')
+    const sec1 = parseFloat(((inputCoords.value[1] - deg1 - min1 / 60) * 3600)).toFixed(4).toString().replace(',', '.')
 
     degrees.value[0] = deg0
     degrees.value[1] = deg1
@@ -441,7 +433,7 @@ const getCoordsFromAdress = async (location) => {
           inputCoords.value[1] = output.v2
           inputCoords.value[2] = output.v3
           setInput()
-          emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
+          emit('input-coords-changed', [inputCoords.value[0].toString().replace(',', '.'), inputCoords.value[1].toString().replace(',', '.'), inputCoords.value[2].toString().replace(',', '.')])
         })
       } else {
         store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0]).then(() => {
@@ -453,7 +445,7 @@ const getCoordsFromAdress = async (location) => {
           inputCoords.value[0] = output.v1
           inputCoords.value[1] = output.v2
           setInput()
-          emit('input-coords-changed', [inputCoords.value[0], inputCoords.value[1], inputCoords.value[2]])
+          emit('input-coords-changed', [inputCoords.value[0].toString().replace(',', '.'), inputCoords.value[1].toString().replace(',', '.'), inputCoords.value[2]].toString().replace(',', '.'))
         })
       }
     })

@@ -7,10 +7,6 @@
             {{ code.title_short }}
         </option>
       </select>
-      <!-- <EpsgSelection
-        :isOutput="true"
-        :outputSelected="!outputSelected"
-        @output-selected="outputSelectedMethod"/> -->
     </section>
     <div class="transformed-coordinates" :class="{ hasTransformed: hasTransformed}">
       <div v-if="isLoading">
@@ -145,8 +141,6 @@ export default {
   },
 
   components: {
-    // eslint-disable-next-line vue/no-unused-components
-    EpsgSelection: defineAsyncComponent(() => import('@/components/coordinatetransformation/EpsgSelection')),
     Loader: defineAsyncComponent(() => import('@/components/shared/Loader'))
   },
 

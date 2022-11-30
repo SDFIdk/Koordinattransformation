@@ -2,7 +2,8 @@
   <section class="output-coordinate">
     <h3>Output</h3>
     <section class="coordinate-selection-wrapper">
-      <select id='epsg-output-select' @change="onEpsgSelect">
+      <select :class="{ isSelected: this.outputSelected }" id='epsg-output-select' @change="onEpsgSelect">
+        <option value="0" disabled selected>Vælg Koordinatsystem</option>
         <option v-for="(code, index) in filteredOutputCodes" :key="index" :value='code' >
             {{ code.title_short }}
         </option>
@@ -296,7 +297,7 @@ export default {
     const filteredOutputCodes = ref([])
     const route = useRoute()
 
-    // a whole lot of math
+    /** Fylder output feltet med de aktuelle koordinater formateret på en pæn måde */
     const setOutput = () => {
       let result1 = ''
       let result2 = ''
@@ -356,9 +357,6 @@ export default {
         }
       }
       // Opdater kun hvis der er sket noget nyt
-      // if (output1.value === res1 && output2.value === res2 && output3.value === res3) {
-      //   return
-      // }
       // Et lille "loader"-icon, der skal gøre brugeren opmærksom på,
       // at der altså fortages en transformation.
       isLoading.value = true
@@ -496,6 +494,24 @@ export default {
   margin: 0;
   padding: 0;
 }
+
+option {
+  background: white;
+  color: black;
+}
+
+#epsg-output-select {
+  padding-left: 20px;
+  width: 100%;
+  height: 2.5rem;
+  border-radius: 30px;
+  border-color: var(--darkSteel);
+}
+
+.isSelected {
+  background: white;
+}
+
 .coordinate-selection-wrapper {
   margin-top: 1.4rem;
 }

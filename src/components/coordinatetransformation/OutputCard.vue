@@ -5,7 +5,7 @@
       <select :class="{ isSelected: this.outputSelected }" id='epsg-output-select' @change="onEpsgSelect">
         <option value="0" disabled selected>Vælg Koordinatsystem</option>
         <option v-for="(code, index) in filteredOutputCodes" :key="index" :value='code' >
-            {{ code.title_short }}
+            {{ code.title_short }} ({{ code.srid }})
         </option>
       </select>
     </section>

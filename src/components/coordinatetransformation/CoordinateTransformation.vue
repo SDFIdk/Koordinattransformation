@@ -41,20 +41,17 @@ export default {
   name: 'CoordinateTransformation',
   components: {
     InputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/InputCard')),
-    OutputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCard'))
+    OutputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCard')),
+    MenuCloser: defineAsyncComponent(() => import('@/components/coordinatetransformation/MenuCloser'))
   },
   props: {
     mapError: {
       type: String,
-      default () {
-        return ''
-      }
+      default () { return '' }
     },
     mapErrorIsVisible: {
       type: Boolean,
-      default () {
-        return false
-      }
+      default () { return false }
     }
   },
   methods: {
@@ -86,6 +83,7 @@ export default {
     is3DChanged (state) {
       this.is3D = state
     },
+
     errorOccurred (state, err) {
       this.error = err
       this.errorVisible = state
@@ -98,6 +96,7 @@ export default {
     coordinatesCopied (state) {
       this.popupVisible = state
     },
+
     /**
      * sets the dimensions of the components according to the width and height of the viewport
      */
@@ -106,6 +105,7 @@ export default {
       this.window.height = window.innerHeight
     }
   },
+
   setup () {
     const inputCoords = ref(inject('inputCoords'))
     const is3D = ref(true)
@@ -128,6 +128,7 @@ export default {
       is3D
     }
   },
+
   created () {
     window.addEventListener('resize', this.handleResize)
     this.handleResize()

@@ -6,7 +6,7 @@
     <section class="coordinate-selection-wrapper">
       <select id="epsg-select" @change="inputEPSGChanged">
         <option class="epsg-option" v-for="(code, index) in filteredCRS" :key="index" :value='code' >
-            {{ code.title_short }}
+            {{ code.title_short }} ({{ code.srid }})
         </option>
       </select>
     </section>
@@ -239,7 +239,7 @@ const emit = defineEmits([
 
 const getEpsgCodes = async () => {
   const tempCRS = []
-  // Der er forskellige lister for Danmark og Grøndland
+  // Der er forskellige lister for Danmark og Grønland
   if (route.name === 'Denmark' && crs.value.length !== 0) {
     for (let i = 0, iEnd = crs.value.DK.length; i < iEnd; ++i) {
       await store
@@ -256,6 +256,7 @@ const getEpsgCodes = async () => {
           tempCRS.push(store.state.CRSInformation.data)
         })
     }
+
     filteredCRS.value = tempCRS
     document.getElementById('epsg-select').value = filteredCRS.value[0].title
   } else if (route.name === 'Greenland') {

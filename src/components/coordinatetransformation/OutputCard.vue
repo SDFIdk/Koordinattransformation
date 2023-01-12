@@ -122,6 +122,7 @@
 import { defineAsyncComponent, inject, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
+import Formatter from './Formatting'
 
 export default {
   name: 'OutputCoordinates',
@@ -296,67 +297,19 @@ export default {
       coordinates.push(parameter + ' m')
     }
 
-    const formatToMetres = (coords) => {
-      let formatted = []
-      const degrees1 = coords[0].toFixed(4)
-      const degrees2 = coords[1].toFixed(4)
-
-      // result1 = degrees1 + ' m, '
-      // result2 = degrees2 + ' m'
-      formatted = [degrees1 + ' m, ', degrees2 + ' m']
-
-      return formatted
-    }
-
-    const formatToDegrees = (coords) => {
-      const degrees1 = coords[0].toFixed(4)
-      const degrees2 = coords[1].toFixed(4)
-      // result1 = degrees1 + ' °N, '
-      // result2 = degrees2 + ' °E'
-      const formatted = [degrees1 + ' °N, ', degrees2 + ' °E']
-
-      return formatted
-    }
-
-    const formatToDegreesAndMinutes = (coords) => {
-      const degrees1 = Math.floor(coords[0])
-      const degrees2 = Math.floor(coords[1])
-      const minutes1 = (parseFloat(coords[0] - degrees1) * 60).toFixed(4)
-      const minutes2 = (parseFloat(coords[1] - degrees2) * 60).toFixed(4)
-
-      const formatted = [degrees1 + ' ° ' + minutes1 + '\' N, ', degrees2 + ' ° ' + minutes2 + ' \' E']
-
-      return formatted
-    }
-
-    const formatToDegreesMinutesAndSeconds = (coords) => {
-      const degrees1 = Math.floor(coords[0])
-      const degrees2 = Math.floor(coords[1])
-      const minutes1 = Math.floor((coords[0] - degrees1) * 60)
-      const minutes2 = Math.floor((coords[1] - degrees2) * 60)
-      const seconds1 = ((coords[0] - degrees1 - minutes1 / 60) * 3600).toFixed(4)
-      const seconds2 = ((coords[1] - degrees2 - minutes2 / 60) * 3600).toFixed(4)
-
-      const formatted = [
-        degrees1 + '° ' + minutes1 + '\' ' + seconds1 + '" N, ',
-        degrees2 + '° ' + minutes2 + '\' ' + seconds2 + '" E'
-      ]
-      return formatted
-    }
-
     /** Fylder output feltet med de aktuelle koordinater formateret på en pæn måde */
     const formatCoordinates = (coords) => {
       let formattedCoordinates = []
 
       if (isMetres.value) {
-        formattedCoordinates = formatToMetres(coords)
+        formattedCoordinates = Formatter.toMetres(coords)
       } else {
         if (degreesChecked.value) {
-          formattedCoordinates = formatToDegrees(coords)
+          formattedCoordinates = Formatter.toDegrees(coords)
         } else if (minutesChecked.value) {
-          formattedCoordinates = formatToDegreesAndMinutes(coords)
+          formattedCoordinates = Formatter.toDegreesAndMinutes(coords)
         } else {
-          formattedCoordinates = formatToDegreesMinutesAndSeconds(coords)
+          formattedCoordinates = Formatter.toDegreesMinutesAndSeconds(coords)
         }
       }
       if (props.is3D) {

@@ -257,13 +257,13 @@ export default {
     },
 
     minutesChecked () {
-      this.setOutput()
+      this.formatOutput()
     },
     secondsChecked () {
-      this.setOutput()
+      this.formatOutput()
     },
     degreesChecked () {
-      this.setOutput()
+      this.formatOutput()
     }
   },
 
@@ -292,68 +292,68 @@ export default {
     const route = useRoute()
 
     /** Fylder output feltet med de aktuelle koordinater formateret på en pæn måde */
-    const setOutput = () => {
+    const formatOutput = () => {
       let result1 = ''
       let result2 = ''
       let result3 = ''
-      const d3 = outputCoords.value[2].toFixed(2)
+      const degrees3 = outputCoords.value[2].toFixed(2)
 
       if (isMetres.value) {
-        const d1 = outputCoords.value[0].toFixed(4)
-        const d2 = outputCoords.value[1].toFixed(4)
+        const degrees1 = outputCoords.value[0].toFixed(4)
+        const degrees2 = outputCoords.value[1].toFixed(4)
 
-        result1 = d1 + ' m, '
-        result2 = d2 + ' m'
+        result1 = degrees1 + ' m, '
+        result2 = degrees2 + ' m'
 
         if (props.is3D) {
           result2 += ', '
-          result3 = d3 + ' m'
+          result3 = degrees3 + ' m'
         } else {
           result3 = ''
         }
       } else {
         if (degreesChecked.value) {
-          const d1 = outputCoords.value[0].toFixed(4)
-          const d2 = outputCoords.value[1].toFixed(4)
+          const degrees1 = outputCoords.value[0].toFixed(4)
+          const degrees2 = outputCoords.value[1].toFixed(4)
 
-          result1 = d1 + ' °N, '
-          result2 = d2 + ' °E'
+          result1 = degrees1 + ' °N, '
+          result2 = degrees2 + ' °E'
 
           if (props.is3D) {
             result2 += ', '
-            result3 = d3 + ' m'
+            result3 = degrees3 + ' m'
           } else {
             result3 = ''
           }
         } else if (minutesChecked.value) {
-          const d1 = Math.floor(outputCoords.value[0])
-          const d2 = Math.floor(outputCoords.value[1])
-          const m1 = (parseFloat(outputCoords.value[0] - d1) * 60).toFixed(4)
-          const m2 = (parseFloat(outputCoords.value[1] - d2) * 60).toFixed(4)
+          const degrees1 = Math.floor(outputCoords.value[0])
+          const degrees2 = Math.floor(outputCoords.value[1])
+          const minutes1 = (parseFloat(outputCoords.value[0] - degrees1) * 60).toFixed(4)
+          const minutes2 = (parseFloat(outputCoords.value[1] - degrees2) * 60).toFixed(4)
 
-          result1 = d1 + ' ° ' + m1 + '\' N, '
-          result2 = d2 + ' ° ' + m2 + ' \' E'
+          result1 = degrees1 + ' ° ' + minutes1 + '\' N, '
+          result2 = degrees2 + ' ° ' + minutes2 + ' \' E'
 
           if (props.is3D) {
             result2 += ', '
-            result3 = d3 + ' m'
+            result3 = degrees3 + ' m'
           } else {
             result3 = ''
           }
         } else {
-          const d1 = Math.floor(outputCoords.value[0])
-          const d2 = Math.floor(outputCoords.value[1])
-          const m1 = Math.floor((outputCoords.value[0] - d1) * 60)
-          const m2 = Math.floor((outputCoords.value[1] - d2) * 60)
-          const s1 = ((outputCoords.value[0] - d1 - m1 / 60) * 3600).toFixed(4)
-          const s2 = ((outputCoords.value[1] - d2 - m2 / 60) * 3600).toFixed(4)
+          const degrees1 = Math.floor(outputCoords.value[0])
+          const degrees2 = Math.floor(outputCoords.value[1])
+          const minutes1 = Math.floor((outputCoords.value[0] - degrees1) * 60)
+          const minutes2 = Math.floor((outputCoords.value[1] - degrees2) * 60)
+          const seconds1 = ((outputCoords.value[0] - degrees1 - minutes1 / 60) * 3600).toFixed(4)
+          const seconds2 = ((outputCoords.value[1] - degrees2 - minutes2 / 60) * 3600).toFixed(4)
 
-          result1 = d1 + '° ' + m1 + '\' ' + s1 + '" N, '
-          result2 = d2 + '° ' + m2 + '\' ' + s2 + '" E'
+          result1 = degrees1 + '° ' + minutes1 + '\' ' + seconds1 + '" N, '
+          result2 = degrees2 + '° ' + minutes2 + '\' ' + seconds2 + '" E'
 
           if (props.is3D) {
             result2 += ', '
-            result3 = d3 + ' m'
+            result3 = degrees3 + ' m'
           } else {
             result3 = ''
           }
@@ -365,10 +365,14 @@ export default {
       isLoading.value = true
       setTimeout(() => {
         isLoading.value = false
-        output1.value = result1
-        output2.value = result2
-        output3.value = result3
+        updateOutputField(result1, result2, result3)
       }, 500)
+    }
+
+    const updateOutputField = (value1, value2, value3) => {
+      output1.value = value1
+      output2.value = value2
+      output3.value = value3
     }
 
     const getEpsgCodes = async () => {
@@ -430,7 +434,7 @@ export default {
           outputCoords.value[0] = parseFloat(output.v1)
           outputCoords.value[1] = parseFloat(output.v2)
           outputCoords.value[2] = parseFloat(output.v3)
-          setOutput()
+          formatOutput()
         })
     }
 
@@ -444,7 +448,7 @@ export default {
           }
           outputCoords.value[0] = parseFloat(output.v1)
           outputCoords.value[1] = parseFloat(output.v2)
-          setOutput()
+          formatOutput()
         })
     }
 
@@ -452,7 +456,7 @@ export default {
       outputCoords.value[0] = props.inputCoords[0]
       outputCoords.value[1] = props.inputCoords[1]
       outputCoords.value[2] = props.inputCoords[2]
-      setOutput()
+      formatOutput()
     }
 
     const transform = () => {
@@ -493,7 +497,7 @@ export default {
       hasTransformed,
       isLoading,
       transform,
-      setOutput,
+      formatOutput,
       output1,
       output2,
       output3,

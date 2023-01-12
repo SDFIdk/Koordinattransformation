@@ -297,11 +297,14 @@ export default {
       let result2 = ''
       let result3 = ''
       const d3 = outputCoords.value[2].toFixed(2)
+
       if (isMetres.value) {
         const d1 = outputCoords.value[0].toFixed(4)
         const d2 = outputCoords.value[1].toFixed(4)
+
         result1 = d1 + ' m, '
         result2 = d2 + ' m'
+
         if (props.is3D) {
           result2 += ', '
           result3 = d3 + ' m'
@@ -312,8 +315,10 @@ export default {
         if (degreesChecked.value) {
           const d1 = outputCoords.value[0].toFixed(4)
           const d2 = outputCoords.value[1].toFixed(4)
+
           result1 = d1 + ' °N, '
           result2 = d2 + ' °E'
+
           if (props.is3D) {
             result2 += ', '
             result3 = d3 + ' m'
@@ -325,8 +330,10 @@ export default {
           const d2 = Math.floor(outputCoords.value[1])
           const m1 = (parseFloat(outputCoords.value[0] - d1) * 60).toFixed(4)
           const m2 = (parseFloat(outputCoords.value[1] - d2) * 60).toFixed(4)
+
           result1 = d1 + ' ° ' + m1 + '\' N, '
           result2 = d2 + ' ° ' + m2 + ' \' E'
+
           if (props.is3D) {
             result2 += ', '
             result3 = d3 + ' m'
@@ -340,8 +347,10 @@ export default {
           const m2 = Math.floor((outputCoords.value[1] - d2) * 60)
           const s1 = ((outputCoords.value[0] - d1 - m1 / 60) * 3600).toFixed(4)
           const s2 = ((outputCoords.value[1] - d2 - m2 / 60) * 3600).toFixed(4)
+
           result1 = d1 + '° ' + m1 + '\' ' + s1 + '" N, '
           result2 = d2 + '° ' + m2 + '\' ' + s2 + '" E'
+
           if (props.is3D) {
             result2 += ', '
             result3 = d3 + ' m'
@@ -410,42 +419,54 @@ export default {
       }, 4000)
     }
 
+    const setOutput3D = async () => {
+      store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
+        .then(() => {
+          const output = store.state.trans.data
+          if (output.message !== undefined) {
+            error(output.message)
+            return
+          }
+          outputCoords.value[0] = parseFloat(output.v1)
+          outputCoords.value[1] = parseFloat(output.v2)
+          outputCoords.value[2] = parseFloat(output.v3)
+          setOutput()
+        })
+    }
+
+    const setOutput2D = async () => {
+      store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
+        .then(() => {
+          const output = store.state.trans.data
+          if (output.message !== undefined) {
+            error(output.message)
+            return
+          }
+          outputCoords.value[0] = parseFloat(output.v1)
+          outputCoords.value[1] = parseFloat(output.v2)
+          setOutput()
+        })
+    }
+
+    const setOutputDirect = () => {
+      outputCoords.value[0] = props.inputCoords[0]
+      outputCoords.value[1] = props.inputCoords[1]
+      outputCoords.value[2] = props.inputCoords[2]
+      setOutput()
+    }
+
     const transform = () => {
       if (!hasTransformed.value) {
         return
       }
       if (props.inputEPSG === outputEPSG.value) {
-        outputCoords.value[0] = props.inputCoords[0]
-        outputCoords.value[1] = props.inputCoords[1]
-        outputCoords.value[2] = props.inputCoords[2]
-        setOutput()
+        setOutputDirect()
         return
       }
       if (props.is3D) {
-        store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
-          .then(() => {
-            const output = store.state.trans.data
-            if (output.message !== undefined) {
-              error(output.message)
-              return
-            }
-            outputCoords.value[0] = parseFloat(output.v1)
-            outputCoords.value[1] = parseFloat(output.v2)
-            outputCoords.value[2] = parseFloat(output.v3)
-            setOutput()
-          })
+        setOutput3D()
       } else {
-        store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
-          .then(() => {
-            const output = store.state.trans.data
-            if (output.message !== undefined) {
-              error(output.message)
-              return
-            }
-            outputCoords.value[0] = parseFloat(output.v1)
-            outputCoords.value[1] = parseFloat(output.v2)
-            setOutput()
-          })
+        setOutput2D()
       }
     }
 

@@ -335,43 +335,52 @@ export default {
       }, 500)
     }
 
-    const getEpsgCodes = async () => {
+    const getGreenlandCodes = async () => {
       const tempCodes = []
+      for (let i = 0; i < crs.value.GL.length; ++i) {
+        await store
+          .dispatch('CRSInformation/get', crs.value.GL[i])
+          .then(() => {
+            tempCodes.push(store.state.CRSInformation.data)
+          })
+      }
+      for (let i = 0; i < crs.value.Global.length; ++i) {
+        await store
+          .dispatch('CRSInformation/get', crs.value.Global[i])
+          .then(() => {
+            tempCodes.push(store.state.CRSInformation.data)
+          })
+      }
+      return tempCodes
+    }
+
+    const getDenmarkCodes = async () => {
+      const codes = []
+      for (let i = 0; i < crs.value.DK.length; ++i) {
+        await store
+          .dispatch('CRSInformation/get', crs.value.DK[i])
+          .then(() => {
+            codes.push(store.state.CRSInformation.data)
+          })
+      }
+
+      for (let i = 0; i < crs.value.Global.length; ++i) {
+        await store
+          .dispatch('CRSInformation/get', crs.value.Global[i])
+          .then(() => {
+            codes.push(store.state.CRSInformation.data)
+          })
+      }
+      return codes
+    }
+
+    const getEpsgCodes = async () => {
       // Der er forskellige lister for Danmark og Grøndland
       if (route.name === 'Denmark' && crs.value.length !== 0) {
-        for (let i = 0; i < crs.value.DK.length; ++i) {
-          await store
-            .dispatch('CRSInformation/get', crs.value.DK[i])
-            .then(() => {
-              tempCodes.push(store.state.CRSInformation.data)
-            })
-        }
-
-        for (let i = 0; i < crs.value.Global.length; ++i) {
-          await store
-            .dispatch('CRSInformation/get', crs.value.Global[i])
-            .then(() => {
-              tempCodes.push(store.state.CRSInformation.data)
-            })
-        }
-        filteredOutputCodes.value = tempCodes
+        filteredOutputCodes.value = await getDenmarkCodes()
         document.getElementById('epsg-output-select').value = filteredOutputCodes.value[0].title
       } else if (route.name === 'Greenland') {
-        for (let i = 0; i < crs.value.GL.length; ++i) {
-          await store
-            .dispatch('CRSInformation/get', crs.value.GL[i])
-            .then(() => {
-              tempCodes.push(store.state.CRSInformation.data)
-            })
-        }
-        for (let i = 0; i < crs.value.Global.length; ++i) {
-          await store
-            .dispatch('CRSInformation/get', crs.value.Global[i])
-            .then(() => {
-              tempCodes.push(store.state.CRSInformation.data)
-            })
-        }
-        filteredOutputCodes.value = tempCodes
+        filteredOutputCodes.value = await getGreenlandCodes()
       }
     }
 

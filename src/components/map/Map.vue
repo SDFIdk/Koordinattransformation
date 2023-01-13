@@ -197,7 +197,7 @@ const instantiateMap = (options) => {
         })]
   })
 }
-
+///
 const defaultOlView = new OlView({
   center: center,
   zoom: 9,
@@ -226,7 +226,6 @@ const fetchMap = async () => {
   olMap.value = instantiateMap(options)
 
   setCursor()
-
   // Lyt efter brugerklik på kortet med kortmarkøren og foretag evt. transformation
   setMapOnClick()
 }

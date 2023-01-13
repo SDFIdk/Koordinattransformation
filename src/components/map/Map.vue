@@ -111,34 +111,19 @@ const inputEPSG = ref(props.isDenmark ? 'EPSG:25832' : 'EPSG:3178')
 const timeout = 500
 const error = ref('')
 const errorVisible = ref(false)
+const defaultZoom = new Zoom({
+  duration: 700,
+  className: 'custom-zoom',
+  zoomInClassName: '-in',
+  zoomOutClassName: '-out',
+  zoomInLabel: 'Zoom ind2',
+  zoomOutLabel: 'Zoom ud2',
+  zoomInTipLabel: 'Zoom2',
+  zoomOutTipLabel: 'Zoom2'
+})
 
-provide('inputEPSG', inputEPSG.value)
-
-onMounted(() => {
-  mousePositionControl = new MousePosition({
-    coordinateFormat: createStringXY(4),
-    projection: mapProjection,
-    className: 'custom-mouse-position',
-    target: document.getElementById('mouse-position')
-  })
-
-  olView.value = new OlView({
-    center: center,
-    zoom: 9,
-    minZoom: 4,
-    maxZoom: 100,
-    extent: props.isDenmark
-      ? [
-          200_000, 5_900_000, 1_005_000, 6_620_000
-        ]
-      : [
-          -11_000_000, 7_000_000, 1_000_000, 21_000_000
-        ],
-    showFullExtent: false,
-    projection: mapProjection
-  })
-
-  // Vores eget kort (hvis Danmmark)
+// Vores eget kort (hvis Danmmark)
+const fetchMap = () => {
   fetch(`https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${process.env.VUE_APP_TOKEN}`)
     .then(res => res.text())
     .then(xml => {
@@ -154,31 +139,17 @@ onMounted(() => {
           attribution: false,
           rotate: false
         }).extend([mousePositionControl, new FullScreen()]),
-
-        zoom: new Zoom({
-          duration: 700,
-          className: 'custom-zoom',
-          zoomInClassName: '-in',
-          zoomOutClassName: '-out',
-          zoomInLabel: 'Zoom ind2',
-          zoomOutLabel: 'Zoom ud2',
-          zoomInTipLabel: 'Zoom2',
-          zoomOutTipLabel: 'Zoom2'
-        }),
-
+        zoom: defaultZoom,
         view: olView.value,
 
         layers: props.isDenmark
-          ? [
-              new TileLayer({
-                opacity: 1,
-                source: new WMTS(options)
-              })]
-          : [
-              new TileLayer({
-                source: new OSM()
-              })
-            ]
+          ? [new TileLayer({
+              opacity: 1,
+              source: new WMTS(options)
+            })]
+          : [new TileLayer({
+              source: new OSM()
+            })]
       })
       // Kortmarkøren skal sættes, når applikationen første gang er loadet
       setTimeout(() => {
@@ -232,6 +203,30 @@ onMounted(() => {
         setPinMarker(mpos)
       })
     })
+}
+provide('inputEPSG', inputEPSG.value)
+
+onMounted(() => {
+  mousePositionControl = new MousePosition({
+    coordinateFormat: createStringXY(4),
+    projection: mapProjection,
+    className: 'custom-mouse-position',
+    target: document.getElementById('mouse-position')
+  })
+
+  olView.value = new OlView({
+    center: center,
+    zoom: 9,
+    minZoom: 4,
+    maxZoom: 100,
+    extent: props.isDenmark
+      ? [200_000, 5_900_000, 1_005_000, 6_620_000]
+      : [-11_000_000, 7_000_000, 1_000_000, 21_000_000],
+    showFullExtent: false,
+    projection: mapProjection
+  })
+
+  fetchMap()
 })
 </script>
 

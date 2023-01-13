@@ -297,7 +297,7 @@ export default {
       coordinates.push(parameter + ' m')
     }
 
-    /** Fylder output feltet med de aktuelle koordinater formateret på en pæn måde */
+    /** formaterer de givne koordinater på en pæn måde */
     const formatCoordinates = (coords) => {
       let formattedCoordinates = []
 
@@ -321,6 +321,7 @@ export default {
       return formattedCoordinates
     }
 
+    // fylder output feltet med de givne koordinater
     const updateOutputField = (coords) => {
       // Opdater kun hvis der er sket noget nyt
       // Et lille "loader"-icon, der skal gøre brugeren opmærksom på,
@@ -371,7 +372,6 @@ export default {
             })
         }
         filteredOutputCodes.value = tempCodes
-        document.getElementById('epsg-output-select').value = 'Vælg koordinatsystem'
       }
     }
 

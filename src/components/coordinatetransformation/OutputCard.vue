@@ -292,46 +292,37 @@ export default {
     const filteredOutputCodes = ref([])
     const route = useRoute()
 
-    const appendThirdParameter = (coordinates, parameter) => {
-      coordinates[1] += ', '
-      coordinates.push(parameter + ' m')
-    }
-
     /** formaterer de givne koordinater på en pæn måde */
-    const formatCoordinates = (coords) => {
+    const formatCoordinates = (_coords) => {
       let formattedCoordinates = []
 
       if (isMetres.value) {
-        formattedCoordinates = Formatter.toMetres(coords)
+        formattedCoordinates = Formatter.toMetres(_coords)
       } else {
         if (degreesChecked.value) {
-          formattedCoordinates = Formatter.toDegrees(coords)
+          formattedCoordinates = Formatter.toDegrees(_coords)
         } else if (minutesChecked.value) {
-          formattedCoordinates = Formatter.toDegreesAndMinutes(coords)
+          formattedCoordinates = Formatter.toDegreesAndMinutes(_coords)
         } else {
-          formattedCoordinates = Formatter.toDegreesMinutesAndSeconds(coords)
+          formattedCoordinates = Formatter.toDegreesMinutesAndSeconds(_coords)
         }
       }
       if (props.is3D) {
-        appendThirdParameter(formattedCoordinates, coords[2])
+        Formatter.appendThirdParameter(formattedCoordinates, _coords[2])
       } else {
         formattedCoordinates.push('')
       }
-
       return formattedCoordinates
     }
 
     // fylder output feltet med de givne koordinater
-    const updateOutputField = (coords) => {
-      // Opdater kun hvis der er sket noget nyt
-      // Et lille "loader"-icon, der skal gøre brugeren opmærksom på,
-      // at der altså fortages en transformation.
-      isLoading.value = true
+    const updateOutputField = (_coords) => {
+      isLoading.value = true // viser et animeret loader ikon.
       setTimeout(() => {
         isLoading.value = false
-        output1.value = coords[0]
-        output2.value = coords[1]
-        output3.value = coords[2]
+        output1.value = _coords[0]
+        output2.value = _coords[1]
+        output3.value = _coords[2]
       }, 500)
     }
 
@@ -374,11 +365,10 @@ export default {
       return codes
     }
 
-    const getEpsgCodes = async () => {
+    const updateFilteredCodes = async () => {
       // Der er forskellige lister for Danmark og Grøndland
       if (route.name === 'Denmark' && crs.value.length !== 0) {
         filteredOutputCodes.value = await getDenmarkCodes()
-        document.getElementById('epsg-output-select').value = filteredOutputCodes.value[0].title
       } else if (route.name === 'Greenland') {
         filteredOutputCodes.value = await getGreenlandCodes()
       }
@@ -446,7 +436,7 @@ export default {
       store.dispatch('CRS/clear')
       store.dispatch('CRS/get', '').then(() => {
         crs.value = store.state.CRS.data
-        getEpsgCodes()
+        updateFilteredCodes()
       })
     })
 
@@ -454,7 +444,7 @@ export default {
       updateOutputField,
       degrees,
       filteredOutputCodes,
-      getEpsgCodes,
+      updateFilteredCodes,
       store,
       colors,
       degreesChecked,

@@ -4,8 +4,6 @@ const Formatter = {
     const degrees1 = coords[0].toFixed(4)
     const degrees2 = coords[1].toFixed(4)
 
-    // result1 = degrees1 + ' m, '
-    // result2 = degrees2 + ' m'
     formatted = [degrees1 + ' m, ', degrees2 + ' m']
 
     return formatted
@@ -14,8 +12,6 @@ const Formatter = {
   toDegrees (coords) {
     const degrees1 = coords[0].toFixed(4)
     const degrees2 = coords[1].toFixed(4)
-    // result1 = degrees1 + ' °N, '
-    // result2 = degrees2 + ' °E'
     const formatted = [degrees1 + ' °N, ', degrees2 + ' °E']
 
     return formatted
@@ -45,6 +41,11 @@ const Formatter = {
       degrees2 + '° ' + minutes2 + '\' ' + seconds2 + '" E'
     ]
     return formatted
+  },
+
+  appendThirdParameter (coordinates, parameter) {
+    coordinates[1] += ', '
+    coordinates.push(parameter + ' m')
   }
 }
 export default Formatter

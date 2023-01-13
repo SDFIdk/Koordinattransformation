@@ -176,19 +176,8 @@ const setMapOnClick = () => {
   })
 }
 
-// Vores eget kort (hvis Danmmark)
-const fetchMap = async () => {
-  const mapUrl = `https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${process.env.VUE_APP_TOKEN}`
-  const map = await fetch(mapUrl)
-  const mapText = await map.text()
-  const res = new WMTSCapabilities().read(mapText)
-
-  const options = optionsFromCapabilities(res, {
-    layer: 'topo_skaermkort_daempet',
-    matrixSet: 'View1'
-  })
-
-  olMap.value = new OlMap({
+const instantiateMap = (options) => {
+  return new OlMap({
     target: 'map',
     controls: defaultControls({
       zoom: false,
@@ -207,6 +196,21 @@ const fetchMap = async () => {
           source: new OSM()
         })]
   })
+}
+
+// Vores eget kort (hvis Danmmark)
+const fetchMap = async () => {
+  const mapUrl = `https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${process.env.VUE_APP_TOKEN}`
+  const map = await fetch(mapUrl)
+  const mapText = await map.text()
+  const res = new WMTSCapabilities().read(mapText)
+
+  const options = optionsFromCapabilities(res, {
+    layer: 'topo_skaermkort_daempet',
+    matrixSet: 'View1'
+  })
+
+  olMap.value = instantiateMap(options)
 
   setCursor()
 

@@ -198,6 +198,18 @@ const instantiateMap = (options) => {
   })
 }
 
+const defaultOlView = new OlView({
+  center: center,
+  zoom: 9,
+  minZoom: 4,
+  maxZoom: 100,
+  extent: props.isDenmark
+    ? [200_000, 5_900_000, 1_005_000, 6_620_000]
+    : [-11_000_000, 7_000_000, 1_000_000, 21_000_000],
+  showFullExtent: false,
+  projection: mapProjection
+})
+
 // Vores eget kort (hvis Danmmark)
 const fetchMap = async () => {
   const mapUrl = `https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${process.env.VUE_APP_TOKEN}`
@@ -228,17 +240,7 @@ onMounted(() => {
     target: document.getElementById('mouse-position')
   })
 
-  olView.value = new OlView({
-    center: center,
-    zoom: 9,
-    minZoom: 4,
-    maxZoom: 100,
-    extent: props.isDenmark
-      ? [200_000, 5_900_000, 1_005_000, 6_620_000]
-      : [-11_000_000, 7_000_000, 1_000_000, 21_000_000],
-    showFullExtent: false,
-    projection: mapProjection
-  })
+  olView.value = defaultOlView
 
   fetchMap()
 })

@@ -201,11 +201,12 @@ const instantiateMap = (options) => {
 // Vores eget kort (hvis Danmmark)
 const fetchMap = async () => {
   const mapUrl = `https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${process.env.VUE_APP_TOKEN}`
+
   const map = await fetch(mapUrl)
   const mapText = await map.text()
-  const res = new WMTSCapabilities().read(mapText)
+  const capabilities = new WMTSCapabilities().read(mapText)
 
-  const options = optionsFromCapabilities(res, {
+  const options = optionsFromCapabilities(capabilities, {
     layer: 'topo_skaermkort_daempet',
     matrixSet: 'View1'
   })

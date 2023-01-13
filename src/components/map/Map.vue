@@ -121,39 +121,7 @@ const defaultZoom = new Zoom({
   zoomInTipLabel: 'Zoom2',
   zoomOutTipLabel: 'Zoom2'
 })
-
-// Vores eget kort (hvis Danmmark)
-const fetchMap = async () => {
-  const mapUrl = `https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${process.env.VUE_APP_TOKEN}`
-  const map = await fetch(mapUrl)
-  const mapText = await map.text()
-  console.log(mapText)
-  const res = new WMTSCapabilities().read(mapText)
-  console.log(res)
-  const options = optionsFromCapabilities(res, {
-    layer: 'topo_skaermkort_daempet',
-    matrixSet: 'View1'
-  })
-
-  olMap.value = new OlMap({
-    target: 'map',
-    controls: defaultControls({
-      zoom: false,
-      attribution: false,
-      rotate: false
-    }).extend([mousePositionControl, new FullScreen()]),
-    zoom: defaultZoom,
-    view: olView.value,
-
-    layers: props.isDenmark
-      ? [new TileLayer({
-          opacity: 1,
-          source: new WMTS(options)
-        })]
-      : [new TileLayer({
-          source: new OSM()
-        })]
-  })
+const setCursor = () => {
   // Kortmarkøren skal sættes, når applikationen første gang er loadet
   setTimeout(() => {
     const pinnedMarker = document.getElementById('pinned-marker')
@@ -166,8 +134,9 @@ const fetchMap = async () => {
 
     olMap.value.addOverlay(overlay)
   }, timeout)
+}
 
-  // Lyt efter brugerklik på kortet med kortmarkøren og foretag evt. transformation
+const setMapOnClick = () => {
   olMap.value.on('click', e => {
     // clear the address input field
     document.getElementById('dawa-autocomplete-input').value = ''
@@ -205,6 +174,44 @@ const fetchMap = async () => {
     }
     setPinMarker(mpos)
   })
+}
+
+// Vores eget kort (hvis Danmmark)
+const fetchMap = async () => {
+  const mapUrl = `https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${process.env.VUE_APP_TOKEN}`
+  const map = await fetch(mapUrl)
+  const mapText = await map.text()
+  const res = new WMTSCapabilities().read(mapText)
+
+  const options = optionsFromCapabilities(res, {
+    layer: 'topo_skaermkort_daempet',
+    matrixSet: 'View1'
+  })
+
+  olMap.value = new OlMap({
+    target: 'map',
+    controls: defaultControls({
+      zoom: false,
+      attribution: false,
+      rotate: false
+    }).extend([mousePositionControl, new FullScreen()]),
+    zoom: defaultZoom,
+    view: olView.value,
+
+    layers: props.isDenmark
+      ? [new TileLayer({
+          opacity: 1,
+          source: new WMTS(options)
+        })]
+      : [new TileLayer({
+          source: new OSM()
+        })]
+  })
+
+  setCursor()
+
+  // Lyt efter brugerklik på kortet med kortmarkøren og foretag evt. transformation
+  setMapOnClick()
 }
 provide('inputEPSG', inputEPSG.value)
 

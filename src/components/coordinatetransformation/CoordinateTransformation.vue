@@ -76,10 +76,6 @@ export default {
       this.$emit('input-coords-changed', coords)
     },
 
-    /**
-     * updates the is3D variable according to the state
-     * @param state
-     */
     is3DChanged (state) {
       this.is3D = state
     },
@@ -89,17 +85,10 @@ export default {
       this.errorVisible = state
     },
 
-    /**
-     * updates the popupIsVisible according to the given state
-     * @param state
-     */
     coordinatesCopied (state) {
       this.popupVisible = state
     },
 
-    /**
-     * sets the dimensions of the components according to the width and height of the viewport
-     */
     handleResize () {
       this.window.width = window.innerWidth
       this.window.height = window.innerHeight

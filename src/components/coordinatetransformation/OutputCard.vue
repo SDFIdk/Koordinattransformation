@@ -122,6 +122,7 @@
 import { defineAsyncComponent, inject, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
+import Formatter from './Formatting'
 
 export default {
   name: 'OutputCoordinates',
@@ -257,13 +258,13 @@ export default {
     },
 
     minutesChecked () {
-      this.setOutput()
+      this.updateOutputField(this.formatCoordinates(this.outputCoords))
     },
     secondsChecked () {
-      this.setOutput()
+      this.updateOutputField(this.formatCoordinates(this.outputCoords))
     },
     degreesChecked () {
-      this.setOutput()
+      this.updateOutputField(this.formatCoordinates(this.outputCoords))
     }
   },
 
@@ -291,115 +292,85 @@ export default {
     const filteredOutputCodes = ref([])
     const route = useRoute()
 
-    /** Fylder output feltet med de aktuelle koordinater formateret på en pæn måde */
-    const setOutput = () => {
-      let result1 = ''
-      let result2 = ''
-      let result3 = ''
-      const d3 = outputCoords.value[2].toFixed(2)
+    /** formaterer de givne koordinater på en pæn måde */
+    const formatCoordinates = (_coords) => {
+      let formattedCoordinates = []
+
       if (isMetres.value) {
-        const d1 = outputCoords.value[0].toFixed(4)
-        const d2 = outputCoords.value[1].toFixed(4)
-        result1 = d1 + ' m, '
-        result2 = d2 + ' m'
-        if (props.is3D) {
-          result2 += ', '
-          result3 = d3 + ' m'
-        } else {
-          result3 = ''
-        }
+        formattedCoordinates = Formatter.toMetres(_coords)
       } else {
         if (degreesChecked.value) {
-          const d1 = outputCoords.value[0].toFixed(4)
-          const d2 = outputCoords.value[1].toFixed(4)
-          result1 = d1 + ' °N, '
-          result2 = d2 + ' °E'
-          if (props.is3D) {
-            result2 += ', '
-            result3 = d3 + ' m'
-          } else {
-            result3 = ''
-          }
+          formattedCoordinates = Formatter.toDegrees(_coords)
         } else if (minutesChecked.value) {
-          const d1 = Math.floor(outputCoords.value[0])
-          const d2 = Math.floor(outputCoords.value[1])
-          const m1 = (parseFloat(outputCoords.value[0] - d1) * 60).toFixed(4)
-          const m2 = (parseFloat(outputCoords.value[1] - d2) * 60).toFixed(4)
-          result1 = d1 + ' ° ' + m1 + '\' N, '
-          result2 = d2 + ' ° ' + m2 + ' \' E'
-          if (props.is3D) {
-            result2 += ', '
-            result3 = d3 + ' m'
-          } else {
-            result3 = ''
-          }
+          formattedCoordinates = Formatter.toDegreesAndMinutes(_coords)
         } else {
-          const d1 = Math.floor(outputCoords.value[0])
-          const d2 = Math.floor(outputCoords.value[1])
-          const m1 = Math.floor((outputCoords.value[0] - d1) * 60)
-          const m2 = Math.floor((outputCoords.value[1] - d2) * 60)
-          const s1 = ((outputCoords.value[0] - d1 - m1 / 60) * 3600).toFixed(4)
-          const s2 = ((outputCoords.value[1] - d2 - m2 / 60) * 3600).toFixed(4)
-          result1 = d1 + '° ' + m1 + '\' ' + s1 + '" N, '
-          result2 = d2 + '° ' + m2 + '\' ' + s2 + '" E'
-          if (props.is3D) {
-            result2 += ', '
-            result3 = d3 + ' m'
-          } else {
-            result3 = ''
-          }
+          formattedCoordinates = Formatter.toDegreesMinutesAndSeconds(_coords)
         }
       }
-      // Opdater kun hvis der er sket noget nyt
-      // Et lille "loader"-icon, der skal gøre brugeren opmærksom på,
-      // at der altså fortages en transformation.
-      isLoading.value = true
+      if (props.is3D) {
+        Formatter.appendThirdParameter(formattedCoordinates, _coords[2])
+      } else {
+        formattedCoordinates.push('')
+      }
+      return formattedCoordinates
+    }
+
+    // fylder output feltet med de givne koordinater
+    const updateOutputField = (_coords) => {
+      isLoading.value = true // viser et animeret loader ikon.
       setTimeout(() => {
         isLoading.value = false
-        output1.value = result1
-        output2.value = result2
-        output3.value = result3
+        output1.value = _coords[0]
+        output2.value = _coords[1]
+        output3.value = _coords[2]
       }, 500)
     }
 
-    const getEpsgCodes = async () => {
+    const getGreenlandCodes = async () => {
       const tempCodes = []
+      for (let i = 0; i < crs.value.GL.length; ++i) {
+        await store
+          .dispatch('CRSInformation/get', crs.value.GL[i])
+          .then(() => {
+            tempCodes.push(store.state.CRSInformation.data)
+          })
+      }
+      for (let i = 0; i < crs.value.Global.length; ++i) {
+        await store
+          .dispatch('CRSInformation/get', crs.value.Global[i])
+          .then(() => {
+            tempCodes.push(store.state.CRSInformation.data)
+          })
+      }
+      return tempCodes
+    }
+
+    const getDenmarkCodes = async () => {
+      const codes = []
+      for (let i = 0; i < crs.value.DK.length; ++i) {
+        await store
+          .dispatch('CRSInformation/get', crs.value.DK[i])
+          .then(() => {
+            codes.push(store.state.CRSInformation.data)
+          })
+      }
+
+      for (let i = 0; i < crs.value.Global.length; ++i) {
+        await store
+          .dispatch('CRSInformation/get', crs.value.Global[i])
+          .then(() => {
+            codes.push(store.state.CRSInformation.data)
+          })
+      }
+      return codes
+    }
+
+    const updateFilteredCodes = async () => {
       // Der er forskellige lister for Danmark og Grøndland
       if (route.name === 'Denmark' && crs.value.length !== 0) {
-        for (let i = 0; i < crs.value.DK.length; ++i) {
-          await store
-            .dispatch('CRSInformation/get', crs.value.DK[i])
-            .then(() => {
-              tempCodes.push(store.state.CRSInformation.data)
-            })
-        }
-
-        for (let i = 0; i < crs.value.Global.length; ++i) {
-          await store
-            .dispatch('CRSInformation/get', crs.value.Global[i])
-            .then(() => {
-              tempCodes.push(store.state.CRSInformation.data)
-            })
-        }
-        filteredOutputCodes.value = tempCodes
-        document.getElementById('epsg-output-select').value = filteredOutputCodes.value[0].title
+        filteredOutputCodes.value = await getDenmarkCodes()
       } else if (route.name === 'Greenland') {
-        for (let i = 0; i < crs.value.GL.length; ++i) {
-          await store
-            .dispatch('CRSInformation/get', crs.value.GL[i])
-            .then(() => {
-              tempCodes.push(store.state.CRSInformation.data)
-            })
-        }
-        for (let i = 0; i < crs.value.Global.length; ++i) {
-          await store
-            .dispatch('CRSInformation/get', crs.value.Global[i])
-            .then(() => {
-              tempCodes.push(store.state.CRSInformation.data)
-            })
-        }
-        filteredOutputCodes.value = tempCodes
-        document.getElementById('epsg-output-select').value = 'Vælg koordinatsystem'
+        filteredOutputCodes.value = await getGreenlandCodes()
       }
     }
 
@@ -410,42 +381,54 @@ export default {
       }, 4000)
     }
 
+    const setOutput3D = async () => {
+      store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
+        .then(() => {
+          const output = store.state.trans.data
+          if (output.message !== undefined) {
+            error(output.message)
+            return
+          }
+          outputCoords.value[0] = parseFloat(output.v1)
+          outputCoords.value[1] = parseFloat(output.v2)
+          outputCoords.value[2] = parseFloat(output.v3)
+          updateOutputField(formatCoordinates(outputCoords.value))
+        })
+    }
+
+    const setOutput2D = async () => {
+      store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
+        .then(() => {
+          const output = store.state.trans.data
+          if (output.message !== undefined) {
+            error(output.message)
+            return
+          }
+          outputCoords.value[0] = parseFloat(output.v1)
+          outputCoords.value[1] = parseFloat(output.v2)
+          updateOutputField(formatCoordinates(outputCoords.value))
+        })
+    }
+
+    const setOutputDirect = () => {
+      outputCoords.value[0] = props.inputCoords[0]
+      outputCoords.value[1] = props.inputCoords[1]
+      outputCoords.value[2] = props.inputCoords[2]
+      updateOutputField(formatCoordinates(outputCoords.value))
+    }
+
     const transform = () => {
       if (!hasTransformed.value) {
         return
       }
       if (props.inputEPSG === outputEPSG.value) {
-        outputCoords.value[0] = props.inputCoords[0]
-        outputCoords.value[1] = props.inputCoords[1]
-        outputCoords.value[2] = props.inputCoords[2]
-        setOutput()
+        setOutputDirect()
         return
       }
       if (props.is3D) {
-        store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
-          .then(() => {
-            const output = store.state.trans.data
-            if (output.message !== undefined) {
-              error(output.message)
-              return
-            }
-            outputCoords.value[0] = parseFloat(output.v1)
-            outputCoords.value[1] = parseFloat(output.v2)
-            outputCoords.value[2] = parseFloat(output.v3)
-            setOutput()
-          })
+        setOutput3D()
       } else {
-        store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
-          .then(() => {
-            const output = store.state.trans.data
-            if (output.message !== undefined) {
-              error(output.message)
-              return
-            }
-            outputCoords.value[0] = parseFloat(output.v1)
-            outputCoords.value[1] = parseFloat(output.v2)
-            setOutput()
-          })
+        setOutput2D()
       }
     }
 
@@ -453,14 +436,15 @@ export default {
       store.dispatch('CRS/clear')
       store.dispatch('CRS/get', '').then(() => {
         crs.value = store.state.CRS.data
-        getEpsgCodes()
+        updateFilteredCodes()
       })
     })
 
     return {
+      updateOutputField,
       degrees,
       filteredOutputCodes,
-      getEpsgCodes,
+      updateFilteredCodes,
       store,
       colors,
       degreesChecked,
@@ -472,7 +456,7 @@ export default {
       hasTransformed,
       isLoading,
       transform,
-      setOutput,
+      formatCoordinates,
       output1,
       output2,
       output3,

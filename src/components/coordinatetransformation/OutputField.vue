@@ -39,7 +39,7 @@ const props = defineProps({
   border: var(--darkSteel) solid 1px;
 }
 .transformed-coordinates.hasTransformed {
-  background-color: var(--action);
+  background-color: #3EDDC6;
   color: var(--white);
 }
 .transformed-coordinates::selection {

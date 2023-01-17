@@ -9,7 +9,7 @@
         </option>
       </select>
     </section>
-    <OutputField :output1="output1" :output2="output2" :output3="output3"/>
+    <OutputField :output1="output1" :output2="output2" :output3="output3" :class="{hasTransformed: hasTransformed}" />
     <article class="footer" :class="{isMetres: isMetres}">
       <div class="radio-and-info-group" v-show="!isMetres">
         <div class="radiogroup" :class="{radioGroupDisabled: isMetres}">
@@ -162,6 +162,7 @@ const emit = defineEmits([
   'error-occurred'
 ])
 
+/** watch for changes in inputCoords, minutesChecked, secondsChecked, degreesChecked  */
 watch(() => props.inputCoords, () => {
   if (epsgSelected.value) {
     console.log('transform!')

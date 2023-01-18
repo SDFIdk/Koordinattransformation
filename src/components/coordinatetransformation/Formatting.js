@@ -2,7 +2,6 @@ const Formatter = {
   /** formaterer de givne koordinater på en pæn måde */
   formatCoordinates (_coords, _isMeters, _degrees, _minutes, _seconds, _is3D) {
     let formattedCoordinates = []
-    console.log('formatCoordinates(): coords[0]', _coords[0])
 
     if (_isMeters) {
       formattedCoordinates = this.toMeters(_coords)
@@ -34,7 +33,7 @@ const Formatter = {
     return formatted
   },
 
-  toDegrees (coords, degrees) {
+  toDegrees (coords) {
     console.log('format degrees')
     const degrees1 = coords[0].toFixed(4)
     const degrees2 = coords[1].toFixed(4)
@@ -57,21 +56,16 @@ const Formatter = {
 
   toDegreesMinutesAndSeconds (_coords, _degrees, _minutes, _seconds) {
     console.log('format degrees, minutes and seconds')
-    console.log('CORDS: ')
-    console.log('cords[0]: ', _coords[0])
     const degrees1 = Math.floor(_coords[0])
     const degrees2 = Math.floor(_coords[1])
     const minutes1 = Math.floor((_coords[0] - degrees1) * 60)
     const minutes2 = Math.floor((_coords[1] - degrees2) * 60)
     const seconds1 = ((_coords[0] - degrees1 - minutes1 / 60) * 3600).toFixed(4)
     const seconds2 = ((_coords[1] - degrees2 - minutes2 / 60) * 3600).toFixed(4)
-    console.log('degrees1: ', degrees1)
     const formatted = [
       degrees1 + '° ' + minutes1 + '\' ' + seconds1 + '" N, ',
       degrees2 + '° ' + minutes2 + '\' ' + seconds2 + '" E'
     ]
-    console.log('formatted')
-    console.log(formatted)
     return formatted
   },
 

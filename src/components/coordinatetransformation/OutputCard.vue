@@ -168,7 +168,6 @@ const emit = defineEmits([
 /** watch for changes in inputCoords, minutesChecked, secondsChecked, degreesChecked  */
 watch(() => props.inputCoords, () => {
   if (epsgSelected.value) {
-    console.log('transform!')
     if (!hasTransformed.value) {
       const result = transformer.transform(props.inputEPSG, props.inputCoords, outputEPSG.value, props.is3D)
       updateOutputField(Formatter.formatCoordinates(result, isMeters.value, degreesChecked.value, minutesChecked.value, secondsChecked.value, props.is3D))
@@ -202,12 +201,8 @@ const onEpsgSelect = async (event) => {
     degreesChecked.value = true
   }
   const result = await transformer.transform(props.inputEPSG, props.inputCoords, outputEPSG.value, props.is3D)
-  console.log('going into format: ', result)
   hasTransformed.value = true
-  // transform is good, format is bad, move formatting to updateOutputField()
-  const formatted = Formatter.formatCoordinates(result)
-  console.log('formatted: ', formatted)
-  updateOutputField(result) // gets array of 3 NaN
+  updateOutputField(result)
 }
 
 const disableRadioButtons = () => {
@@ -310,9 +305,7 @@ const updateOutputField = (_coords) => {
   isLoading.value = true // viser et animeret loader ikon.
   setTimeout(() => {
     isLoading.value = false
-    console.log('updating outputField: ', _coords)
     const formattedOutput = Formatter.formatCoordinates(_coords, isMeters.value, degreesChecked.value, minutesChecked.value, secondsChecked.value, props.is3D)
-    console.log('formatted output: ', formattedOutput)
     output1.value = formattedOutput[0]
     output2.value = formattedOutput[1]
     output3.value = formattedOutput[2]

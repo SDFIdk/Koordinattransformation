@@ -3,8 +3,6 @@ export default class Transformer {
   async transform (_inputEpsg, _inputCoords, _outputEpsg, _is3D) {
     try {
       if (_inputEpsg === _outputEpsg) {
-        // console.log('direct')
-
         return this.transformNone()
       }
       if (_is3D) {
@@ -12,11 +10,7 @@ export default class Transformer {
 
         return result
       } else {
-        // console.log('2D')
         const result = await this.transform2D(_inputEpsg, _inputCoords, _outputEpsg)
-
-        // console.log('RESULT')
-        // console.log(result)
 
         return result
       }

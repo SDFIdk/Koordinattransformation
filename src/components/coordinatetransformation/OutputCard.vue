@@ -115,6 +115,7 @@ import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import Formatter from './Formatting'
 import Transformer from './Transformer'
+import MapAPI from '../map/MapAPI'
 
 const OutputField = defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputField'))
 const store = useStore()
@@ -312,70 +313,20 @@ const updateOutputField = (_coords) => {
   }, 500)
 }
 
-const getGreenlandCodes = async () => {
-  const tempCodes = []
-  for (let i = 0; i < crs.value.GL.length; ++i) {
-    await store
-      .dispatch('CRSInformation/get', crs.value.GL[i])
-      .then(() => {
-        tempCodes.push(store.state.CRSInformation.data)
-      })
-  }
-  for (let i = 0; i < crs.value.Global.length; ++i) {
-    await store
-      .dispatch('CRSInformation/get', crs.value.Global[i])
-      .then(() => {
-        tempCodes.push(store.state.CRSInformation.data)
-      })
-  }
-  return tempCodes
-}
-
-const getDenmarkCodes = async () => {
-  const codes = []
-  for (let i = 0; i < crs.value.DK.length; ++i) {
-    await store
-      .dispatch('CRSInformation/get', crs.value.DK[i])
-      .then(() => {
-        codes.push(store.state.CRSInformation.data)
-      })
-  }
-
-  for (let i = 0; i < crs.value.Global.length; ++i) {
-    await store
-      .dispatch('CRSInformation/get', crs.value.Global[i])
-      .then(() => {
-        codes.push(store.state.CRSInformation.data)
-      })
-  }
-  return codes
-}
-
-// fyld dropdown menu med koderne for Danmark eller for Grønland
-const updateFilteredCodes = async () => {
-  // Der er forskellige lister for Danmark og Grøndland
-  if (route.name === 'Denmark' && crs.value.length !== 0) {
-    filteredOutputCodes.value = await getDenmarkCodes()
-  } else if (route.name === 'Greenland') {
-    filteredOutputCodes.value = await getGreenlandCodes()
-  }
-}
-
-// eslint-disable-next-line no-unused-vars
-const error = err => {
-  emit('error-occurred', true, err)
-  setTimeout(() => {
-    emit('error-occurred', false)
-  }, 4000)
-}
+// const error = err => {
+//   emit('error-occurred', true, err)
+//   setTimeout(() => {
+//     emit('error-occurred', false)
+//   }, 4000)
+// }
 
 onMounted(() => {
   // clear og opdater de viste koder.
   store.dispatch('CRS/clear')
   store.dispatch('CRS/get', '')
-    .then(() => {
+    .then(async () => {
       crs.value = store.state.CRS.data
-      updateFilteredCodes()
+      filteredOutputCodes.value = await MapAPI.filterCodes(route.name, crs.value)
     })
 })
 </script>

@@ -10,9 +10,9 @@
       </select>
     </section>
     <OutputField :output1="output1" :output2="output2" :output3="output3" :class="{hasTransformed: hasTransformed}" />
-    <article class="footer" :class="{isMetres: isMetres}">
-      <div class="radio-and-info-group" v-show="!isMetres">
-        <div class="radiogroup" :class="{radioGroupDisabled: isMetres}">
+    <article class="footer" :class="{isMeters: isMeters}">
+      <div class="radio-and-info-group" v-show="!isMeters">
+        <div class="radiogroup" :class="{radioGroupDisabled: isMeters}">
           <label class="radio" @click="checkDegrees">
             <input type="radio" name="date-format">
             <Icon v-show="degreesChecked"
@@ -114,10 +114,13 @@ import { defineAsyncComponent, watch, defineProps, defineEmits, inject, onMounte
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import Formatter from './Formatting'
+import Transformer from './Transformer'
+
 const OutputField = defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputField'))
 const store = useStore()
 const colors = inject('themeColors')
 const outputEPSG = ref('')
+const transformer = new Transformer()
 
 const degreesChecked = ref(false)
 const minutesChecked = ref(false)
@@ -135,7 +138,7 @@ const output2 = ref('')
 const output3 = ref('')
 const hasTransformed = ref(false)
 const isLoading = ref(false)
-const isMetres = ref(true)
+const isMeters = ref(true)
 const hover = ref(false)
 const crs = ref([])
 // const EpsgCodes = ref([])
@@ -166,37 +169,45 @@ const emit = defineEmits([
 watch(() => props.inputCoords, () => {
   if (epsgSelected.value) {
     console.log('transform!')
-    transform()
+    if (!hasTransformed.value) {
+      const result = transformer.transform(props.inputEPSG, props.inputCoords, outputEPSG.value, props.is3D)
+      updateOutputField(Formatter.formatCoordinates(result, isMeters.value, degreesChecked.value, minutesChecked.value, secondsChecked.value, props.is3D))
+    }
   }
 })
 watch(() => minutesChecked.value, () => {
-  updateOutputField(formatCoordinates(outputCoords.value))
+  updateOutputField(Formatter.formatCoordinates(outputCoords.value, isMeters.value, degreesChecked.value, minutesChecked.value, secondsChecked.value, props.is3D))
 })
 watch(() => secondsChecked.value, () => {
-  updateOutputField(formatCoordinates(outputCoords.value))
+  updateOutputField(Formatter.formatCoordinates(outputCoords.value, isMeters.value, degreesChecked.value, minutesChecked.value, secondsChecked.value, props.is3D))
 })
 watch(() => degreesChecked.value, () => {
-  updateOutputField(formatCoordinates(outputCoords.value))
+  updateOutputField(Formatter.formatCoordinates(outputCoords.value, isMeters.value, degreesChecked.value, minutesChecked.value, secondsChecked.value, props.is3D))
 })
 
 // En output-EPSG er valgt: Der skal foretages transformation,
 // og brugergrænsefladen opdateres ift. om output EPSG-koden er i meter eller DMS og 2D eller 3D
-const onEpsgSelect = (event) => {
+const onEpsgSelect = async (event) => {
+  epsgSelected.value = true
+
   const code = event.target.selectedOptions[0]._value
+  outputEPSG.value = code.srid
 
   if (code.v1_unit === 'metre') {
-    isMetres.value = true
+    isMeters.value = true
     // TODO: this should hide the radio buttons entirely
     disableRadioButtons()
   } else {
-    isMetres.value = false
+    isMeters.value = false
     degreesChecked.value = true
   }
-
-  epsgSelected.value = true
-  outputEPSG.value = code.srid
+  const result = await transformer.transform(props.inputEPSG, props.inputCoords, outputEPSG.value, props.is3D)
+  console.log('going into format: ', result)
   hasTransformed.value = true
-  transform()
+  // transform is good, format is bad, move formatting to updateOutputField()
+  const formatted = Formatter.formatCoordinates(result)
+  console.log('formatted: ', formatted)
+  updateOutputField(result) // gets array of 3 NaN
 }
 
 const disableRadioButtons = () => {
@@ -294,37 +305,17 @@ const copyCoordinates = () => {
   }
 }
 
-/** formaterer de givne koordinater på en pæn måde */
-const formatCoordinates = (_coords) => {
-  let formattedCoordinates = []
-
-  if (isMetres.value) {
-    formattedCoordinates = Formatter.toMetres(_coords)
-  } else {
-    if (degreesChecked.value) {
-      formattedCoordinates = Formatter.toDegrees(_coords)
-    } else if (minutesChecked.value) {
-      formattedCoordinates = Formatter.toDegreesAndMinutes(_coords)
-    } else {
-      formattedCoordinates = Formatter.toDegreesMinutesAndSeconds(_coords)
-    }
-  }
-  if (props.is3D) {
-    Formatter.appendThirdParameter(formattedCoordinates, _coords[2])
-  } else {
-    formattedCoordinates.push('')
-  }
-  return formattedCoordinates
-}
-
 // fylder output feltet med de givne koordinater
 const updateOutputField = (_coords) => {
   isLoading.value = true // viser et animeret loader ikon.
   setTimeout(() => {
     isLoading.value = false
-    output1.value = _coords[0]
-    output2.value = _coords[1]
-    output3.value = _coords[2]
+    console.log('updating outputField: ', _coords)
+    const formattedOutput = Formatter.formatCoordinates(_coords, isMeters.value, degreesChecked.value, minutesChecked.value, secondsChecked.value, props.is3D)
+    console.log('formatted output: ', formattedOutput)
+    output1.value = formattedOutput[0]
+    output2.value = formattedOutput[1]
+    output3.value = formattedOutput[2]
   }, 500)
 }
 
@@ -377,67 +368,12 @@ const updateFilteredCodes = async () => {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 const error = err => {
   emit('error-occurred', true, err)
   setTimeout(() => {
     emit('error-occurred', false)
   }, 4000)
-}
-
-// sæt outputtet med tre koordinater
-const setOutput3D = async () => {
-  store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
-    .then(() => {
-      const output = store.state.trans.data
-      if (output.message !== undefined) {
-        error(output.message)
-        return
-      }
-      outputCoords.value[0] = parseFloat(output.v1)
-      outputCoords.value[1] = parseFloat(output.v2)
-      outputCoords.value[2] = parseFloat(output.v3)
-      updateOutputField(formatCoordinates(outputCoords.value))
-    })
-}
-
-// sæt outputtet med to koordinater
-const setOutput2D = async () => {
-  store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
-    .then(() => {
-      const output = store.state.trans.data
-      if (output.message !== undefined) {
-        error(output.message)
-        return
-      }
-      outputCoords.value[0] = parseFloat(output.v1)
-      outputCoords.value[1] = parseFloat(output.v2)
-      updateOutputField(formatCoordinates(outputCoords.value))
-    })
-}
-
-// send inputtet direkte igennem til outputtet
-const setOutputDirect = () => {
-  outputCoords.value[0] = props.inputCoords[0]
-  outputCoords.value[1] = props.inputCoords[1]
-  outputCoords.value[2] = props.inputCoords[2]
-  updateOutputField(formatCoordinates(outputCoords.value))
-}
-
-const transform = () => {
-  if (!hasTransformed.value) {
-    return
-  }
-  // Hvis input og output er det samme
-  if (props.inputEPSG === outputEPSG.value) {
-    setOutputDirect()
-    return
-  }
-  // Hvis et tredie koordinat er givet.
-  if (props.is3D) {
-    setOutput3D()
-  } else {
-    setOutput2D()
-  }
 }
 
 onMounted(() => {
@@ -545,7 +481,7 @@ input[type=radio]:checked {
   width: 100%;
   flex-wrap: nowrap;
 }
-.isMetres {
+.isMeters {
   justify-content: end;
 }
 .radio-and-info-group {

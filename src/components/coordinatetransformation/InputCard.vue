@@ -11,7 +11,7 @@
       </select>
     </section>
     <div class="input">
-      <span class="first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
+      <span class="first-input" :class="{isDegreesInput: epsgIsDegrees, isMetersInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
         <Icon v-if="epsgIsDegrees"
           icon="ArrowIcon"
@@ -32,7 +32,7 @@
         <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}">
           <input
             class="coordinates"
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
             step="0.0001"
             v-model=degrees[0]
           />
@@ -42,7 +42,7 @@
         <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}" v-show="epsgIsDegrees && (minutesChecked || secondsChecked)">
           <input
             class="coordinates"
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[0]
             step="0.0001"
           />
@@ -51,14 +51,14 @@
         <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}" v-show="epsgIsDegrees && secondsChecked">
           <input
             class="coordinates"
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[0]
             step="0.0001"
           />
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="second-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
+      <span class="second-input" :class="{isDegreesInput: epsgIsDegrees, isMetersInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
         <Icon v-if="epsgIsDegrees"
           icon="ArrowIcon"
@@ -78,7 +78,7 @@
         />
         <span class="chosen-coordinates">
           <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=degrees[1]
             step="0.0001"
           />
@@ -87,7 +87,7 @@
         </span>
         <span class="chosen-coordinates" v-show="epsgIsDegrees && (minutesChecked || secondsChecked)">
           <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[1]
             step="0.0001"
           />
@@ -95,14 +95,14 @@
         </span>
         <span class="chosen-coordinates" v-show="epsgIsDegrees && secondsChecked">
           <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[1]
             step="0.0001"
           />
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="third-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}" v-show = "is3D">
+      <span class="third-input" :class="{isDegreesInput: epsgIsDegrees, isMetersInput: !epsgIsDegrees}" v-show = "is3D">
         <Icon
           icon="ArrowIcon"
           :width="2"
@@ -619,10 +619,10 @@ input[type=radio] {
   align-items: center;
   width: 100%;
 }
-.isMetresInput {
+.isMetersInput {
   width: 33%;
 }
-.isMetresInput {
+.isMetersInput {
   margin-top: 0.25rem;
   display: inline-flex;
   align-items: center;

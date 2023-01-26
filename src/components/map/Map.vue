@@ -14,6 +14,7 @@
     <Icon
       id="pinned-marker"
       icon="MapMarker"
+      class="--ds-hentdata-icon-download"
     />
   </div>
 </template>
@@ -32,7 +33,7 @@ import proj4 from 'proj4'
 import { epsg25832proj } from 'skraafoto-saul'
 // OpenLayers-ting
 import 'ol/ol.css'
-import { defineProps, onMounted, ref, defineAsyncComponent, provide } from 'vue'
+import { onMounted, ref, defineAsyncComponent, provide } from 'vue'
 import OlMap from 'ol/Map'
 import OlView from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
@@ -46,8 +47,9 @@ import {
   FullScreen
 } from 'ol/control'
 import { useStore } from 'vuex'
+import CoordinateTransformation from '../coordinatetransformation/CoordinateTransformation.vue'
 
-const CoordinateTransformation = defineAsyncComponent(() => import('@/components/coordinatetransformation/CoordinateTransformation'))
+// const CoordinateTransformation = defineAsyncComponent(() => )
 
 const props = defineProps({
   isDenmark: {
@@ -212,7 +214,7 @@ const defaultOlView = new OlView({
 
 // Vores eget kort (hvis Danmmark)
 const fetchMap = async () => {
-  const mapUrl = `https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${process.env.VUE_APP_TOKEN}`
+  const mapUrl = `https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${import.meta.env.VITE_TOKEN}`
 
   const map = await fetch(mapUrl)
   const mapText = await map.text()
@@ -246,6 +248,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
+
 #mouse-position {
   display: none;
 }

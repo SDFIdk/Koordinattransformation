@@ -1,6 +1,4 @@
 import
-/* webpackChunkName: "Vuex" */
-/* webpackPreload: true */
 Vuex from 'vuex'
 
 import { Koortrans } from '@/store/shared/Koortrans'

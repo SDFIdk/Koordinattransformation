@@ -13,7 +13,8 @@
     <div class="input">
       <span class="first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
-        <Icon v-if="epsgIsDegrees"
+        <span id="arrow" class="ds-icon-map-icon-nordpil"></span>
+        <!-- <Icon v-if="epsgIsDegrees"
           icon="ArrowIcon"
           :width="2"
           :height="2"
@@ -28,7 +29,7 @@
           :color="colors.turquoise"
           :stroke-width="0"
           class="arrow-icon arrow-icon-x-coordinate"
-        />
+        /> -->
         <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}">
           <input
             class="coordinates"
@@ -202,9 +203,11 @@
  * Det skal emitte til sin forældre CoordinateTransformation, hvis koordinaterne eller EPSG-koden ændres,
  * eller hvis der er sket en transformationsfejl (f.eks. out-of-bounds)
  */
-import { ref, inject, onUpdated, watch, onMounted, defineEmits } from 'vue'
+import { ref, inject, onUpdated, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
+
+import { dawaAutocomplete } from 'dawa-autocomplete2'
 
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
@@ -455,22 +458,26 @@ const getCoordsFromAdress = async (location) => {
 onMounted(() => {
   // Søgefeltet til indtastning af addresser (DAWA)
   inputEPSG.value = inject('inputEPSG')
-  const dawaAutocomplete2 = require('dawa-autocomplete2')
+  // const dawaAutocomplete2 = require('dawa-autocomplete2')
   const inputElm = document.getElementById('dawa-autocomplete-input')
 
-  dawaAutocomplete2.dawaAutocomplete(inputElm, {
+  dawaAutocomplete(inputElm, {
     select: (selected) => {
       addressSelected.value = selected.tekst
       // Tranformation efter valgt addresse
       getCoordsFromAdress(addressSelected.value)
     }
   })
+
   store.dispatch('CRS/clear')
-  store.dispatch('CRS/get', '').then(() => {
-    crs.value = store.state.CRS.data
-    getEpsgCodes()
-  })
+  store.dispatch('CRS/get', '')
+    .then(() => {
+
+      crs.value = store.state.CRS.data
+      getEpsgCodes()
+    })
 })
+
 setInput()
 
 // Hold øje med kortmarkørens placering,
@@ -511,6 +518,8 @@ onUpdated(() => {
 </script>
 
 <style scoped>
+@import "@dataforsyningen/icons/css/map-icon-nordpil.css";
+
 * {
   padding: 0;
   margin: 0;

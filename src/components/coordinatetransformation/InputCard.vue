@@ -205,6 +205,7 @@
 import { ref, inject, onUpdated, watch, onMounted, defineEmits } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
+import MapAPI from '../map/MapAPI'
 
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
@@ -237,48 +238,6 @@ const emit = defineEmits([
   'toggled-dropdown'
 ])
 
-const getEpsgCodes = async () => {
-  const tempCRS = []
-  // Der er forskellige lister for Danmark og Grønland
-  if (route.name === 'Denmark' && crs.value.length !== 0) {
-    for (let i = 0, iEnd = crs.value.DK.length; i < iEnd; ++i) {
-      await store
-        .dispatch('CRSInformation/get', crs.value.DK[i])
-        .then(() => {
-          tempCRS.push(store.state.CRSInformation.data)
-        })
-    }
-
-    for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
-      await store
-        .dispatch('CRSInformation/get', crs.value.Global[i])
-        .then(() => {
-          tempCRS.push(store.state.CRSInformation.data)
-        })
-    }
-
-    filteredCRS.value = tempCRS
-    document.getElementById('epsg-select').value = filteredCRS.value[0].title
-  } else if (route.name === 'Greenland') {
-    for (let i = 0, iEnd = crs.value.GL.length; i < iEnd; ++i) {
-      await store
-        .dispatch('CRSInformation/get', crs.value.GL[i])
-        .then(() => {
-          tempCRS.push(store.state.CRSInformation.data)
-        })
-    }
-    for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
-      await store
-        .dispatch('CRSInformation/get', crs.value.Global[i])
-        .then(() => {
-          tempCRS.push(store.state.CRSInformation.data)
-        })
-    }
-    filteredCRS.value = tempCRS
-    document.getElementById('epsg-select').value = filteredCRS.value[0].title
-  }
-}
-
 /**
  * UTranformation af inputkoordinaterne, når brugeren vælger ny EPSG
  * @param code
@@ -307,6 +266,7 @@ const inputEPSGChanged = (event) => {
         inputCoords.value[0] = output.v1
         inputCoords.value[1] = output.v2
         inputCoords.value[2] = output.v3
+
         // Vi formaterer inputtet, så det ser pænt ud,
         // og gør CoordinateTransformation opmærksom på ændringen
         // så den kan fortælle Map samt Output om den nye EPSG-kode.
@@ -466,10 +426,12 @@ onMounted(() => {
     }
   })
   store.dispatch('CRS/clear')
-  store.dispatch('CRS/get', '').then(() => {
-    crs.value = store.state.CRS.data
-    getEpsgCodes()
-  })
+  store.dispatch('CRS/get', '')
+    .then(async () => {
+      crs.value = store.state.CRS.data
+      // getEpsgCodes()
+      filteredCRS.value = await MapAPI.filterCodes(route.name, crs.value)
+    })
 })
 setInput()
 

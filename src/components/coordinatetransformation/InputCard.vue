@@ -11,8 +11,10 @@
       </select>
     </section>
     <div class="coordinate-inputs">
+      <!-- <CoordinateInputField ></CoordinateInputField>
+      <CoordinateInputField></CoordinateInputField>
+      <CoordinateInputField></CoordinateInputField> -->
       <span class="coordinate-input first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
-        <!-- Ombyt ikoner ved decimalgrader -->
         <ArrowIcon v-if="epsgIsDegrees"
           style="width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon" />
         <ArrowIcon v-else
@@ -48,7 +50,6 @@
         </span>
       </span>
       <span class="coordinate-input second-input" :class="{isDegreesInput: epsgIsDegrees, isMetersInput: !epsgIsDegrees}">
-        <!-- Ombyt ikoner ved decimalgrader -->
         <ArrowIcon v-if="epsgIsDegrees"
           style="transform: rotate(90deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
         />
@@ -173,6 +174,7 @@ import { ref, inject, onUpdated, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import MapAPI from '../map/MapAPI'
+import CoordinateInputField from './CoordinateInputField.vue'
 
 import { dawaAutocomplete } from 'dawa-autocomplete2'
 
@@ -458,14 +460,7 @@ onUpdated(() => {
 .coordinate-inputs {
   display: flex;
   flex-direction: row;
-  border: 1px solid red;
-
 }
-
-.coordinate-input {
-  border: 1px solid red;
-}
-
 
 #epsg-select {
   padding-left: 20px;
@@ -511,7 +506,8 @@ ul {
   border-bottom: var(--action) solid 1px;
   display: inline-flex;
   flex: 1;
-  width: 10%;
+  /* TODO: this is wonky */
+  width: 65%;
   margin-right: 0.5rem;
   padding-bottom: 0.25rem;
 }
@@ -525,15 +521,7 @@ input {
   border: none;
   width: 100%;
 }
-.arrow-icon-x-coordinate {
-  transform: rotate(90deg);
-}
-.arrow-icon-z-coordinate {
-  transform: rotate(45deg);
-}
-.arrow-icon-x-coordinate {
-  transform: rotate(90deg);
-}
+
 .searchbar {
   display: inline-flex;
   justify-content: space-between;
@@ -544,19 +532,23 @@ input {
   flex-grow: 1;
   padding: 0rem 0.75rem 0.1rem 1rem;
 }
+
 input[type=radio] {
   opacity: 0;
   width: 0;
   height: 0;
   cursor: pointer;
 }
+
 .radiogroup {
   display: inline-flex;
   flex-wrap: nowrap;
 }
+
 .radioGroupDisabled {
   pointer-events: none;
 }
+
 .footer {
   display: inline-flex;
   align-items: center;
@@ -564,21 +556,14 @@ input[type=radio] {
   width: 100%;
   margin-top: 1rem;
 }
+
 .isDegreesInput {
   margin-top: 0.25rem;
   display: inline-flex;
   align-items: center;
   width: 100%;
 }
-.isMetersInput {
-  width: 33%;
-  margin-top: 0.25rem;
-  display: inline-flex;
-  align-items: center;
-}
-/* .isMetersInput {
 
-} */
 @media screen and (max-width: 1180px) {
   .footer {
     display: inline-flex;

@@ -344,9 +344,6 @@ onMounted(() => {
   padding: 0;
 }
 
-.output-field {
-  border: 1px solid red;
-}
 
 option {
   background: white;

@@ -10,8 +10,8 @@
         </option>
       </select>
     </section>
-    <div class="input">
-      <span class="first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
+    <div class="coordinate-inputs">
+      <span class="coordinate-input first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
         <ArrowIcon v-if="epsgIsDegrees"
           style="width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon" />
@@ -47,7 +47,7 @@
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="second-input" :class="{isDegreesInput: epsgIsDegrees, isMetersInput: !epsgIsDegrees}">
+      <span class="coordinate-input second-input" :class="{isDegreesInput: epsgIsDegrees, isMetersInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
         <ArrowIcon v-if="epsgIsDegrees"
           style="transform: rotate(90deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
@@ -81,7 +81,7 @@
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="third-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}" v-show = "is3D">
+      <span class="coordinate-input third-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}" v-show = "is3D">
         <ArrowIcon
           style="transform: rotate(45deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
         />
@@ -455,6 +455,18 @@ onUpdated(() => {
   box-sizing: border-box;
 }
 
+.coordinate-inputs {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid red;
+
+}
+
+.coordinate-input {
+  border: 1px solid red;
+}
+
+
 #epsg-select {
   padding-left: 20px;
   width: 100%;
@@ -560,12 +572,13 @@ input[type=radio] {
 }
 .isMetersInput {
   width: 33%;
-}
-.isMetersInput {
   margin-top: 0.25rem;
   display: inline-flex;
   align-items: center;
 }
+/* .isMetersInput {
+
+} */
 @media screen and (max-width: 1180px) {
   .footer {
     display: inline-flex;

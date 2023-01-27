@@ -11,11 +11,12 @@
       />
       <div id="mouse-position"></div>
     </section>
-    <Icon
+    <MapIcon id="pinned-marker"></MapIcon>
+    <!-- <Icon
       id="pinned-marker"
       icon="MapMarker"
       class="--ds-hentdata-icon-download"
-    />
+    /> -->
   </div>
 </template>
 
@@ -48,6 +49,7 @@ import {
 } from 'ol/control'
 import { useStore } from 'vuex'
 import CoordinateTransformation from '../coordinatetransformation/CoordinateTransformation.vue'
+import MapIcon from './../shared/icons/MapMarker.vue'
 
 // const CoordinateTransformation = defineAsyncComponent(() => )
 

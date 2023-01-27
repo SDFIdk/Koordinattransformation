@@ -12,24 +12,13 @@
     </section>
     <div class="input">
       <span class="first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
+
         <!-- Ombyt ikoner ved decimalgrader -->
-        <span id="arrow" class="ds-icon-map-icon-nordpil"></span>
-        <!-- <Icon v-if="epsgIsDegrees"
-          icon="ArrowIcon"
-          :width="2"
-          :height="2"
-          :color="colors.turquoise"
-          :stroke-width="0"
-          class="arrow-icon"
-        />
-        <Icon v-else
-          icon="ArrowIcon"
-          :width="2"
-          :height="2"
-          :color="colors.turquoise"
-          :stroke-width="0"
-          class="arrow-icon arrow-icon-x-coordinate"
-        /> -->
+        <ArrowIcon v-if="epsgIsDegrees"
+          style="width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon" />
+        <ArrowIcon v-else
+          style="transform: rotate(90deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon" />
+
         <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}">
           <input
             class="coordinates"
@@ -60,22 +49,13 @@
         </span>
       </span>
       <span class="second-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
+
         <!-- Ombyt ikoner ved decimalgrader -->
-        <Icon v-if="epsgIsDegrees"
-          icon="ArrowIcon"
-          :width="2"
-          :height="2"
-          :color="colors.turquoise"
-          :stroke-width="0"
-          class="arrow-icon arrow-icon-x-coordinate"
+        <ArrowIcon v-if="epsgIsDegrees"
+          style="transform: rotate(90deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
         />
-        <Icon v-else
-          icon="ArrowIcon"
-          :width="2"
-          :height="2"
-          :color="colors.turquoise"
-          :stroke-width="0"
-          class="arrow-icon"
+        <ArrowIcon v-else
+          style="width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
         />
         <span class="chosen-coordinates">
           <input
@@ -104,13 +84,8 @@
         </span>
       </span>
       <span class="third-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}" v-show = "is3D">
-        <Icon
-          icon="ArrowIcon"
-          :width="2"
-          :height="2"
-          :color="colors.turquoise"
-          :stroke-width="0"
-          class="arrow-icon-z-coordinate"
+        <ArrowIcon
+          style="transform: rotate(45deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
         />
         <span class="chosen-coordinates">
         <input
@@ -126,14 +101,15 @@
     <div class="footer">
       <div class="searchbar">
         <input class="searchbar-input" id="dawa-autocomplete-input"/>
-        <Icon
+        <SearchIcon></SearchIcon>
+        <!-- <Icon
           icon="SearchIcon"
           class="searchbar-icon"
           :color="colors.turquoise"
           :width="1.8"
           :height="1.8"
           :stroke-width="0.75"
-        />
+        /> -->
       </div>
       <div class="radiogroup" v-show="epsgIsDegrees" :class="{radioGroupDisabled: !epsgIsDegrees}">
         <label class="radio" @click="checkDegrees">
@@ -206,8 +182,12 @@
 import { ref, inject, onUpdated, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
+import MapIcon from './../shared/icons/MapMarker.vue'
 
 import { dawaAutocomplete } from 'dawa-autocomplete2'
+import ArrowIcon from './../shared/icons/ArrowIcon.vue'
+import SearchIcon from './../shared/icons/SearchIcon.vue'
+
 
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="icon-border" v-if="borderColor" :style="[borderStyle, borderFillStyle]" >
     <component
       :is="component"
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+/** TODO: delete this. */
 import { defineAsyncComponent } from 'vue'
 
 export default {
@@ -74,7 +75,7 @@ export default {
     },
 
     component () {
-      return defineAsyncComponent(() => import('@/components/shared/icons/' + this.icon))
+      return defineAsyncComponent(() => import('@/components/shared/icons/' + this.icon + '.vue'))
     },
 
     borderStyle () {
@@ -99,14 +100,18 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-*
-  transition all 200ms ease
-  backface-visibility hidden
-  perspective none
-  perspective-origin center center
-  transform translate3d(0, 0, 0)
-  text-rendering optimizeLegibility
+<style scoped>
+@import "@dataforsyningen/icons";
+* {
+  transition: all 200ms ease;
+  backface-visibility: hidden;
+  perspective: none;
+  perspective-origin: center center;
+  transform: translate3d(0, 0, 0);
+  text-rendering: optimizeLegibility;
+/*
   -webkit-font-smoothing subpixel-antialiased
-  -moz-osx-font-smoothing subpixel-antialiased
-</style>
+  -moz-osx-font-smoothing subpixel-antialiased */
+
+}
+</style> -->

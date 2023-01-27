@@ -143,7 +143,7 @@ export default {
   },
 
   components: {
-    Loader: defineAsyncComponent(() => import('@/components/shared/Loader'))
+    Loader: defineAsyncComponent(() => import('@/components/shared/Loader.vue'))
   },
 
   methods: {
@@ -434,10 +434,11 @@ export default {
 
     onMounted(() => {
       store.dispatch('CRS/clear')
-      store.dispatch('CRS/get', '').then(() => {
-        crs.value = store.state.CRS.data
-        updateFilteredCodes()
-      })
+      store.dispatch('CRS/get', '')
+        .then(() => {
+          crs.value = store.state.CRS.data
+          updateFilteredCodes()
+        })
     })
 
     return {

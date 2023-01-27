@@ -12,7 +12,6 @@
     </section>
     <div class="input">
       <span class="first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
-
         <!-- Ombyt ikoner ved decimalgrader -->
         <ArrowIcon v-if="epsgIsDegrees"
           style="width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon" />
@@ -22,7 +21,7 @@
         <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}">
           <input
             class="coordinates"
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
             step="0.0001"
             v-model=degrees[0]
           />
@@ -32,7 +31,7 @@
         <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}" v-show="epsgIsDegrees && (minutesChecked || secondsChecked)">
           <input
             class="coordinates"
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[0]
             step="0.0001"
           />
@@ -41,15 +40,14 @@
         <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}" v-show="epsgIsDegrees && secondsChecked">
           <input
             class="coordinates"
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[0]
             step="0.0001"
           />
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="second-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
-
+      <span class="second-input" :class="{isDegreesInput: epsgIsDegrees, isMetersInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
         <ArrowIcon v-if="epsgIsDegrees"
           style="transform: rotate(90deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
@@ -59,7 +57,7 @@
         />
         <span class="chosen-coordinates">
           <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=degrees[1]
             step="0.0001"
           />
@@ -68,7 +66,7 @@
         </span>
         <span class="chosen-coordinates" v-show="epsgIsDegrees && (minutesChecked || secondsChecked)">
           <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[1]
             step="0.0001"
           />
@@ -76,7 +74,7 @@
         </span>
         <span class="chosen-coordinates" v-show="epsgIsDegrees && secondsChecked">
           <input
-            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[1]
             step="0.0001"
           />
@@ -174,6 +172,7 @@
 import { ref, inject, onUpdated, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
+import MapAPI from '../map/MapAPI'
 
 import { dawaAutocomplete } from 'dawa-autocomplete2'
 
@@ -213,48 +212,6 @@ const emit = defineEmits([
   'toggled-dropdown'
 ])
 
-const getEpsgCodes = async () => {
-  const tempCRS = []
-  // Der er forskellige lister for Danmark og Grønland
-  if (route.name === 'Denmark' && crs.value.length !== 0) {
-    for (let i = 0, iEnd = crs.value.DK.length; i < iEnd; ++i) {
-      await store
-        .dispatch('CRSInformation/get', crs.value.DK[i])
-        .then(() => {
-          tempCRS.push(store.state.CRSInformation.data)
-        })
-    }
-
-    for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
-      await store
-        .dispatch('CRSInformation/get', crs.value.Global[i])
-        .then(() => {
-          tempCRS.push(store.state.CRSInformation.data)
-        })
-    }
-
-    filteredCRS.value = tempCRS
-    document.getElementById('epsg-select').value = filteredCRS.value[0].title
-  } else if (route.name === 'Greenland') {
-    for (let i = 0, iEnd = crs.value.GL.length; i < iEnd; ++i) {
-      await store
-        .dispatch('CRSInformation/get', crs.value.GL[i])
-        .then(() => {
-          tempCRS.push(store.state.CRSInformation.data)
-        })
-    }
-    for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
-      await store
-        .dispatch('CRSInformation/get', crs.value.Global[i])
-        .then(() => {
-          tempCRS.push(store.state.CRSInformation.data)
-        })
-    }
-    filteredCRS.value = tempCRS
-    document.getElementById('epsg-select').value = filteredCRS.value[0].title
-  }
-}
-
 /**
  * UTranformation af inputkoordinaterne, når brugeren vælger ny EPSG
  * @param code
@@ -283,6 +240,7 @@ const inputEPSGChanged = (event) => {
         inputCoords.value[0] = output.v1
         inputCoords.value[1] = output.v2
         inputCoords.value[2] = output.v3
+
         // Vi formaterer inputtet, så det ser pænt ud,
         // og gør CoordinateTransformation opmærksom på ændringen
         // så den kan fortælle Map samt Output om den nye EPSG-kode.
@@ -444,10 +402,10 @@ onMounted(() => {
 
   store.dispatch('CRS/clear')
   store.dispatch('CRS/get', '')
-    .then(() => {
-
+    .then(async () => {
       crs.value = store.state.CRS.data
-      getEpsgCodes()
+      // getEpsgCodes()
+      filteredCRS.value = await MapAPI.filterCodes(route.name, crs.value)
     })
 })
 
@@ -601,10 +559,10 @@ input[type=radio] {
   align-items: center;
   width: 100%;
 }
-.isMetresInput {
+.isMetersInput {
   width: 33%;
 }
-.isMetresInput {
+.isMetersInput {
   margin-top: 0.25rem;
   display: inline-flex;
   align-items: center;

@@ -10,7 +10,7 @@ const props = defineProps({
 
 <template>
 <div class='input'>
-  <span class='first-input' :class='{isDegreesInput: isDegrees, isMetresInput: !isDegrees}'>
+  <span class='first-input' :class='{isDegreesInput: isDegrees, isMetersInput: !isDegrees}'>
     <!-- Ombyt ikoner ved decimalgrader -->
     <Icon v-if='isDegrees'
       icon='ArrowIcon'
@@ -31,7 +31,7 @@ const props = defineProps({
     <span class='chosen-coordinates' :class='{degreesInput: isDegrees}'>
       <input
         class='coordinates'
-        :class='{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}'
+        :class='{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}'
         type='number'
         step='0.0001'
         v-model=degrees[0]
@@ -42,7 +42,7 @@ const props = defineProps({
     <span class='chosen-coordinates' :class='{degreesInput: isDegrees}' v-show='isDegrees && (minutesChecked || secondsChecked)'>
       <input
         class='coordinates'
-        :class='{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}'
+        :class='{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}'
         v-model=minutes[0]
         type='number'
         step='0.0001'
@@ -52,7 +52,7 @@ const props = defineProps({
     <span class='chosen-coordinates' :class='{degreesInput: isDegrees}' v-show='isDegrees && secondsChecked'>
       <input
         class='coordinates'
-        :class='{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}'
+        :class='{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}'
         v-model=seconds[0]
         type='number'
         step='0.0001'
@@ -60,7 +60,7 @@ const props = defineProps({
       <span class='degrees'>'</span>
     </span>
   </span>
-  <span class='second-input' :class='{isDegreesInput: isDegrees, isMetresInput: !isDegrees}'>
+  <span class='second-input' :class='{isDegreesInput: isDegrees, isMetersInput: !isDegrees}'>
     <!-- Ombyt ikoner ved decimalgrader -->
     <Icon v-if='isDegrees'
       icon='ArrowIcon'
@@ -80,7 +80,7 @@ const props = defineProps({
     />
     <span class='chosen-coordinates'>
       <input
-        :class='{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}'
+        :class='{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}'
         v-model=degrees[1]
         type='number'
         step='0.0001'
@@ -90,7 +90,7 @@ const props = defineProps({
     </span>
     <span class='chosen-coordinates' v-show='isDegrees && (minutesChecked || secondsChecked)'>
       <input
-        :class='{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}'
+        :class='{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}'
         v-model=minutes[1]
         type='number'
         step='0.0001'
@@ -99,7 +99,7 @@ const props = defineProps({
     </span>
     <span class='chosen-coordinates' v-show='isDegrees && secondsChecked'>
       <input
-        :class='{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}'
+        :class='{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}'
         v-model=seconds[1]
         type='number'
         step='0.0001'
@@ -107,7 +107,7 @@ const props = defineProps({
       <span class='degrees'>'</span>
     </span>
   </span>
-  <span class='third-input' :class='{isDegreesInput: isDegrees, isMetresInput: !isDegrees}' v-show = 'is3D'>
+  <span class='third-input' :class='{isDegreesInput: isDegrees, isMetersInput: !isDegrees}' v-show = 'is3D'>
     <Icon
       icon='ArrowIcon'
       :width='2'

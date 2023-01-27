@@ -11,24 +11,13 @@
       </select>
     </section>
     <div class="input">
-      <span class="first-input" :class="{isDegreesInput: epsgIsDegrees, isMetersInput: !epsgIsDegrees}">
+      <span class="first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
-        <Icon v-if="epsgIsDegrees"
-          icon="ArrowIcon"
-          :width="2"
-          :height="2"
-          :color="colors.turquoise"
-          :stroke-width="0"
-          class="arrow-icon"
-        />
-        <Icon v-else
-          icon="ArrowIcon"
-          :width="2"
-          :height="2"
-          :color="colors.turquoise"
-          :stroke-width="0"
-          class="arrow-icon arrow-icon-x-coordinate"
-        />
+        <ArrowIcon v-if="epsgIsDegrees"
+          style="width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon" />
+        <ArrowIcon v-else
+          style="transform: rotate(90deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon" />
+
         <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}">
           <input
             class="coordinates"
@@ -60,21 +49,11 @@
       </span>
       <span class="second-input" :class="{isDegreesInput: epsgIsDegrees, isMetersInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
-        <Icon v-if="epsgIsDegrees"
-          icon="ArrowIcon"
-          :width="2"
-          :height="2"
-          :color="colors.turquoise"
-          :stroke-width="0"
-          class="arrow-icon arrow-icon-x-coordinate"
+        <ArrowIcon v-if="epsgIsDegrees"
+          style="transform: rotate(90deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
         />
-        <Icon v-else
-          icon="ArrowIcon"
-          :width="2"
-          :height="2"
-          :color="colors.turquoise"
-          :stroke-width="0"
-          class="arrow-icon"
+        <ArrowIcon v-else
+          style="width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
         />
         <span class="chosen-coordinates">
           <input
@@ -102,14 +81,9 @@
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="third-input" :class="{isDegreesInput: epsgIsDegrees, isMetersInput: !epsgIsDegrees}" v-show = "is3D">
-        <Icon
-          icon="ArrowIcon"
-          :width="2"
-          :height="2"
-          :color="colors.turquoise"
-          :stroke-width="0"
-          class="arrow-icon-z-coordinate"
+      <span class="third-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}" v-show = "is3D">
+        <ArrowIcon
+          style="transform: rotate(45deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
         />
         <span class="chosen-coordinates">
         <input
@@ -125,14 +99,7 @@
     <div class="footer">
       <div class="searchbar">
         <input class="searchbar-input" id="dawa-autocomplete-input"/>
-        <Icon
-          icon="SearchIcon"
-          class="searchbar-icon"
-          :color="colors.turquoise"
-          :width="1.8"
-          :height="1.8"
-          :stroke-width="0.75"
-        />
+        <SearchIcon></SearchIcon>
       </div>
       <div class="radiogroup" v-show="epsgIsDegrees" :class="{radioGroupDisabled: !epsgIsDegrees}">
         <label class="radio" @click="checkDegrees">
@@ -202,10 +169,17 @@
  * Det skal emitte til sin forældre CoordinateTransformation, hvis koordinaterne eller EPSG-koden ændres,
  * eller hvis der er sket en transformationsfejl (f.eks. out-of-bounds)
  */
-import { ref, inject, onUpdated, watch, onMounted, defineEmits } from 'vue'
+import { ref, inject, onUpdated, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import MapAPI from '../map/MapAPI'
+
+import { dawaAutocomplete } from 'dawa-autocomplete2'
+
+/** icons */
+import ArrowIcon from './../shared/icons/ArrowIcon.vue'
+import SearchIcon from './../shared/icons/SearchIcon.vue'
+
 
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
@@ -415,16 +389,17 @@ const getCoordsFromAdress = async (location) => {
 onMounted(() => {
   // Søgefeltet til indtastning af addresser (DAWA)
   inputEPSG.value = inject('inputEPSG')
-  const dawaAutocomplete2 = require('dawa-autocomplete2')
+  // const dawaAutocomplete2 = require('dawa-autocomplete2')
   const inputElm = document.getElementById('dawa-autocomplete-input')
 
-  dawaAutocomplete2.dawaAutocomplete(inputElm, {
+  dawaAutocomplete(inputElm, {
     select: (selected) => {
       addressSelected.value = selected.tekst
       // Tranformation efter valgt addresse
       getCoordsFromAdress(addressSelected.value)
     }
   })
+
   store.dispatch('CRS/clear')
   store.dispatch('CRS/get', '')
     .then(async () => {
@@ -433,6 +408,7 @@ onMounted(() => {
       filteredCRS.value = await MapAPI.filterCodes(route.name, crs.value)
     })
 })
+
 setInput()
 
 // Hold øje med kortmarkørens placering,
@@ -473,6 +449,8 @@ onUpdated(() => {
 </script>
 
 <style scoped>
+@import "@dataforsyningen/icons/css/map-icon-nordpil.css";
+
 * {
   padding: 0;
   margin: 0;

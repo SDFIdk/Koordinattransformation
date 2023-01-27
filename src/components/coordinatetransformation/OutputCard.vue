@@ -294,7 +294,14 @@ const copyCoordinates = () => {
     navigator.clipboard.writeText(output1.value + output2.value + output3.value)
 
     emit('coordinates-copied', true)
-
+    onMounted(() => {
+      store.dispatch('CRS/clear')
+      store.dispatch('CRS/get', '')
+        .then(() => {
+          crs.value = store.state.CRS.data
+          updateFilteredCodes()
+        })
+    })
     window.setTimeout(() => {
       emit('coordinates-copied', false)
     }, 3333)

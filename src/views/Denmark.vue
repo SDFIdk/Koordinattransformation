@@ -7,7 +7,7 @@ import { defineAsyncComponent } from 'vue'
 export default {
   name: 'DenmarkView',
   components: {
-    Map: defineAsyncComponent(() => import('@/components/map/Map'))
+    Map: defineAsyncComponent(() => import('@/components/map/Map.vue'))
   }
 }
 </script>

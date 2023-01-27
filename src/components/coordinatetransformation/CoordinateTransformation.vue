@@ -40,9 +40,9 @@ import { defineAsyncComponent, ref, inject } from 'vue'
 export default {
   name: 'CoordinateTransformation',
   components: {
-    InputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/InputCard')),
-    OutputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCard')),
-    MenuCloser: defineAsyncComponent(() => import('@/components/coordinatetransformation/MenuCloser'))
+    InputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/InputCard.vue')),
+    OutputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCard.vue')),
+    MenuCloser: defineAsyncComponent(() => import('@/components/coordinatetransformation/MenuCloser.vue'))
   },
   props: {
     mapError: {

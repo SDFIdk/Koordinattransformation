@@ -1,6 +1,6 @@
 <script setup>
 // TODO: finish this and implement in inputCard.vue
-import { inject, defineProps } from 'vue'
+import { inject } from 'vue'
 
 const colors = inject('themeColors')
 const props = defineProps({

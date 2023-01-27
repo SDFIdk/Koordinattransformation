@@ -13,7 +13,7 @@
 
 <script setup>
 /** the output field to go in the output card */
-import { defineProps, defineAsyncComponent } from 'vue'
+import { defineAsyncComponent } from 'vue'
 
 const Loader = defineAsyncComponent(() => import('@/components/shared/Loader'))
 

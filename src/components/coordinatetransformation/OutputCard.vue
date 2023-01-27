@@ -9,7 +9,7 @@
         </option>
       </select>
     </section>
-    <OutputField :output1="output1" :output2="output2" :output3="output3" :class="{hasTransformed: hasTransformed}" />
+    <OutputField class="output-field"  :output1="output1" :output2="output2" :output3="output3" :class="{hasTransformed: hasTransformed}" />
     <article class="footer" :class="{isMeters: isMeters}">
       <div class="radio-and-info-group" v-show="!isMeters">
         <div class="radiogroup" :class="{radioGroupDisabled: isMeters}">
@@ -110,14 +110,14 @@
 /**
  * Ouput foretager den reelle transformation - den er vi er interesseret i
  */
-import { defineAsyncComponent, watch, defineProps, defineEmits, inject, onMounted, ref } from 'vue'
+import { defineAsyncComponent, watch, inject, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import Formatter from './Formatting'
 import Transformer from './Transformer'
 import MapAPI from '../map/MapAPI'
+import OutputField from './OutputField.vue'
 
-const OutputField = defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputField'))
 const store = useStore()
 const colors = inject('themeColors')
 const outputEPSG = ref('')
@@ -342,6 +342,10 @@ onMounted(() => {
 * {
   margin: 0;
   padding: 0;
+}
+
+.output-field {
+  border: 1px solid red;
 }
 
 option {

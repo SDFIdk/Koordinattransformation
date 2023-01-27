@@ -449,8 +449,6 @@ onUpdated(() => {
 </script>
 
 <style scoped>
-@import "@dataforsyningen/icons/css/map-icon-nordpil.css";
-
 * {
   padding: 0;
   margin: 0;
@@ -510,6 +508,7 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 input {
+  appearance: textfield;
   -moz-appearance: textfield;
   border: none;
   width: 100%;

@@ -102,14 +102,6 @@
       <div class="searchbar">
         <input class="searchbar-input" id="dawa-autocomplete-input"/>
         <SearchIcon></SearchIcon>
-        <!-- <Icon
-          icon="SearchIcon"
-          class="searchbar-icon"
-          :color="colors.turquoise"
-          :width="1.8"
-          :height="1.8"
-          :stroke-width="0.75"
-        /> -->
       </div>
       <div class="radiogroup" v-show="epsgIsDegrees" :class="{radioGroupDisabled: !epsgIsDegrees}">
         <label class="radio" @click="checkDegrees">
@@ -182,9 +174,10 @@
 import { ref, inject, onUpdated, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
-import MapIcon from './../shared/icons/MapMarker.vue'
 
 import { dawaAutocomplete } from 'dawa-autocomplete2'
+
+/** icons */
 import ArrowIcon from './../shared/icons/ArrowIcon.vue'
 import SearchIcon from './../shared/icons/SearchIcon.vue'
 

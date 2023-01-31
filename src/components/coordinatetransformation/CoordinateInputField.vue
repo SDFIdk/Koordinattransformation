@@ -1,5 +1,5 @@
 <template>
-  <span class="coordinate-input first-input" :class="{isDegreesInput: epsgIsDegrees, isMetersInput: !epsgIsDegrees}">
+  <div class="coordinate-input first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
     <ArrowIcon v-if="epsgIsDegrees"
       style="width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon" />
     <ArrowIcon v-else
@@ -33,7 +33,7 @@
       />
       <span class="degrees">"</span>
     </span>
-  </span>
+  </div>
 </template>
 
 <script setup>
@@ -51,42 +51,3 @@ const props = defineProps({
 })
 
 </script>
-
-<style scoped>
-* {
-  border: solid 1px red;
-}
-input {
-  appearance: textfield;
-  -moz-appearance: textfield;
-  border: none;
-  width: 100%;
-}
-
-.isMetersInput {
-  width: 33%;
-  margin-top: 0.25rem;
-  display: inline-flex;
-  align-items: center;
-}
-
-/* TODO: implement these */
-.arrow-icon-x-coordinate {
-  transform: rotate(90deg);
-}
-.arrow-icon-z-coordinate {
-  transform: rotate(45deg);
-}
-.arrow-icon-x-coordinate {
-  transform: rotate(90deg);
-}
-
-.chosen-coordinates {
-  border-bottom: var(--action) solid 1px;
-  display: inline-flex;
-  flex: 1;
-  width: 10%;
-  margin-right: 0.5rem;
-  padding-bottom: 0.25rem;
-}
-</style>

@@ -73,22 +73,20 @@ export default class Transformer {
     transformNone(inputEpsg, inputCoords, outputEpsg) {
         const outputCoords = [];
 
-        store.dispatch(
-            "trans/get",
-            inputEpsg + "/" + outputEpsg + "/" + inputCoords[0] + "," + inputCoords[1] + "," + inputCoords[2]
-        )
-        .then(() => {
-            const output = store.state.trans.data;
-            // if (output.message !== undefined) {
-            //   error(output.message)
-            //   return
-            // }
-            outputCoords[0] = parseFloat(output.v1);
-            outputCoords[1] = parseFloat(output.v2);
-            outputCoords[2] = parseFloat(output.v3);
-            console.log("transform3D", outputCoords);
-            console.table(outputCoords);
-        });
+        const coords = inputCoords[0] + "," + inputCoords[1] + "," + inputCoords[2]
+        store.dispatch("trans/get", inputEpsg + "/" + outputEpsg + "/" + coords)
+            .then(() => {
+                const output = store.state.trans.data;
+                // if (output.message !== undefined) {
+                //   error(output.message)
+                //   return
+                // }
+                outputCoords[0] = parseFloat(output.v1);
+                outputCoords[1] = parseFloat(output.v2);
+                outputCoords[2] = parseFloat(output.v3);
+                console.log("transform3D", outputCoords);
+                console.table(outputCoords);
+            });
         return outputCoords;
     }
 }

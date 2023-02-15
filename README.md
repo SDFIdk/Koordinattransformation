@@ -27,7 +27,7 @@ For anden specifik konfiguration af Vue.js, se: [Configuration Reference](https:
 
 ### Start server med hot-reload til udvikling
 ```
-npm run serve
+npm run dev
 ```
 
 ### Compile og minify til produktion

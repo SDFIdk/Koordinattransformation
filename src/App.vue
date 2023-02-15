@@ -16,7 +16,7 @@
 import { onErrorCaptured, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { isConsole, isIE, isSmartTV, isWearable } from 'mobile-device-detect'
-import Header from '@/components/shared/header/Header.vue'
+import Header from '@/components/shared/header/Header'
 
 export default {
   name: 'App',

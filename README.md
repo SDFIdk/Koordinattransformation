@@ -15,9 +15,9 @@ npm install
 
 Applikationen kræver et par *environment variables* til stede i root folderen. Disse er som følger:
 ```
-VITE_NODE_ENV = [production | development | staging]
-VITE_TOKEN = [Dataforsyning token for authentification]
-VITE_API_BASE_URL = [Dataforsyning API URL]
+VUE_APP_NODE_ENV = [production | development | staging]
+VUE_APP_TOKEN = [Dataforsyning token for authentification]
+VUE_APP_API_BASEURL = [Dataforsyning API URL]
 ```
 Du kan gemme disse variabler i .env filer i projektets root mappe **eller i parent directory** for avanceret konfiguration
 

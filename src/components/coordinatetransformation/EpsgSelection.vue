@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <article class="coordinate-selection">
     <section
       @click="toggleDropdown"
@@ -196,4 +196,4 @@ ul {
   padding: 0;
   margin: 0;
 }
-</style> -->
+</style>

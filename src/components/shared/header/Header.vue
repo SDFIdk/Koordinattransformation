@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import Brand from '@/components/shared/header/Brand.vue'
-import Nav from '@/components/shared/header/Nav.vue'
+import Brand from '@/components/shared/header/Brand'
+import Nav from '@/components/shared/header/Nav'
 
 export default {
   name: 'HeaderComponent',

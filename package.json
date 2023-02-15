@@ -3,47 +3,48 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview",
-    "test": "vitest",
-    "coverage": "vitest run --coverage",
+    "serve": "vue-cli-service serve --mode development --open --modern --target web",
+    "build-test": "vue-cli-service build --mode staging --dest dist --modern --no-unsafe-inline --target app --report-json --debug",
     "build-prod": "vue-cli-service build --mode production --dest dist --modern --no-unsafe-inline --target app --report-json",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src"
+    "lint": "vue-cli-service lint"
   },
   "engines": {
     "npm": ">=8.5.2",
     "node": ">=17.6.0"
   },
   "dependencies": {
-    "@dataforsyningen/css": "^0.4.2",
-    "@dataforsyningen/icons": "^0.2.2",
     "@popperjs/core": "^2.11.6",
-    "@vitejs/plugin-vue": "^1.6.1",
+    "core-js": "^3.21.1",
     "dawa-autocomplete2": "^1.0.2",
     "mobile-device-detect": "0.4.3",
     "ol": "6.14.1",
     "proj4": "2.8.0",
     "sanitize.css": "13.0.0",
     "skraafoto-saul": "^2.1.0",
-    "vite": "^2.5.4",
     "vue": "3.2.31",
     "vue-router": "4.0.14",
-    "vuex": "4.0.2"
+    "vuex": "4.0.2",
+    "webpack": "5.70.0"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "7.17.0",
+    "@vue/cli-plugin-babel": "5.0.4",
+    "@vue/cli-plugin-eslint": "5.0.4",
+    "@vue/cli-plugin-pwa": "5.0.4",
+    "@vue/cli-plugin-router": "5.0.4",
+    "@vue/cli-plugin-vuex": "5.0.4",
+    "@vue/cli-service": "5.0.4",
     "@vue/compiler-sfc": "3.2.31",
     "@vue/eslint-config-standard": "^6.1.0",
-    "eslint": "^8.32.0",
+    "eslint": "8.12.0",
     "eslint-module-utils": "2.7.3",
     "eslint-plugin-import": "2.25.4",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "6.0.0",
     "eslint-plugin-standard": "5.0.0",
-    "eslint-plugin-vue": "^8.7.1",
+    "eslint-plugin-vue": "8.5.0",
     "mini-css-extract-plugin": "2.6.0",
     "stylus": "0.57.0",
-    "stylus-loader": "6.2.0",
-    "vitest": "^0.28.2"
+    "stylus-loader": "6.2.0"
   }
 }

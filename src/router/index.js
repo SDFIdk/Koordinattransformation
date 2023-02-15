@@ -1,11 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import /* webpackPreload: true */ { createRouter, createWebHistory } from 'vue-router'
 import { nextTick } from 'vue'
 
 // eslint-disable-next-line one-var
-const Home = () => import('@/views/Home.vue'),
-Denmark = () => import('@/views/Denmark.vue'),
-Greenland = () => import('@/views/Greenland.vue'),
-About = () => import('@/views/About.vue')
+const Home = () => import(/* webpackChunkName: "Home", webpackMode: "lazy", webpackPreload: true */ '@/views/Home.vue'),
+  Denmark = () => import(/* webpackChunkName: "Home", webpackMode: "lazy", webpackPreload: true */ '@/views/Denmark.vue'),
+  Greenland = () => import(/* webpackChunkName: "Cases", webpackMode: "lazy", webpackPreload: true */ '@/views/Greenland.vue'),
+  About = () => import('@/views/About.vue')
 const routes = [
   {
     path: '/',

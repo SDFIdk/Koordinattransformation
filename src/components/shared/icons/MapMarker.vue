@@ -1,6 +1,6 @@
 <template>
   <svg
-    width="50" height="50" viewBox="0 0 92 118" fill="none"
+    width="92" height="118" viewBox="0 0 92 118" fill="none"
   >
     <g
       :stroke="color"

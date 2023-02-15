@@ -3,9 +3,9 @@ import { nextTick } from 'vue'
 
 // eslint-disable-next-line one-var
 const Home = () => import('@/views/Home.vue'),
-Denmark = () => import('@/views/Denmark.vue'),
-Greenland = () => import('@/views/Greenland.vue'),
-About = () => import('@/views/About.vue')
+  Denmark = () => import('@/views/Denmark.vue'),
+  Greenland = () => import('@/views/Greenland.vue'),
+  About = () => import('@/views/About.vue')
 const routes = [
   {
     path: '/',

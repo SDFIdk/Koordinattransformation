@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <article class="coordinate-selection">
     <section
       @click="toggleDropdown"
@@ -9,38 +9,35 @@
         { outputNotSelected: outputNotSelected }]"
     >
       <span class="input-crs">
-        <Icon v-if="isOutput && outputNotSelected"
-          icon="HashtagIcon"
-          :width="2"
-          :height="2"
-          :color="colors.white"
-        />
-        <Icon v-else
-          icon="HashtagIcon"
-          :width="2"
-          :height="2"
-          :color="colors.turquoise"
-        />
+        <svg v-if="isOutput && outputNotSelected"
+          width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 5L9 19" stroke="hsl(0,0%,100%)" stroke-linecap="round"/>
+          <path d="M15 5L15 19" stroke="hsl(0,0%,100%)" stroke-linecap="round"/>
+          <path d="M19 9L5 9" stroke="hsl(0,0%,100%)" stroke-linecap="round"/>
+          <path d="M19 15L5 15" stroke="hsl(0,0%,100%)" stroke-linecap="round"/>
+        </svg>
+        <svg v-else
+          width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 5L9 19" stroke="hsl(186,100%,33%)" stroke-linecap="round"/>
+          <path d="M15 5L15 19" stroke="hsl(186,100%,33%)" stroke-linecap="round"/>
+          <path d="M19 9L5 9" stroke="hsl(186,100%,33%)" stroke-linecap="round"/>
+          <path d="M19 15L5 15" stroke="hsl(186,100%,33%)" stroke-linecap="round"/>
+        </svg>
+
         <div class="epsg-code">
           {{ chosenInput }}
         </div>
       </span>
-      <Icon v-if="isOutput && outputNotSelected"
-        icon="ExpandIcon"
-        :width="2.5"
-        :height="2.5"
-        :color="colors.white"
-        :stroke-width="0.75"
-        class="expand-icon"
-      />
-      <Icon v-else
-        icon="ExpandIcon"
-        :width="2.5"
-        :height="2.5"
-        :color="colors.turquoise"
-        :stroke-width="0.75"
-        class="expand-icon"
-      />
+      <span v-if="isOutput && outputNotSelected">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 9L12 15L18 9" stroke="hsl(0,0%,100%)" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span v-else>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 9L12 15L18 9" stroke="hsl(186,100%,33%)" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
     </section>
     <section v-show="inputActive" class="crs-selection">
       <article class="selection-list" :class="{ isOutput: isOutput }">
@@ -196,4 +193,4 @@ ul {
   padding: 0;
   margin: 0;
 }
-</style> -->
+</style>

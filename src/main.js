@@ -53,7 +53,7 @@ app.config.globalProperties.$store = store
 app.use(colors)
   .component(
     'Icon', defineAsyncComponent(() => import(
-      '@/components/shared/Icon.vue'
+      '@/components/shared/Icon'
     ))
   )
   .use(router)

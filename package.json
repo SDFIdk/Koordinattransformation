@@ -6,9 +6,6 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "vitest",
-    "coverage": "vitest run --coverage",
-    "build-prod": "vue-cli-service build --mode production --dest dist --modern --no-unsafe-inline --target app --report-json",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src"
   },
   "engines": {
@@ -16,25 +13,21 @@
     "node": ">=17.6.0"
   },
   "dependencies": {
-    "@dataforsyningen/css": "^0.4.2",
-    "@dataforsyningen/icons": "^0.2.2",
     "@popperjs/core": "^2.11.6",
-    "@vitejs/plugin-vue": "^1.6.1",
-    "dawa-autocomplete2": "^1.0.2",
+    "dawa-autocomplete2": "^1.1.0",
     "mobile-device-detect": "0.4.3",
     "ol": "6.14.1",
     "proj4": "2.8.0",
     "sanitize.css": "13.0.0",
     "skraafoto-saul": "^2.1.0",
-    "vite": "^2.5.4",
     "vue": "3.2.31",
     "vue-router": "4.0.14",
     "vuex": "4.0.2"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue": "^1.6.1",
     "@vue/compiler-sfc": "3.2.31",
-    "@vue/eslint-config-standard": "^6.1.0",
-    "eslint": "^8.32.0",
+    "eslint": "^8.34.0",
     "eslint-module-utils": "2.7.3",
     "eslint-plugin-import": "2.25.4",
     "eslint-plugin-node": "11.1.0",
@@ -44,6 +37,6 @@
     "mini-css-extract-plugin": "2.6.0",
     "stylus": "0.57.0",
     "stylus-loader": "6.2.0",
-    "vitest": "^0.28.2"
+    "vite": "^2.5.4"
   }
 }

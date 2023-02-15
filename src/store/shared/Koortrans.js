@@ -22,7 +22,7 @@ export class Koortrans {
       get ({ commit }, crsParameter) {
         return new Promise((resolve, reject) => {
           commit('request')
-          fetch(environmentAPIDomains[import.meta.env.VITE_NODE_ENV] + path + crsParameter + '?token=' + tokens.get[import.meta.env.VITE_NODE_ENV])
+          fetch(environmentAPIDomains[import.meta.env.VITE_NODE_ENV] + path + crsParameter + '?token=' + tokens.get[import.meta.env. VITE_NODE_ENV])
             .then(res => res.json())
             .then(data => {
               commit('success', data)

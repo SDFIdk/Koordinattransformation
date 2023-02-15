@@ -13,15 +13,20 @@
     <div class="input">
       <span class="first-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
-        <ArrowIcon v-if="epsgIsDegrees"
-          style="width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon" />
-        <ArrowIcon v-else
-          style="transform: rotate(90deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon" />
-
+        <span v-if="epsgIsDegrees">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 18L6.53766 17.8096C6.45633 18.0071 6.50946 18.2345 6.66988 18.3755C6.83031 18.5166 7.06261 18.5401 7.24807 18.4341L7 18ZM11.9498 5.97915L12.4121 5.78877L11.9498 4.66595L11.4874 5.78877L11.9498 5.97915ZM16.8995 18L16.6515 18.4341C16.8369 18.5401 17.0692 18.5166 17.2296 18.3755C17.3901 18.2345 17.4432 18.0071 17.3619 17.8096L16.8995 18ZM11.9498 15.1716L12.1978 14.7374L11.9498 14.5957L11.7017 14.7374L11.9498 15.1716ZM11.4498 15.3002C11.4498 15.5763 11.6737 15.8002 11.9498 15.8002C12.226 15.8002 12.4498 15.5763 12.4498 15.3002H11.4498ZM12.4498 13.0502C12.4498 12.774 12.226 12.5502 11.9498 12.5502C11.6737 12.5502 11.4498 12.774 11.4498 13.0502H12.4498ZM7.46234 18.1904L12.4121 6.16952L11.4874 5.78877L6.53766 17.8096L7.46234 18.1904ZM11.4874 6.16952L16.4372 18.1904L17.3619 17.8096L12.4121 5.78877L11.4874 6.16952ZM17.1476 17.5659L12.1978 14.7374L11.7017 15.6057L16.6515 18.4341L17.1476 17.5659ZM11.7017 14.7374L6.75193 17.5659L7.24807 18.4341L12.1978 15.6057L11.7017 14.7374ZM12.4498 15.3002V13.0502H11.4498V15.3002H12.4498Z" fill="hsl(171,70%,40%)"/>
+          </svg>
+        </span>
+        <span v-else style="transform:rotate(90deg)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 18L6.53766 17.8096C6.45633 18.0071 6.50946 18.2345 6.66988 18.3755C6.83031 18.5166 7.06261 18.5401 7.24807 18.4341L7 18ZM11.9498 5.97915L12.4121 5.78877L11.9498 4.66595L11.4874 5.78877L11.9498 5.97915ZM16.8995 18L16.6515 18.4341C16.8369 18.5401 17.0692 18.5166 17.2296 18.3755C17.3901 18.2345 17.4432 18.0071 17.3619 17.8096L16.8995 18ZM11.9498 15.1716L12.1978 14.7374L11.9498 14.5957L11.7017 14.7374L11.9498 15.1716ZM11.4498 15.3002C11.4498 15.5763 11.6737 15.8002 11.9498 15.8002C12.226 15.8002 12.4498 15.5763 12.4498 15.3002H11.4498ZM12.4498 13.0502C12.4498 12.774 12.226 12.5502 11.9498 12.5502C11.6737 12.5502 11.4498 12.774 11.4498 13.0502H12.4498ZM7.46234 18.1904L12.4121 6.16952L11.4874 5.78877L6.53766 17.8096L7.46234 18.1904ZM11.4874 6.16952L16.4372 18.1904L17.3619 17.8096L12.4121 5.78877L11.4874 6.16952ZM17.1476 17.5659L12.1978 14.7374L11.7017 15.6057L16.6515 18.4341L17.1476 17.5659ZM11.7017 14.7374L6.75193 17.5659L7.24807 18.4341L12.1978 15.6057L11.7017 14.7374ZM12.4498 15.3002V13.0502H11.4498V15.3002H12.4498Z" fill="hsl(171,70%,40%)"/>
+          </svg>
+        </span>
         <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}">
           <input
             class="coordinates"
-            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             step="0.0001"
             v-model=degrees[0]
           />
@@ -31,7 +36,7 @@
         <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}" v-show="epsgIsDegrees && (minutesChecked || secondsChecked)">
           <input
             class="coordinates"
-            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[0]
             step="0.0001"
           />
@@ -40,24 +45,44 @@
         <span class="chosen-coordinates" :class="{degreesInput: epsgIsDegrees}" v-show="epsgIsDegrees && secondsChecked">
           <input
             class="coordinates"
-            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[0]
             step="0.0001"
           />
           <span class="degrees">"</span>
         </span>
       </span>
-      <span class="second-input" :class="{isDegreesInput: epsgIsDegrees, isMetersInput: !epsgIsDegrees}">
+      <span class="second-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}">
         <!-- Ombyt ikoner ved decimalgrader -->
-        <ArrowIcon v-if="epsgIsDegrees"
-          style="transform: rotate(90deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
+        <span v-if="epsgIsDegrees" style="transform:rotate(90deg)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 18L6.53766 17.8096C6.45633 18.0071 6.50946 18.2345 6.66988 18.3755C6.83031 18.5166 7.06261 18.5401 7.24807 18.4341L7 18ZM11.9498 5.97915L12.4121 5.78877L11.9498 4.66595L11.4874 5.78877L11.9498 5.97915ZM16.8995 18L16.6515 18.4341C16.8369 18.5401 17.0692 18.5166 17.2296 18.3755C17.3901 18.2345 17.4432 18.0071 17.3619 17.8096L16.8995 18ZM11.9498 15.1716L12.1978 14.7374L11.9498 14.5957L11.7017 14.7374L11.9498 15.1716ZM11.4498 15.3002C11.4498 15.5763 11.6737 15.8002 11.9498 15.8002C12.226 15.8002 12.4498 15.5763 12.4498 15.3002H11.4498ZM12.4498 13.0502C12.4498 12.774 12.226 12.5502 11.9498 12.5502C11.6737 12.5502 11.4498 12.774 11.4498 13.0502H12.4498ZM7.46234 18.1904L12.4121 6.16952L11.4874 5.78877L6.53766 17.8096L7.46234 18.1904ZM11.4874 6.16952L16.4372 18.1904L17.3619 17.8096L12.4121 5.78877L11.4874 6.16952ZM17.1476 17.5659L12.1978 14.7374L11.7017 15.6057L16.6515 18.4341L17.1476 17.5659ZM11.7017 14.7374L6.75193 17.5659L7.24807 18.4341L12.1978 15.6057L11.7017 14.7374ZM12.4498 15.3002V13.0502H11.4498V15.3002H12.4498Z" fill="hsl(171,70%,40%)"/>
+          </svg>
+        </span>
+        <span v-else>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 18L6.53766 17.8096C6.45633 18.0071 6.50946 18.2345 6.66988 18.3755C6.83031 18.5166 7.06261 18.5401 7.24807 18.4341L7 18ZM11.9498 5.97915L12.4121 5.78877L11.9498 4.66595L11.4874 5.78877L11.9498 5.97915ZM16.8995 18L16.6515 18.4341C16.8369 18.5401 17.0692 18.5166 17.2296 18.3755C17.3901 18.2345 17.4432 18.0071 17.3619 17.8096L16.8995 18ZM11.9498 15.1716L12.1978 14.7374L11.9498 14.5957L11.7017 14.7374L11.9498 15.1716ZM11.4498 15.3002C11.4498 15.5763 11.6737 15.8002 11.9498 15.8002C12.226 15.8002 12.4498 15.5763 12.4498 15.3002H11.4498ZM12.4498 13.0502C12.4498 12.774 12.226 12.5502 11.9498 12.5502C11.6737 12.5502 11.4498 12.774 11.4498 13.0502H12.4498ZM7.46234 18.1904L12.4121 6.16952L11.4874 5.78877L6.53766 17.8096L7.46234 18.1904ZM11.4874 6.16952L16.4372 18.1904L17.3619 17.8096L12.4121 5.78877L11.4874 6.16952ZM17.1476 17.5659L12.1978 14.7374L11.7017 15.6057L16.6515 18.4341L17.1476 17.5659ZM11.7017 14.7374L6.75193 17.5659L7.24807 18.4341L12.1978 15.6057L11.7017 14.7374ZM12.4498 15.3002V13.0502H11.4498V15.3002H12.4498Z" fill="hsl(171,70%,40%)"/>
+          </svg>
+        </span>
+        <!-- <Icon v-if="epsgIsDegrees"
+          icon="ArrowIcon"
+          :width="2"
+          :height="2"
+          :color="colors.turquoise"
+          :stroke-width="0"
+          class="arrow-icon arrow-icon-x-coordinate"
         />
-        <ArrowIcon v-else
-          style="width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
-        />
+        <Icon v-else
+          icon="ArrowIcon"
+          :width="2"
+          :height="2"
+          :color="colors.turquoise"
+          :stroke-width="0"
+          class="arrow-icon"
+        /> -->
         <span class="chosen-coordinates">
           <input
-            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=degrees[1]
             step="0.0001"
           />
@@ -66,7 +91,7 @@
         </span>
         <span class="chosen-coordinates" v-show="epsgIsDegrees && (minutesChecked || secondsChecked)">
           <input
-            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=minutes[1]
             step="0.0001"
           />
@@ -74,7 +99,7 @@
         </span>
         <span class="chosen-coordinates" v-show="epsgIsDegrees && secondsChecked">
           <input
-            :class="{degreesInput: degreesChecked, metersInput: minutesChecked, secondsInput: secondsChecked}"
+            :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
             v-model=seconds[1]
             step="0.0001"
           />
@@ -82,9 +107,11 @@
         </span>
       </span>
       <span class="third-input" :class="{isDegreesInput: epsgIsDegrees, isMetresInput: !epsgIsDegrees}" v-show = "is3D">
-        <ArrowIcon
-          style="transform: rotate(45deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
-        />
+        <span style="transform:rotate(45deg)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 18L6.53766 17.8096C6.45633 18.0071 6.50946 18.2345 6.66988 18.3755C6.83031 18.5166 7.06261 18.5401 7.24807 18.4341L7 18ZM11.9498 5.97915L12.4121 5.78877L11.9498 4.66595L11.4874 5.78877L11.9498 5.97915ZM16.8995 18L16.6515 18.4341C16.8369 18.5401 17.0692 18.5166 17.2296 18.3755C17.3901 18.2345 17.4432 18.0071 17.3619 17.8096L16.8995 18ZM11.9498 15.1716L12.1978 14.7374L11.9498 14.5957L11.7017 14.7374L11.9498 15.1716ZM11.4498 15.3002C11.4498 15.5763 11.6737 15.8002 11.9498 15.8002C12.226 15.8002 12.4498 15.5763 12.4498 15.3002H11.4498ZM12.4498 13.0502C12.4498 12.774 12.226 12.5502 11.9498 12.5502C11.6737 12.5502 11.4498 12.774 11.4498 13.0502H12.4498ZM7.46234 18.1904L12.4121 6.16952L11.4874 5.78877L6.53766 17.8096L7.46234 18.1904ZM11.4874 6.16952L16.4372 18.1904L17.3619 17.8096L12.4121 5.78877L11.4874 6.16952ZM17.1476 17.5659L12.1978 14.7374L11.7017 15.6057L16.6515 18.4341L17.1476 17.5659ZM11.7017 14.7374L6.75193 17.5659L7.24807 18.4341L12.1978 15.6057L11.7017 14.7374ZM12.4498 15.3002V13.0502H11.4498V15.3002H12.4498Z" fill="hsl(171,70%,40%)"/>
+          </svg>
+        </span>
         <span class="chosen-coordinates">
         <input
           :class="{degreesInput: true}"
@@ -99,7 +126,9 @@
     <div class="footer">
       <div class="searchbar">
         <input class="searchbar-input" id="dawa-autocomplete-input"/>
-        <SearchIcon></SearchIcon>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19.5 19.5L16.5 16.5M18 12C18 15.3137 15.3137 18 12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12Z" stroke="hsl(171,70%,40%)" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
       <div class="radiogroup" v-show="epsgIsDegrees" :class="{radioGroupDisabled: !epsgIsDegrees}">
         <label class="radio" @click="checkDegrees">
@@ -169,17 +198,11 @@
  * Det skal emitte til sin forældre CoordinateTransformation, hvis koordinaterne eller EPSG-koden ændres,
  * eller hvis der er sket en transformationsfejl (f.eks. out-of-bounds)
  */
-import { ref, inject, onUpdated, watch, onMounted } from 'vue'
+import { ref, inject, onUpdated, watch, onMounted, defineEmits } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
-import MapAPI from '../map/MapAPI'
 
 import { dawaAutocomplete } from 'dawa-autocomplete2'
-
-/** icons */
-import ArrowIcon from './../shared/icons/ArrowIcon.vue'
-import SearchIcon from './../shared/icons/SearchIcon.vue'
-
 
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
@@ -212,6 +235,48 @@ const emit = defineEmits([
   'toggled-dropdown'
 ])
 
+const getEpsgCodes = async () => {
+  const tempCRS = []
+  // Der er forskellige lister for Danmark og Grønland
+  if (route.name === 'Denmark' && crs.value.length !== 0) {
+    for (let i = 0, iEnd = crs.value.DK.length; i < iEnd; ++i) {
+      await store
+        .dispatch('CRSInformation/get', crs.value.DK[i])
+        .then(() => {
+          tempCRS.push(store.state.CRSInformation.data)
+        })
+    }
+
+    for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
+      await store
+        .dispatch('CRSInformation/get', crs.value.Global[i])
+        .then(() => {
+          tempCRS.push(store.state.CRSInformation.data)
+        })
+    }
+
+    filteredCRS.value = tempCRS
+    document.getElementById('epsg-select').value = filteredCRS.value[0].title
+  } else if (route.name === 'Greenland') {
+    for (let i = 0, iEnd = crs.value.GL.length; i < iEnd; ++i) {
+      await store
+        .dispatch('CRSInformation/get', crs.value.GL[i])
+        .then(() => {
+          tempCRS.push(store.state.CRSInformation.data)
+        })
+    }
+    for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
+      await store
+        .dispatch('CRSInformation/get', crs.value.Global[i])
+        .then(() => {
+          tempCRS.push(store.state.CRSInformation.data)
+        })
+    }
+    filteredCRS.value = tempCRS
+    document.getElementById('epsg-select').value = filteredCRS.value[0].title
+  }
+}
+
 /**
  * UTranformation af inputkoordinaterne, når brugeren vælger ny EPSG
  * @param code
@@ -240,7 +305,6 @@ const inputEPSGChanged = (event) => {
         inputCoords.value[0] = output.v1
         inputCoords.value[1] = output.v2
         inputCoords.value[2] = output.v3
-
         // Vi formaterer inputtet, så det ser pænt ud,
         // og gør CoordinateTransformation opmærksom på ændringen
         // så den kan fortælle Map samt Output om den nye EPSG-kode.
@@ -399,16 +463,12 @@ onMounted(() => {
       getCoordsFromAdress(addressSelected.value)
     }
   })
-
   store.dispatch('CRS/clear')
-  store.dispatch('CRS/get', '')
-    .then(async () => {
-      crs.value = store.state.CRS.data
-      // getEpsgCodes()
-      filteredCRS.value = await MapAPI.filterCodes(route.name, crs.value)
-    })
+  store.dispatch('CRS/get', '').then(() => {
+    crs.value = store.state.CRS.data
+    getEpsgCodes()
+  })
 })
-
 setInput()
 
 // Hold øje med kortmarkørens placering,
@@ -508,8 +568,8 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 input {
-  appearance: textfield;
   -moz-appearance: textfield;
+  appearance: textfield;
   border: none;
   width: 100%;
 }
@@ -558,10 +618,10 @@ input[type=radio] {
   align-items: center;
   width: 100%;
 }
-.isMetersInput {
+.isMetresInput {
   width: 33%;
 }
-.isMetersInput {
+.isMetresInput {
   margin-top: 0.25rem;
   display: inline-flex;
   align-items: center;

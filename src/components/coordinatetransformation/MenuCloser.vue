@@ -5,6 +5,7 @@
 </template>
 
 <script setup>
+import { defineEmits } from 'vue'
 const emit = defineEmits(['handle-close'])
 
 function handleClose () {

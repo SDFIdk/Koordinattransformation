@@ -17,7 +17,7 @@ Applikationen kræver et par *environment variables* til stede i root folderen. 
 ```
 VITE_NODE_ENV = [production | development | staging]
 VITE_TOKEN = [Dataforsyning token for authentification]
-VITE_API_BASE_URL = [Dataforsyning API URL]
+VITE_API_BASEURL = [Dataforsyning API URL]
 ```
 Du kan gemme disse variabler i .env filer i projektets root mappe **eller i parent directory** for avanceret konfiguration
 
@@ -27,7 +27,7 @@ For anden specifik konfiguration af Vue.js, se: [Configuration Reference](https:
 
 ### Start server med hot-reload til udvikling
 ```
-npm run serve
+npm run dev
 ```
 
 ### Compile og minify til produktion

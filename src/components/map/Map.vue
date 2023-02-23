@@ -38,7 +38,7 @@ import proj4 from 'proj4'
 import { epsg25832proj } from 'skraafoto-saul'
 // OpenLayers-ting
 import 'ol/ol.css'
-import { defineProps, onMounted, ref, defineAsyncComponent, provide } from 'vue'
+import { onMounted, ref, defineAsyncComponent, provide } from 'vue'
 import OlMap from 'ol/Map'
 import OlView from 'ol/View'
 import TileLayer from 'ol/layer/Tile'

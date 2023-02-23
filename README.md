@@ -3,39 +3,23 @@
 Koordinattransformation er en Vue.js applikation der gør det let at transformere koordinater mellem forskellige referencesystemer.
 
 før projektet kan installeres, er det nødvendigt at installere
-npm version: >=8.5.2 og
-node version: >=17.6.0
+- node.js version: >=17.6.0 [link til download](https://nodejs.org/en/)
+- npm version: >=8.5.2, dette gøres igennem node.js installeren.
 
 ## setup a projektet
-```
-npm install
-```
+For at kunne køre projektet, er der nogle miljøvariable, der skal føres ind i projektet.
+Disse ligger i [Koordinattransformation_config](https://github.com/SDFIdk/Koordinattransformation-config) og hedder henholdsvis: `.env.development`, `.env.production` og `.env.staging`. kopier disse filer ind i root directory af projektet.
 
-### Tilpasning af konfiguration
+- Naviger til projektet i terminalen
+- tast `npm install` for at installere npm dependencies. Disse er senere at finde i ./node_modules
 
-Applikationen kræver et par *environment variables* til stede i root folderen. Disse er som følger:
-```
-VUE_APP_NODE_ENV = [production | development | staging]
-VUE_APP_TOKEN = [Dataforsyning token for authentification]
-VUE_APP_API_BASEURL = [Dataforsyning API URL]
-```
-Du kan gemme disse variabler i .env filer i projektets root mappe **eller i parent directory** for avanceret konfiguration
+Herfra har man tre muligheder:
+- `npm run dev` for at køre projektet i localhost. portnummeret vil blive vist i terminalvinduet.
+- `npm run build` for at compile og minify projektet til produktion
+- `npm run lint` for at linte med eslint
+
+
 
 For anden specifik konfiguration af Vue.js, se: [Configuration Reference](https://cli.vuejs.org/config/).
 
-## Scripts
 
-### Start server med hot-reload til udvikling
-```
-npm run serve
-```
-
-### Compile og minify til produktion
-```
-npm run build
-```
-
-### Linter og fixer filer
-```
-npm run lint
-```

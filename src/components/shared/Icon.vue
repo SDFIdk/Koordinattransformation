@@ -74,7 +74,7 @@ export default {
     },
 
     component () {
-      return defineAsyncComponent(() => import('@/components/shared/icons/' + this.icon))
+      // return defineAsyncComponent(() => import('@/components/shared/icons/' + this.icon)) // TODO: this does not work anymore
     },
 
     borderStyle () {

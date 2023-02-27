@@ -22,6 +22,7 @@
                 :minutes-checked="minutesChecked"
                 :seconds-checked="secondsChecked"
             />
+
             <CoordinateInputField
                 @coords-changed="emit('input-coords-changed', inputCoords)"
                 :epsgIsDegrees="epsgIsDegrees"
@@ -33,13 +34,26 @@
                 :minutes-checked="minutesChecked"
                 :seconds-checked="secondsChecked"
             />
-            <HeightInputField
-                @coords-changed="emit('input-coords-changed', inputCoords)"
-                :is3D="is3D"
-                :epsgIsDegrees="epsgIsDegrees"
-                :degreesInput="degreesInput"
-                :meters="meters"
-            />
+
+            <span
+                class="coordinate-input third-input"
+                :class="{
+                    isDegreesInput: epsgIsDegrees,
+                    isMetresInput: !epsgIsDegrees
+                }"
+                v-show = "is3D">
+                <ArrowIcon
+                    style="transform: rotate(45deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
+                />
+                <span class="input-field">
+                    <input
+                    :class="{degreesInput: true}"
+                    v-model=meters
+                    step="0.0001"
+                    />
+                    <span class="degrees">m</span>
+                </span>
+            </span>
         </div>
 
         <div class="footer">
@@ -81,7 +95,6 @@ import { useRoute } from 'vue-router'
 
 import { dawaAutocomplete } from 'dawa-autocomplete2'
 import CoordinateInputField from './CoordinateInputField.vue'
-import HeightInputField from './HeightInputField.vue'
 
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
@@ -243,7 +256,6 @@ const checkSeconds = () => {
 
 // Smuksering af inputkoordinaterne i de tre til syv tastefelter
 const setInput = () => {
-    console.log('setInput()')
     if (!epsgIsDegrees.value || degreesChecked.value) {
         const deg0 = parseFloat(inputCoords.value[0]).toFixed(4)
         const deg1 = parseFloat(inputCoords.value[1]).toFixed(4)
@@ -396,6 +408,16 @@ onUpdated(() => {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+}
+
+.input-field {
+    border-bottom: var(--action) solid 1px;
+    display: inline-flex;
+    flex: 1;
+    width: 10%;
+    margin-bottom: -1.9rem;
+    margin-right: 0.5rem;
+    padding-bottom: 0.25rem;
 }
 
 input::-webkit-outer-spin-button,

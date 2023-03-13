@@ -263,7 +263,7 @@ export default {
                 }
             }
             if (props.is3D) {
-                Formatter.appendThirdParameter(formattedCoordinates, _coords[2])
+                Formatter.appendThirdParameter(formattedCoordinates, _coords[2].toFixed(3))
             } else {
                 formattedCoordinates.push('')
             }

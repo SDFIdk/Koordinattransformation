@@ -20,11 +20,13 @@
 
         <span class="input-field"
             :class="{degreesInput: epsgIsDegrees}">
-            <input
+            <form action=""></form>
+            <input id="degreesInput"
                 class="coordinates"
                 :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
                 step="0.0001"
                 v-model=props.degrees[element]
+                @input="validateDegrees"
             />
             <span class="unit" v-show="props.epsgIsDegrees">°N</span>
             <span class="unit" v-show="!props.epsgIsDegrees">m</span>
@@ -33,21 +35,23 @@
         <span class="input-field"
             :class="{degreesInput: epsgIsDegrees}"
             v-show="props.epsgIsDegrees && (props.minutesChecked || props.secondsChecked)">
-            <input
+            <input id="minutesInput"
                 class="coordinates"
                 :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
                 v-model=props.minutes[element]
                 step="0.0001"
+                @input="validateMinutes"
             />
             <span class="degrees">'</span>
         </span>
 
         <span class="input-field" :class="{degreesInput: props.epsgIsDegrees}" v-show="props.epsgIsDegrees && secondsChecked">
-            <input
+            <input id="secondsInput"
                 class="coordinates"
                 :class="{degreesInput: props.degreesChecked, metresInput: props.minutesChecked, secondsInput: props.secondsChecked}"
                 v-model=props.seconds[element]
                 step="0.0001"
+                @input="validateSeconds"
             />
             <span class="degrees">"</span>
         </span>
@@ -70,6 +74,27 @@ const props = defineProps({
 const emit = defineEmits([
     'coords-changed'
 ])
+
+const validateDegrees = () => {
+    if (props.degrees[0].includes(','))
+        props.degrees[0] = props.degrees[0].replace(',', '.')
+    if (props.degrees[1].includes(','))
+        props.degrees[1] = props.degrees[1].replace(',', '.')
+}
+
+const validateMinutes = () => {
+    if (props.minutes[0].includes(','))
+        props.minutes[0] = props.minutes[0].replace(',', '.')
+    if (props.minutes[1].includes(','))
+        props.minutes[1] = props.minutes[1].replace(',', '.')
+}
+
+const validateSeconds = () => {
+    if (props.seconds[0].includes(','))
+        props.seconds[0] = props.seconds[0].replace(',', '.')
+    if (props.seconds[1].includes(','))
+        props.seconds[1] = props.seconds[1].replace(',', '.')
+}
 
 onUpdated(() => {
     emit('coords-changed')

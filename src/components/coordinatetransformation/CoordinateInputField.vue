@@ -28,7 +28,7 @@
                 v-model=props.degrees[element]
                 @input="validateDegrees"
             />
-            <span class="unit" v-show="props.epsgIsDegrees">°N</span>
+            <span class="unit" v-show="props.epsgIsDegrees"> {{ props.direction }} </span>
             <span class="unit" v-show="!props.epsgIsDegrees">m</span>
         </span>
 
@@ -61,6 +61,7 @@
 <script setup>
 import { onUpdated } from 'vue';
 const props = defineProps({
+    direction: String,
     epsgIsDegrees: Boolean,
     degrees: [],
     minutes: [],

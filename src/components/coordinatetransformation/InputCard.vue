@@ -13,6 +13,7 @@
         <div class="input">
             <CoordinateInputField
                 @coords-changed="emit('input-coords-changed', inputCoords)"
+                :direction="northDegreeUnit"
                 :epsgIsDegrees="epsgIsDegrees"
                 :degrees="degrees"
                 :minutes="minutes"
@@ -25,6 +26,7 @@
 
             <CoordinateInputField
                 @coords-changed="emit('input-coords-changed', inputCoords)"
+                :direction="eastDegreeUnit"
                 :epsgIsDegrees="epsgIsDegrees"
                 :degrees="degrees"
                 :minutes="minutes"
@@ -102,6 +104,9 @@ const inputEPSG = ref('')
 const colors = inject('themeColors')
 const store = useStore()
 const route = useRoute()
+
+const northDegreeUnit = "°N"
+const eastDegreeUnit = "°E"
 
 // Formatknapperne
 const degreesChecked = ref(false)

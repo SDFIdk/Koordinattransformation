@@ -34,8 +34,8 @@ const Formatter = {
         const degrees2 = Math.floor(coords[1])
         const minutes1 = Math.floor((coords[0] - degrees1) * 60)
         const minutes2 = Math.floor((coords[1] - degrees2) * 60)
-        const seconds1 = ((coords[0] - degrees1 - minutes1 / 60) * 3600).toFixed(6)
-        const seconds2 = ((coords[1] - degrees2 - minutes2 / 60) * 3600).toFixed(6)
+        const seconds1 = ((coords[0] - degrees1 - minutes1 / 60) * 3600).toFixed(4)
+        const seconds2 = ((coords[1] - degrees2 - minutes2 / 60) * 3600).toFixed(4)
 
         const formatted = [
         degrees1 + '° ' + minutes1 + '\' ' + seconds1 + '" N, ',

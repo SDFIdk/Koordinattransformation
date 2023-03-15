@@ -11,8 +11,8 @@ const Formatter = {
     },
 
     toDegrees (coords) {
-        const degrees1 = coords[0].toFixed(4)
-        const degrees2 = coords[1].toFixed(4)
+        const degrees1 = coords[0].toFixed(8)
+        const degrees2 = coords[1].toFixed(8)
         const formatted = [degrees1 + ' °N, ', degrees2 + ' °E']
 
         return formatted
@@ -21,8 +21,8 @@ const Formatter = {
     toDegreesAndMinutes (coords) {
         const degrees1 = Math.floor(coords[0])
         const degrees2 = Math.floor(coords[1])
-        const minutes1 = (parseFloat(coords[0] - degrees1) * 60).toFixed(4)
-        const minutes2 = (parseFloat(coords[1] - degrees2) * 60).toFixed(4)
+        const minutes1 = (parseFloat(coords[0] - degrees1) * 60).toFixed(8)
+        const minutes2 = (parseFloat(coords[1] - degrees2) * 60).toFixed(8)
 
         const formatted = [degrees1 + ' ° ' + minutes1 + '\' N, ', degrees2 + ' ° ' + minutes2 + ' \' E']
 

@@ -261,9 +261,16 @@ const checkSeconds = () => {
 
 // Smuksering af inputkoordinaterne i de tre til syv tastefelter
 const setInput = () => {
-    if (!epsgIsDegrees.value || degreesChecked.value) {
+    if (!epsgIsDegrees.value) {
         const deg0 = parseFloat(inputCoords.value[0]).toFixed(4)
         const deg1 = parseFloat(inputCoords.value[1]).toFixed(4)
+
+        degrees.value[0] = deg0
+        degrees.value[1] = deg1
+    }
+    else if (!epsgIsDegrees.value || degreesChecked.value) {
+        const deg0 = parseFloat(inputCoords.value[0]).toFixed(8)
+        const deg1 = parseFloat(inputCoords.value[1]).toFixed(8)
 
         degrees.value[0] = deg0
         degrees.value[1] = deg1
@@ -271,8 +278,8 @@ const setInput = () => {
         const deg0 = Math.floor(inputCoords.value[0])
         const deg1 = Math.floor(inputCoords.value[1])
 
-        const min0 = parseFloat(((inputCoords.value[0] - deg0) * 60)).toFixed(4)
-        const min1 = parseFloat(((inputCoords.value[1] - deg1) * 60)).toFixed(4)
+        const min0 = parseFloat(((inputCoords.value[0] - deg0) * 60)).toFixed(6)
+        const min1 = parseFloat(((inputCoords.value[1] - deg1) * 60)).toFixed(6)
 
         degrees.value[0] = deg0
         degrees.value[1] = deg1

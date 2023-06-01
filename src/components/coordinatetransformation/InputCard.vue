@@ -74,7 +74,7 @@
                 </label>
                 <label class="radio" @click="checkSeconds">
                     <input type="radio" name="date-format">
-                    <span style="display: inline-flex;">min. sek.</span>
+                    min. sek.
                 </label>
             </div>
         </div>
@@ -493,33 +493,14 @@ ul {
     flex-grow: 1;
     padding: 0rem 0.75rem 0.1rem 1rem;
 }
+
+.radio {
+    display: inline-flex;
+    white-space: nowrap;
+}
 input[type="radio"] {
-    appearance: none;
-    background-color: #fff;
-    margin: 0;
-    font: inherit;
-    color: currentColor;
-    width: 1.15em;
-    height: 1.15em;
-    border: 0.15em solid currentColor;
-    border-radius: 50%;
-    transform: translateY(-0.075em);
-    display: grid;
-    place-content: center;
-}
-
-input[type="radio"]::before {
-    content: "";
-    width: 0.65em;
-    height: 0.65em;
-    border-radius: 50%;
-    transform: scale(0);
-    transition: 120ms transform ease-in-out;
-    box-shadow: inset 1em 1em hsl(171,70%,55%);
-}
-
-input[type="radio"]:checked::before {
-  transform: scale(1);
+    transform: scale(.8);
+    display: inline-flex;
 }
 
 .radiogroup {

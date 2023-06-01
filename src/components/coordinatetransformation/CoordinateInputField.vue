@@ -123,13 +123,4 @@ input {
     border: none;
     width: 100%;
 }
-.arrow-icon-x-coordinate {
-    transform: rotate(90deg);
-}
-.arrow-icon-z-coordinate {
-    transform: rotate(45deg);
-}
-.arrow-icon-y-coordinate {
-    transform: rotate(90deg);
-}
 </style>

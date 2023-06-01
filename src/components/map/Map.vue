@@ -1,5 +1,5 @@
 <template>
-    <div id="map" class="olmap" ref="map">
+    <div data-theme="light" id="map" class="olmap" ref="map">
         <section class="transform-container">
             <CoordinateTransformation
                 @input-epsg-changed="inputEPSGChanged"

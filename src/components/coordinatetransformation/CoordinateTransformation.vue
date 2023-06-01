@@ -91,7 +91,7 @@ const errorOccurred = (state, err) => {
 }
 
 const coordinatesCopied = (state) => {
-    popupVisible = state
+    popupVisible.value = state
 }
 
 const handleResize = () => {

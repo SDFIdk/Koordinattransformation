@@ -1,7 +1,7 @@
 <template>
-    <Header />
+    <Header data-theme="light"/>
     <main>
-        <router-view />
+        <router-view/>
     </main>
 </template>
 

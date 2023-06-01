@@ -3,6 +3,8 @@ import
 
 // import '~@/RegisterServiceWorker'
 
+import css from '@dataforsyningen/css'
+
 import store from '@/store'
 
 import router from '@/router'
@@ -20,8 +22,6 @@ import('@/assets/css/fonts.css')
 
 import('@/assets/css/base.css')
 
-import('@/assets/css/classes.css')
-
 import('@/assets/css/grid.css')
 
 const app = createApp(App)
@@ -31,6 +31,7 @@ app.config.performance = (import.meta.env.NODE_ENV !== 'production')
 app.config.globalProperties.$store = store
 
 app.use(colors)
+.use(css)
 .use(router)
 .use(store)
 

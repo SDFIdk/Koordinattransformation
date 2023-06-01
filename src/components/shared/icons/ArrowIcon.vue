@@ -26,7 +26,7 @@ const props = defineProps({
     transform: rotate(0deg);
 }
 
-angle {
+.angle {
     transform: rotate(45deg);
 }
 </style>

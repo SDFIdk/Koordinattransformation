@@ -13,7 +13,7 @@
         <div class="input">
             <CoordinateInputField
                 @coords-changed="emit('input-coords-changed', inputCoords)"
-                :direction="northDegreeUnit"
+                :unit="northDegreeUnit"
                 :epsgIsDegrees="epsgIsDegrees"
                 :degrees="degrees"
                 :minutes="minutes"
@@ -26,7 +26,7 @@
 
             <CoordinateInputField
                 @coords-changed="emit('input-coords-changed', inputCoords)"
-                :direction="eastDegreeUnit"
+                :unit="eastDegreeUnit"
                 :epsgIsDegrees="epsgIsDegrees"
                 :degrees="degrees"
                 :minutes="minutes"

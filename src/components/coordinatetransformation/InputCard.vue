@@ -95,7 +95,6 @@ import { useRoute } from 'vue-router'
 
 import { dawaAutocomplete } from 'dawa-autocomplete2'
 import CoordinateInputField from './CoordinateInputField.vue'
-import HeightInputField from './HeightInputField.vue'
 import ArrowIcon from '../shared/icons/ArrowIcon.vue'
 
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')

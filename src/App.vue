@@ -1,7 +1,7 @@
-<template>
+<template data-theme="light">
     <Header data-theme="light"/>
-    <main>
-        <router-view/>
+    <main data-theme="light">
+        <router-view data-theme="light"/>
     </main>
 </template>
 

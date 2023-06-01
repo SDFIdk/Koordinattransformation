@@ -36,17 +36,15 @@
                 :minutes-checked="minutesChecked"
                 :seconds-checked="secondsChecked"
             />
-
+            
             <span
-                class="coordinate-input third-input"
+                class="third-input"
                 :class="{
                     isDegreesInput: epsgIsDegrees,
                     isMetresInput: !epsgIsDegrees
                 }"
                 v-show = "is3D">
-                <ArrowIcon
-                    style="transform: rotate(45deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
-                />
+                <ArrowIcon :direction="'angle'"/>
                 <span class="input-field">
                     <input
                     :class="{degreesInput: true}"
@@ -97,6 +95,8 @@ import { useRoute } from 'vue-router'
 
 import { dawaAutocomplete } from 'dawa-autocomplete2'
 import CoordinateInputField from './CoordinateInputField.vue'
+import HeightInputField from './HeightInputField.vue'
+import ArrowIcon from '../shared/icons/ArrowIcon.vue'
 
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
@@ -153,7 +153,6 @@ const getEpsgCodes = async () => {
         }
 
         filteredCRS.value = tempCRS
-        console.table(filteredCRS)
         document.getElementById('epsg-select').value = filteredCRS.value[0].title
     } else if (route.name === 'Greenland') {
         for (let i = 0, iEnd = crs.value.GL.length; i < iEnd; ++i) {
@@ -416,7 +415,7 @@ onUpdated(() => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 * {
     padding: 0;
     margin: 0;
@@ -428,7 +427,7 @@ onUpdated(() => {
     display: inline-flex;
     flex: 1;
     width: 10%;
-    margin-bottom: -1.9rem;
+    margin-bottom: -.5rem;
     margin-right: 0.5rem;
     padding-bottom: 0.25rem;
 }

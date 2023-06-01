@@ -127,7 +127,7 @@ input {
 .arrow-icon-z-coordinate {
     transform: rotate(45deg);
 }
-.arrow-icon-x-coordinate {
+.arrow-icon-y-coordinate {
     transform: rotate(90deg);
 }
 </style>

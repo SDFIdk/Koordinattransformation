@@ -153,6 +153,7 @@ const getEpsgCodes = async () => {
         }
 
         filteredCRS.value = tempCRS
+        console.table(filteredCRS)
         document.getElementById('epsg-select').value = filteredCRS.value[0].title
     } else if (route.name === 'Greenland') {
         for (let i = 0, iEnd = crs.value.GL.length; i < iEnd; ++i) {

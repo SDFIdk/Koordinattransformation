@@ -101,10 +101,6 @@ const handleResize = () => {
 
 
 
-//   created () {
-//     window.addEventListener('resize', handleResize)
-//     handleResize()
-//   }
 </script>
 
 <style scoped>

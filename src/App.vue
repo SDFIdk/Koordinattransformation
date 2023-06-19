@@ -1,11 +1,11 @@
-<template>
-  <Header />
-  <main>
-    <router-view />
-  </main>
+<template data-theme="light">
+    <Header data-theme="light"/>
+    <main data-theme="light">
+        <router-view data-theme="light"/>
+    </main>
 </template>
 
-<script>
+<script setup>
 /**
  * Familietræet af forældrekomponenter og deres børn er som følgende:
  * Map -> CoordinateTransformation
@@ -18,45 +18,40 @@ import { useRouter } from 'vue-router'
 import { isConsole, isIE, isSmartTV, isWearable } from 'mobile-device-detect'
 import Header from '@/components/shared/header/Header.vue'
 
-export default {
-  name: 'App',
-  components: { Header },
-  setup () {
-    const error = ref('')
-    onErrorCaptured((e) => {
-      error.value = e
-      window.setTimeout(() => { error.value = '' }, 3000)
-      return true
-    })
-    const router = useRouter()
-    if (isIE) {
-      router.push({ path: '/PageBrowserIncompatible' })
-    }
-    if (isConsole || isWearable || isSmartTV) {
-      router.push({ path: '/PageDeviceIncompatible' })
-    }
-    return { error }
-  }
+const error = ref('')
+onErrorCaptured((e) => {
+    error.value = e
+    window.setTimeout(() => { error.value = '' }, 3000)
+    return true
+})
+
+const router = useRouter()
+
+if (isIE) {
+    router.push({ path: '/PageBrowserIncompatible' })
+}
+if (isConsole || isWearable || isSmartTV) {
+    router.push({ path: '/PageDeviceIncompatible' })
 }
 </script>
 
 <style>
 * {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
 }
 :root, html, body {
-  height: 100%;
-  margin: 0;
+    height: 100%;
+    margin: 0;
 }
 
 main {
-  padding: 0;
+    padding: 0;
 }
 
 .ol-full-screen {
-  display: none;
+    display: none;
 }
 
 .autocomplete-container {

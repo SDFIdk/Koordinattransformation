@@ -13,7 +13,7 @@
         <div class="input">
             <CoordinateInputField
                 @coords-changed="emit('input-coords-changed', inputCoords)"
-                :direction="northDegreeUnit"
+                :unit="northDegreeUnit"
                 :epsgIsDegrees="epsgIsDegrees"
                 :degrees="degrees"
                 :minutes="minutes"
@@ -26,7 +26,7 @@
 
             <CoordinateInputField
                 @coords-changed="emit('input-coords-changed', inputCoords)"
-                :direction="eastDegreeUnit"
+                :unit="eastDegreeUnit"
                 :epsgIsDegrees="epsgIsDegrees"
                 :degrees="degrees"
                 :minutes="minutes"
@@ -36,17 +36,15 @@
                 :minutes-checked="minutesChecked"
                 :seconds-checked="secondsChecked"
             />
-
+            
             <span
-                class="coordinate-input third-input"
+                class="third-input"
                 :class="{
                     isDegreesInput: epsgIsDegrees,
                     isMetresInput: !epsgIsDegrees
                 }"
                 v-show = "is3D">
-                <ArrowIcon
-                    style="transform: rotate(45deg); width: 30px; height: 30px;" :color="colors.turquoise" :stroke-width="0" class="arrow-icon"
-                />
+                <ArrowIcon :direction="'angle'"/>
                 <span class="input-field">
                     <input
                     :class="{degreesInput: true}"
@@ -76,7 +74,7 @@
                 </label>
                 <label class="radio" @click="checkSeconds">
                     <input type="radio" name="date-format">
-                    <span style="display: inline-flex;">min. sek.</span>
+                    min. sek.
                 </label>
             </div>
         </div>
@@ -97,6 +95,7 @@ import { useRoute } from 'vue-router'
 
 import { dawaAutocomplete } from 'dawa-autocomplete2'
 import CoordinateInputField from './CoordinateInputField.vue'
+import ArrowIcon from '../shared/icons/ArrowIcon.vue'
 
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
@@ -415,7 +414,7 @@ onUpdated(() => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 * {
     padding: 0;
     margin: 0;
@@ -427,7 +426,7 @@ onUpdated(() => {
     display: inline-flex;
     flex: 1;
     width: 10%;
-    margin-bottom: -1.9rem;
+    margin-bottom: -.5rem;
     margin-right: 0.5rem;
     padding-bottom: 0.25rem;
 }
@@ -494,33 +493,14 @@ ul {
     flex-grow: 1;
     padding: 0rem 0.75rem 0.1rem 1rem;
 }
+
+.radio {
+    display: inline-flex;
+    white-space: nowrap;
+}
 input[type="radio"] {
-    appearance: none;
-    background-color: #fff;
-    margin: 0;
-    font: inherit;
-    color: currentColor;
-    width: 1.15em;
-    height: 1.15em;
-    border: 0.15em solid currentColor;
-    border-radius: 50%;
-    transform: translateY(-0.075em);
-    display: grid;
-    place-content: center;
-}
-
-input[type="radio"]::before {
-    content: "";
-    width: 0.65em;
-    height: 0.65em;
-    border-radius: 50%;
-    transform: scale(0);
-    transition: 120ms transform ease-in-out;
-    box-shadow: inset 1em 1em hsl(171,70%,55%);
-}
-
-input[type="radio"]:checked::before {
-  transform: scale(1);
+    transform: scale(.8);
+    display: inline-flex;
 }
 
 .radiogroup {

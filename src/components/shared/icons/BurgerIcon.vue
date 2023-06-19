@@ -1,27 +1,13 @@
 <template>
-  <svg
-    viewBox="0 0 16 16"
-  >
-    <path
-      :stroke="color"
-      :stroke-width="strokeWidth"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      d="M4 9.33h8M4 6.67h8"
-    />
-  </svg>
+    <span>
+        <svg width="45" height="45" viewBox="0 0 24 24" class="ds-svg-icon" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 15H19M5 9H19" stroke="hsl(186,100%,33%)" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </span>
 </template>
 
-<script>
-export default {
-  name: 'BurgerIcon',
-  props: {
-    color: {
-      type: String
-    },
-    strokeWidth: {
-      type: [Number, String]
+<style scoped>
+    span {
+        margin-top: 8px;
     }
-  }
-}
-</script>
+</style>

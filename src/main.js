@@ -3,6 +3,8 @@ import
 
 // import '~@/RegisterServiceWorker'
 
+import css from '@dataforsyningen/css'
+
 import store from '@/store'
 
 import router from '@/router'
@@ -16,11 +18,6 @@ import('sanitize.css/forms.css')
 import('sanitize.css/assets.css')
 import('sanitize.css/reduce-motion.css')
 
-import('@/assets/css/fonts.css')
-
-import('@/assets/css/base.css')
-
-import('@/assets/css/classes.css')
 
 import('@/assets/css/grid.css')
 
@@ -31,6 +28,7 @@ app.config.performance = (import.meta.env.NODE_ENV !== 'production')
 app.config.globalProperties.$store = store
 
 app.use(colors)
+.use(css)
 .use(router)
 .use(store)
 

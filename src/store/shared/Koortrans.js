@@ -1,10 +1,10 @@
-import { environmentAPIDomains } from '@/store/shared/Paths'
+import { environment } from '@/store/shared/Paths.js'
 
 const tokens = {
+    // get the token from the active environment
     get: {
         production: import.meta.env.VITE_TOKEN,
         development: import.meta.env.VITE_TOKEN,
-        staging: import.meta.env.VITE_TOKEN
     }
 }
 
@@ -22,7 +22,7 @@ export class Koortrans {
             get ({ commit }, crsParameter) {
                 return new Promise((resolve, reject) => {
                     commit('request')
-                    fetch(environmentAPIDomains[import.meta.env.VITE_NODE_ENV] + path + crsParameter + '?token=' + tokens.get[import.meta.env. VITE_NODE_ENV])
+                    fetch(environment[import.meta.env.VITE_NODE_ENV] + path + crsParameter + '?token=' + tokens.get[import.meta.env. VITE_NODE_ENV])
                     .then(res => res.json())
                     .then(data => {
                         commit('success', data)

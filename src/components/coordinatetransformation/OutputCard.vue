@@ -197,7 +197,7 @@ export default {
                 this.$emit('coordinates-copied', true)
                 window.setTimeout(() => {
                     this.$emit('coordinates-copied', false)
-                }, 3333)
+                }, 1000)
             }
         }
     },

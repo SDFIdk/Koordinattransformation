@@ -27,7 +27,7 @@
   </Transition>
 </template>
 
-<script>
+<script setup>
 /**
  * CoordinateTransformation er forældre til input- og outputkomponenterne samt barn til Map-komponentet.
  * Den er bindeled og står for koordinering mellem de tre komponenter:
@@ -35,94 +35,65 @@
  * Og når en EPSG-koden eller koordinatsættet ændres i Input, skal Output vide dette for at
  * Komponentet står også for at vise fejlmeddelelser, men (på trods af navnet) ikke for nogen af transformationerne
  */
-import { defineAsyncComponent, ref, inject } from 'vue'
+import { ref, inject } from 'vue'
+import InputCard from '@/components/coordinatetransformation/InputCard.vue'
+import OutputCard from '@/components/coordinatetransformation/OutputCard.vue'
+import MenuCloser from '@/components/coordinatetransformation/MenuCloser.vue'
 
-export default {
-  name: 'CoordinateTransformation',
-  components: {
-    InputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/InputCard.vue')),
-    OutputCard: defineAsyncComponent(() => import('@/components/coordinatetransformation/OutputCard.vue')),
-    MenuCloser: defineAsyncComponent(() => import('@/components/coordinatetransformation/MenuCloser.vue'))
-  },
-  props: {
+const inputCoords = ref(inject('inputCoords'))
+const is3D = ref(true)
+const inputEPSG = ref(inject('inputEPSG'))
+const popupVisible = ref(false)
+const menuClosed = ref(false)
+const window = ref({ width: 0, height: 0 })
+const errorVisible = ref('')
+const error = ref('')
+
+const props = defineProps({
     mapError: {
-      type: String,
-      default () { return '' }
+        type: String,
+            default () { return '' }
     },
     mapErrorIsVisible: {
-      type: Boolean,
-      default () { return false }
+        type: Boolean,
+        default () { return false }
     }
-  },
-  methods: {
-    /**
-     * updates the input EPSG to the given EPSG code
-     * and emits an event input-epsg-changed
-     * @param code
-     */
-    inputEPSGChanged (code) {
-      this.inputEPSG = code.srid
-      this.$emit('input-epsg-changed', code.srid)
-    },
+})
 
-    /**
-     * emits an event input-coord-changed
-     * run when the input coordinates in the input card is changed
-     * e.g. when choosing EPSG, when clicking map, when changed manually, when entering address
-     * @param coords
-     */
-    inputCoordsChanged (coords) {
-      this.inputCoords = coords
-      this.$emit('input-coords-changed', coords)
-    },
+const emit = defineEmits([
+    'input-epsg-changed',
+    'input-coords-changed'
+])
 
-    is3DChanged (state) {
-      this.is3D = state
-    },
-
-    errorOccurred (state, err) {
-      this.error = err
-      this.errorVisible = state
-    },
-
-    coordinatesCopied (state) {
-      this.popupVisible = state
-    },
-
-    handleResize () {
-      this.window.width = window.innerWidth
-      this.window.height = window.innerHeight
-    }
-  },
-
-  setup () {
-    const inputCoords = ref(inject('inputCoords'))
-    const is3D = ref(true)
-    const colors = inject('themeColors')
-    const inputEPSG = inject('inputEPSG')
-    const popupVisible = ref(false)
-    const menuClosed = ref(false)
-    const window = ref({ width: 0, height: 0 })
-    const errorVisible = ref('')
-    const error = ref('')
-    return {
-      inputCoords,
-      colors,
-      inputEPSG,
-      popupVisible,
-      menuClosed,
-      window,
-      error,
-      errorVisible,
-      is3D
-    }
-  },
-
-  created () {
-    window.addEventListener('resize', this.handleResize)
-    this.handleResize()
-  }
+const inputEPSGChanged = (code) => {
+    inputEPSG.value = code.srid
+    emit('input-epsg-changed', code.srid)
 }
+
+/**
+ * emits an event input-coord-changed
+ * run when the input coordinates in the input card is changed
+ * e.g. when choosing EPSG, when clicking map, when changed manually, when entering address
+ * @param coords
+ */
+const inputCoordsChanged = (coords) => {
+    inputCoords.value = coords
+    emit('input-coords-changed', coords)
+}
+
+const is3DChanged = (state) => {
+    is3D.value = state
+}
+
+const errorOccurred = (state, err) => {
+    error.value = err
+    errorVisible.value = state
+}
+
+const coordinatesCopied = (state) => {
+    popupVisible.value = state
+}
+
 </script>
 
 <style scoped>

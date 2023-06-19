@@ -18,9 +18,6 @@ import('sanitize.css/forms.css')
 import('sanitize.css/assets.css')
 import('sanitize.css/reduce-motion.css')
 
-import('@/assets/css/fonts.css')
-
-import('@/assets/css/base.css')
 
 import('@/assets/css/grid.css')
 

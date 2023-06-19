@@ -94,13 +94,6 @@ const coordinatesCopied = (state) => {
     popupVisible.value = state
 }
 
-const handleResize = () => {
-    window.value.width = window.value.innerWidth
-    window.value.height = window.value.innerHeight
-}
-
-
-
 </script>
 
 <style scoped>

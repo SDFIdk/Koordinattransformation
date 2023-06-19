@@ -89,7 +89,7 @@
  * Det skal emitte til sin forældre CoordinateTransformation, hvis koordinaterne eller EPSG-koden ændres,
  * eller hvis der er sket en transformationsfejl (f.eks. out-of-bounds)
  */
-import { ref, inject, onUpdated, watch, onMounted, defineEmits } from 'vue'
+import { ref, inject, onUpdated, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 
@@ -358,7 +358,6 @@ const getCoordsFromAdress = async (location) => {
 onMounted(() => {
     // Søgefeltet til indtastning af addresser (DAWA)
     inputEPSG.value = inject('inputEPSG')
-    // const dawaAutocomplete2 = require('dawa-autocomplete2')
     const inputElm = document.getElementById('dawa-autocomplete-input')
 
     dawaAutocomplete(inputElm, {

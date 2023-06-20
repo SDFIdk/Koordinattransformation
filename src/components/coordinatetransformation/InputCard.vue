@@ -19,9 +19,7 @@
                 :minutes="minutes"
                 :seconds="seconds"
                 :element="0"
-                :degreesChecked="degreesChecked"
-                :minutes-checked="minutesChecked"
-                :seconds-checked="secondsChecked"
+                :format="format"
             />
 
             <CoordinateInputField
@@ -32,9 +30,7 @@
                 :minutes="minutes"
                 :seconds="seconds"
                 :element="1"
-                :degrees-checked="degreesChecked"
-                :minutes-checked="minutesChecked"
-                :seconds-checked="secondsChecked"
+                :format="format"
             />
             
             <span
@@ -48,7 +44,7 @@
                 <span class="input-field">
                     <input
                     :class="{degreesInput: true}"
-                    v-model=meters
+                    v-model=heightInMeters
                     step="0.0001"
                     />
                     <span class="degrees">m</span>
@@ -64,16 +60,20 @@
                 </svg>
             </div>
             <div class="radiogroup" v-show="epsgIsDegrees" :class="{radioGroupDisabled: !epsgIsDegrees}">
-                <label class="radio" @click="checkDegrees">
-                    <input type="radio" name="date-format">
+                <input v-model="format" value="degrees"
+                    type="radio" name="date-format">
+                <label for="degrees" class="radio">
                     DD
                 </label>
-                <label class="radio" @click="checkMinutes">
-                    <input type="radio" name="date-format">
+
+                <input 
+                    v-model="format" value="minutes" type="radio" name="date-format">
+                <label for="minutes" class="radio">
                     min.
                 </label>
-                <label class="radio" @click="checkSeconds">
-                    <input type="radio" name="date-format">
+                <input v-model="format" value="seconds" 
+                    type="radio" name="date-format">
+                <label for="seconds" class="radio">
                     min. sek.
                 </label>
             </div>
@@ -100,23 +100,19 @@ import ArrowIcon from '../shared/icons/ArrowIcon.vue'
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
 const inputEPSG = ref('')
-const colors = inject('themeColors')
 const store = useStore()
 const route = useRoute()
 
 const northDegreeUnit = "°N"
 const eastDegreeUnit = "°E"
 
-// Formatknapperne
-const degreesChecked = ref(false)
-const minutesChecked = ref(false)
-const secondsChecked = ref(false)
+const format = ref('meters')
 
 // DMS
 const degrees = ref([0, 0])
 const minutes = ref([0, 0])
 const seconds = ref([0, 0])
-const meters = ref(0)
+const heightInMeters = ref(0)
 const is3D = ref(true)
 const epsgIsDegrees = ref(false)
 const crs = ref([])
@@ -182,10 +178,10 @@ const inputEPSGChanged = (event) => {
     // check units. Er de grader eller meter
     if (code.v1_unit === 'degree') {
         epsgIsDegrees.value = true
-        checkDegrees()
+        format.value = 'degrees'
     } else {
         epsgIsDegrees.value = false
-        disableRadioButtons()
+        format.value = 'meters'
     }
     // 3D eller 2D?
     is3D.value = code.v3 !== null
@@ -224,40 +220,6 @@ const inputEPSGChanged = (event) => {
     }
 }
 
-// Formatknapperne virker kun ved DMS
-const disableRadioButtons = () => {
-    degreesChecked.value = false
-    minutesChecked.value = false
-    secondsChecked.value = false
-}
-
-const checkDegrees = () => {
-    if (!degreesChecked.value) {
-        degreesChecked.value = true
-        minutesChecked.value = false
-        secondsChecked.value = false
-        setInput()
-    }
-}
-
-const checkMinutes = () => {
-    if (!minutesChecked.value) {
-        degreesChecked.value = false
-        minutesChecked.value = true
-        secondsChecked.value = false
-        setInput()
-    }
-}
-
-const checkSeconds = () => {
-    if (!secondsChecked.value) {
-        degreesChecked.value = false
-        minutesChecked.value = false
-        secondsChecked.value = true
-        setInput()
-    }
-}
-
 // Smuksering af inputkoordinaterne i de tre til syv tastefelter
 const setInput = () => {
     if (!epsgIsDegrees.value) {
@@ -267,13 +229,13 @@ const setInput = () => {
         degrees.value[0] = deg0
         degrees.value[1] = deg1
     }
-    else if (!epsgIsDegrees.value || degreesChecked.value) {
+    else if (!epsgIsDegrees.value || format.value == 'degrees') {
         const deg0 = parseFloat(inputCoords.value[0]).toFixed(8)
         const deg1 = parseFloat(inputCoords.value[1]).toFixed(8)
 
         degrees.value[0] = deg0
         degrees.value[1] = deg1
-    } else if (minutesChecked.value) {
+    } else if (format.value == 'minutes') {
         const deg0 = Math.floor(inputCoords.value[0])
         const deg1 = Math.floor(inputCoords.value[1])
 
@@ -284,7 +246,7 @@ const setInput = () => {
         degrees.value[1] = deg1
         minutes.value[0] = min0
         minutes.value[1] = min1
-    } else {
+    } else if (format.value == 'seconds') {
         const deg0 = Math.floor(inputCoords.value[0])
         const deg1 = Math.floor(inputCoords.value[1])
 
@@ -324,7 +286,7 @@ const getCoordsFromAdress = async (location) => {
     .then(data => data[0].adgangsadresse.vejpunkt.koordinater)
     .then(coords => {
         if (is3D.value) {
-            store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0] + ',' + meters.value)
+            store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0] + ',' + heightInMeters.value)
             .then(() => {
                 const output = store.state.trans.data
                 // Abort hvis fejl
@@ -389,20 +351,20 @@ watch([degrees.value, minutes.value, seconds.value], () => {
     // Sørg for at lade koordinaterne være tal og aldrig bogstaver
     let v1 = degrees.value[0]
     let v2 = degrees.value[1]
-    if (minutesChecked.value || secondsChecked.value) {
+    if (format.value == 'minutes' || format.value == 'seconds') {
         v1 += minutes.value[0] / 60
         v2 += minutes.value[1] / 60
     }
-    if (secondsChecked.value) {
+    if (format.value == 'seconds') {
         v1 += seconds.value[0] / 3600
         v2 += seconds.value[1] / 3600
     }
-    inputCoords.value = [v1, v2, meters.value]
+    inputCoords.value = [v1, v2, heightInMeters.value]
 })
 
 // Højdeparameteren til 3D-projektering er særskildt.
-watch(meters, () => {
-    inputCoords.value = [inputCoords.value[0], inputCoords.value[1], meters.value]
+watch(heightInMeters, () => {
+    inputCoords.value = [inputCoords.value[0], inputCoords.value[1], heightInMeters.value]
 })
 
 // Gør CoordinateTransformation opmærksom på ændringer i inputkoordinaterne,

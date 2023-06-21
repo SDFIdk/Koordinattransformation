@@ -19,9 +19,9 @@
                 <div class="output-coordinates">{{ output3 }}</div>
             </div>
         </div>
-        <article class="footer" :class="{isMetres: isMetres}">
-            <div class="radio-and-info-group" v-show="!isMetres">
-                <div class="radiogroup" :class="{radioGroupDisabled: isMetres}">
+        <article class="footer" :class="{isMetres: format == 'meters'}">
+            <div class="radio-and-info-group" v-show="format!='meters'">
+                <div class="radiogroup" :class="{radioGroupDisabled: format == 'meters'}">
                     <label class="radio" for="degrees">
                         <input type="radio" v-model="format" value="degrees" name="date-format">
                         DD
@@ -35,21 +35,16 @@
                     min. sek.
                     </label>
                 </div>
-                <Icon
-                    icon="InfoIcon"
-                    :width="1.3"
-                    :height="1.3"
-                    :color="colors.black"
-                    class="info-icon"
+                <InfoIcon 
                     @mouseenter="hover = true"
-                    @mouseleave="hover = false"
-                />
-                <div class="info-text-container">
-                    <Transition>
-                        <p class="info-text" v-if="hover">Repræsentation af geografiske koordinater, vælg mellem decimalgrader, grader og decimalminutter eller grader, minutter og sekunder.</p>
-                    </Transition>
+                    @mouseleave="hover = false"/>
+
+                    <div class="info-text-container">
+                        <Transition>
+                            <p class="info-text" v-if="hover">Repræsentation af geografiske koordinater, vælg mellem decimalgrader, grader og decimalminutter eller grader, minutter og sekunder.</p>
+                        </Transition>
+                    </div>
                 </div>
-            </div>
             <button class="copy-btn" @click="copyCoordinates" :class="{hasTransformed: hasTransformed && !isLoading}">
                 Kopiér
                 <span v-show="!hasTransformed || isLoading">
@@ -72,21 +67,16 @@
 /**
  * Ouput foretager den reelle transformation - den er vi er interesseret i
  */
-import { defineAsyncComponent, inject, onMounted, ref, watch } from 'vue'
+import { inject, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import Formatter from './Formatting'
 import Loader from '@/components/shared/Loader.vue'
+import InfoIcon from '../shared/icons/InfoIcon.vue'
 const store = useStore()
-const colors = inject('themeColors')
 const outputEPSG = ref('')
 
 const format = ref('')
-// const degreesChecked = ref(false)
-// const minutesChecked = ref(false)
-// const secondsChecked = ref(false)
-
-const degrees = ref([0, 0])
 const outputSelected = ref(false)
 const outputCoords = ref([0, 0, 0])
 const output1 = ref('')
@@ -94,16 +84,13 @@ const output2 = ref('')
 const output3 = ref('')
 const hasTransformed = ref(false)
 const isLoading = ref(false)
-const isMetres = ref(true)
 const hover = ref(false)
 const crs = ref([])
-// const EpsgCodes = ref([])
 const filteredOutputCodes = ref([])
 const route = useRoute()
 
 
 const props = defineProps({
-    // Todo: simplify this?
     inputEPSG: { type: String, default () { return '' }},
     is3D: { type: Boolean, default () { return true }},
     inputCoords: { type: Array, default () { return inject('mapMarkerInputCoords').value }}
@@ -120,9 +107,8 @@ const onEpsgSelect = (event) => {
     const code = event.target.selectedOptions[0]._value
 
     if (code.v1_unit === 'metre') {
-        isMetres.value = true
+        format.value = 'meters'
     } else {
-        isMetres.value = false
         format.value = 'degrees'
     }
 
@@ -146,7 +132,7 @@ const copyCoordinates = () => {
 const formatCoordinates = (_coords) => {
     let formattedCoordinates = []
 
-    if (isMetres.value) {
+    if (format.value == 'meters') {
         formattedCoordinates = Formatter.toMetres(_coords)
     } else {
         if (format.value == 'degrees') {
@@ -399,37 +385,17 @@ label {
     background-color: var(--action);
     color: var(--white);
 }
-input[type="radio"] {
-    appearance: none;
-    background-color: #fff;
-    margin: 0;
-    font: inherit;
-    color: currentColor;
-    width: 1.15em;
-    height: 1.15em;
-    border: 0.15em solid currentColor;
-    border-radius: 50%;
-    transform: translateY(-0.075em);
-    display: grid;
-    place-content: center;
+
+.radio {
+    display: inline-flex;
+    white-space: nowrap;
 }
 
-input[type="radio"]::before {
-    content: "";
-    width: 0.65em;
-    height: 0.65em;
-    border-radius: 50%;
-    transform: scale(0);
-    transition: 120ms transform ease-in-out;
-    box-shadow: inset 1em 1em hsl(171,70%,55%);
+input[type='radio'] {
+    transform: scale(.45);
+    display: inline-flex;
 }
 
-input[type="radio"]:checked::before {
-  transform: scale(1);
-}
-input[type=radio]:checked {
-    outline: var(--darkSteel) solid 1px;
-}
 .radioGroupDisabled {
     pointer-events: none;
 }
@@ -450,23 +416,5 @@ input[type=radio]:checked {
 .radiogroup {
     display: inline-flex;
     flex-wrap: nowrap;
-}
-.copy-icon {
-    margin-left: 0.75rem;
-}
-@media screen and (max-width: 828px) {
-    .info-icon {
-        display: none;
-    }
-}
-@media screen and (max-width: 703px) {
-    .info-icon {
-        display: inline;
-    }
-}
-@media screen and (max-width: 410px) {
-    .info-icon {
-        display: none;
-    }
 }
 </style>

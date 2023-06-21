@@ -11,17 +11,19 @@
             </select>
         </section>
         <div class="input">
+            <!-- input til første koordinat (kan indeholde 3 separate felter) -->
             <CoordinateInputField
-                @coords-changed="emit('input-coords-changed', inputCoords)"
-                :unit="northDegreeUnit"
-                :epsgIsDegrees="epsgIsDegrees"
-                :degrees="degrees"
-                :minutes="minutes"
-                :seconds="seconds"
-                :element="0"
-                :format="format"
+            @coords-changed="emit('input-coords-changed', inputCoords)"
+            :unit="northDegreeUnit"
+            :epsgIsDegrees="epsgIsDegrees"
+            :degrees="degrees"
+            :minutes="minutes"
+            :seconds="seconds"
+            :element="0"
+            :format="format"
             />
-
+            
+            <!-- input til andet koordinat (kan indeholde 3 separate felter) -->
             <CoordinateInputField
                 @coords-changed="emit('input-coords-changed', inputCoords)"
                 :unit="eastDegreeUnit"
@@ -33,6 +35,7 @@
                 :format="format"
             />
             
+            <!-- Input til højdekote, vises kun, hvis CRS er 3D -->
             <span
                 class="third-input"
                 :class="{
@@ -103,7 +106,7 @@ const route = useRoute()
 const northDegreeUnit = "°N"
 const eastDegreeUnit = "°E"
 
-const format = ref('meters')
+const format = ref('meters') // koordinater kan være i meter, grader, grader+minutter, grader+minutter+sekunder
 
 // DMS
 const degrees = ref([0, 0])
@@ -173,14 +176,8 @@ const getEpsgCodes = async () => {
  */
 const inputEPSGChanged = (event) => {
     const code = event.target.selectedOptions[0]._value
-    // check units. Er de grader eller meter
-    if (code.v1_unit === 'degree') {
-        epsgIsDegrees.value = true
-        format.value = 'degrees'
-    } else {
-        epsgIsDegrees.value = false
-        format.value = 'meters'
-    }
+
+    updateUnits(code)
     // 3D eller 2D?
     is3D.value = code.v3 !== null
     if (is3D.value) {
@@ -216,6 +213,16 @@ const inputEPSGChanged = (event) => {
             emit('input-epsg-changed', code)
             setInput()
         })
+    }
+}
+
+const updateUnits = (code) => {
+    if (code.v1_unit === 'degree') {
+        epsgIsDegrees.value = true
+        format.value = 'degrees'
+    } else {
+        epsgIsDegrees.value = false
+        format.value = 'meters'
     }
 }
 

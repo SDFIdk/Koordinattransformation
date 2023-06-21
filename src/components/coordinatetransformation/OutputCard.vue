@@ -9,7 +9,7 @@
                 </option>
             </select>
         </section>
-        <div class="transformed-coordinates" :class="{ hasTransformed: hasTransformed}">
+        <div class="transformed-coordinates" :class="{ hasTransformed: hasTransformed }">
             <div v-if="isLoading">
                 <Loader :isLoading=isLoading />
             </div>
@@ -20,20 +20,14 @@
             </div>
         </div>
         <article class="footer" :class="{isMetres: format == 'meters'}">
-            <div class="radio-and-info-group" v-show="format!='meters'">
-                <div class="radiogroup" :class="{radioGroupDisabled: format == 'meters'}">
-                    <label class="radio" for="degrees">
-                        <input type="radio" v-model="format" value="degrees" name="date-format">
-                        DD
-                    </label>
-                    <label class="radio" for="minutes">
-                        <input type="radio" v-model="format" value="minutes" name="date-format">
-                        min.
-                    </label>
-                    <label class="radio" for="seconds">
-                        <input type="radio" v-model="format" value="seconds" name="date-format">
-                    min. sek.
-                    </label>
+            <div class="radio-and-info-group" v-show="radiosVisible">
+                <div class="radiogroup">
+                    <input type="radio" v-model="format" value="degrees">
+                    <label class="radio" for="degrees"> DD </label>
+                    <input type="radio" v-model="format" value="minutes">
+                    <label class="radio" for="minutes"> min. </label>
+                    <input type="radio" v-model="format" value="seconds">
+                    <label class="radio" for="seconds"> min. sek. </label>
                 </div>
                 <InfoIcon 
                     @mouseenter="hover = true"
@@ -69,7 +63,7 @@ import Loader from '../shared/Loader.vue'
 
 const format = ref('')
 const outputSelected = ref(false)
-const outputCoords = ref([0, 0, 0])
+const outputCoords = ref([0, 0, null])
 const output1 = ref('')
 const output2 = ref('')
 const output3 = ref('')
@@ -79,11 +73,13 @@ const hover = ref(false)
 const crs = ref([])
 const filteredOutputCodes = ref([])
 const route = useRoute()
+const radiosVisible = ref(false)
+const outputIs3D = ref(false)
 
 
 const props = defineProps({
     inputEPSG: { type: String, default () { return '' }},
-    is3D: { type: Boolean, default () { return true }},
+    inputIs3D: { type: Boolean, default () { return true }},
     inputCoords: { type: Array, default () { return inject('mapMarkerInputCoords').value }}
 })
 
@@ -97,10 +93,20 @@ const emit = defineEmits([
 const onEpsgSelect = (event) => {
     const code = event.target.selectedOptions[0]._value
 
+    // check units
     if (code.v1_unit === 'metre') {
+        radiosVisible.value = false
         format.value = 'meters'
     } else {
+        radiosVisible.value = true
         format.value = 'degrees'
+    }
+
+    // check if 3D or not
+    if (code.v3 == null) {
+        outputIs3D.value = false
+    } else {
+        outputIs3D.value = true
     }
 
     outputSelected.value = true
@@ -134,7 +140,7 @@ const formatCoordinates = (_coords) => {
             formattedCoordinates = Formatter.toDegreesMinutesAndSeconds(_coords)
         }
     }
-    if (props.is3D) {
+    if (props.inputIs3D && _coords[2] != null) {
         Formatter.appendThirdParameter(formattedCoordinates, _coords[2].toFixed(4))
     } else {
         formattedCoordinates.push('')
@@ -193,7 +199,7 @@ const getDenmarkCodes = async () => {
 }
 
 const updateFilteredCodes = async () => {
-    // Der er forskellige lister for Danmark og Grøndland
+    // Der er forskellige lister for Danmark og Grønland
     if (route.name === 'Denmark' && crs.value.length !== 0) {
         filteredOutputCodes.value = await getDenmarkCodes()
     } else if (route.name === 'Greenland') {
@@ -233,15 +239,9 @@ const setOutput2D = async () => {
         }
         outputCoords.value[0] = parseFloat(output.v1)
         outputCoords.value[1] = parseFloat(output.v2)
+        outputCoords.value[2] = null
         updateOutputField(formatCoordinates(outputCoords.value))
     })
-}
-
-const setOutputDirect = () => {
-    outputCoords.value[0] = props.inputCoords[0]
-    outputCoords.value[1] = props.inputCoords[1]
-    outputCoords.value[2] = props.inputCoords[2]
-    updateOutputField(formatCoordinates(outputCoords.value))
 }
 
 const transform = () => {
@@ -252,12 +252,24 @@ const transform = () => {
         setOutputDirect()
         return
     }
-    if (props.is3D) {
+    if (props.inputIs3D && outputIs3D.value) {
         setOutput3D()
     } else {
         setOutput2D()
     }
 }
+
+const setOutputDirect = () => {
+    outputCoords.value[0] = props.inputCoords[0]
+    outputCoords.value[1] = props.inputCoords[1]
+    if (props.inputIs3D && outputIs3D.value) {
+        outputCoords.value[2] = props.inputCoords[2]
+    } else {
+        outputCoords.value[2] = null
+    }
+    updateOutputField(formatCoordinates(outputCoords.value))
+}
+
 
 onMounted(() => {
     store.dispatch('CRS/clear')

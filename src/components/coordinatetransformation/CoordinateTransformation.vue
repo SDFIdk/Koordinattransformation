@@ -6,14 +6,14 @@
           @input-epsg-changed="inputEPSGChanged"
           @error-occurred="errorOccurred"
           @input-coords-changed="inputCoordsChanged"
-          @is-3d-changed="is3DChanged"
+          @is-3d-changed="isInput3DChanged"
         />
         <OutputCard class="output"
           :inputEPSG=inputEPSG
           :inputCoords=inputCoords
           @error-occurred="errorOccurred"
           @coordinates-copied="coordinatesCopied"
-          :is3D=is3D
+          :inputIs3D=inputIs3D
         />
         <menu-closer class="menu-closer" @handle-close="this.menuClosed = true"/>
       </article>
@@ -41,7 +41,7 @@ import OutputCard from '@/components/coordinatetransformation/OutputCard.vue'
 import MenuCloser from '@/components/coordinatetransformation/MenuCloser.vue'
 
 const inputCoords = ref(inject('inputCoords'))
-const is3D = ref(true)
+const inputIs3D = ref(true)
 const inputEPSG = ref(inject('inputEPSG'))
 const popupVisible = ref(false)
 const menuClosed = ref(false)
@@ -81,8 +81,8 @@ const inputCoordsChanged = (coords) => {
     emit('input-coords-changed', coords)
 }
 
-const is3DChanged = (state) => {
-    is3D.value = state
+const isInput3DChanged = (state) => {
+    inputIs3D.value = state
 }
 
 const errorOccurred = (state, err) => {

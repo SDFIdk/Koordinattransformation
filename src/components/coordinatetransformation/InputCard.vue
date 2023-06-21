@@ -55,27 +55,23 @@
         <div class="footer">
             <div class="searchbar">
                 <input class="searchbar-input" id="dawa-autocomplete-input"/>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19.5 19.5L16.5 16.5M18 12C18 15.3137 15.3137 18 12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12Z" stroke="hsl(171,70%,40%)" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <SearchIcon/>
             </div>
             <div class="radiogroup" v-show="epsgIsDegrees" :class="{radioGroupDisabled: !epsgIsDegrees}">
-                <input v-model="format" value="degrees"
-                    type="radio" name="date-format">
-                <label for="degrees" class="radio">
-                    DD
-                </label>
+                <input type="radio" 
+                    v-model="format" 
+                    value="degrees">
+                <label for="degrees" class="radio"> DD </label>
 
-                <input 
-                    v-model="format" value="minutes" type="radio" name="date-format">
-                <label for="minutes" class="radio">
-                    min.
-                </label>
-                <input v-model="format" value="seconds" 
-                    type="radio" name="date-format">
-                <label for="seconds" class="radio">
-                    min. sek.
-                </label>
+                <input type="radio"
+                    v-model="format" 
+                    value="minutes">
+                <label for="minutes" class="radio"> min. </label>
+                
+                <input type="radio" 
+                    v-model="format" 
+                    value="seconds">
+                <label for="seconds" class="radio"> min. sek. </label>
             </div>
         </div>
     </section>
@@ -96,6 +92,7 @@ import { useRoute } from 'vue-router'
 import { dawaAutocomplete } from 'dawa-autocomplete2'
 import CoordinateInputField from './CoordinateInputField.vue'
 import ArrowIcon from '../shared/icons/ArrowIcon.vue'
+import SearchIcon from '../shared/icons/SearchIcon.vue'
 
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
@@ -113,6 +110,7 @@ const degrees = ref([0, 0])
 const minutes = ref([0, 0])
 const seconds = ref([0, 0])
 const heightInMeters = ref(0)
+
 const is3D = ref(true)
 const epsgIsDegrees = ref(false)
 const crs = ref([])
@@ -197,6 +195,7 @@ const inputEPSGChanged = (event) => {
             inputCoords.value[0] = output.v1
             inputCoords.value[1] = output.v2
             inputCoords.value[2] = output.v3
+
             // Vi formaterer inputtet, så det ser pænt ud,
             // og gør CoordinateTransformation opmærksom på ændringen
             // så den kan fortælle Map samt Output om den nye EPSG-kode.
@@ -422,9 +421,6 @@ input {
 }
 input:focus {
     outline: none;
-}
-.hide {
-    margin: 0 0 0 auto;
 }
 .info-icon {
     border: var(--darkSteel) solid 1px;

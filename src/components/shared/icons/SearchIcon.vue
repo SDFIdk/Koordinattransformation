@@ -1,27 +1,8 @@
 <template>
-  <svg
-    viewBox="0 0 16 16"
-  >
-    <path
-      :stroke="color"
-      :stroke-width="strokeWidth"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      d="M13 13l-2-2M8 12a4 4 0 100-8 4 4 0 000 8z"
-    />
-  </svg>
+    <svg width="24" height="24" viewBox="0 0 24 24" class="ds-svg-icon" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+            d="M19.5 19.5L16.5 16.5M18 12C18 15.3137 15.3137 18 12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12Z"
+            stroke="hsl(186,100%,33%)" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
 </template>
 
-<script>
-export default {
-  name: 'SearchIcon',
-  props: {
-    color: {
-      type: String
-    },
-    strokeWidth: {
-      type: [Number, String]
-    }
-  }
-}
-</script>

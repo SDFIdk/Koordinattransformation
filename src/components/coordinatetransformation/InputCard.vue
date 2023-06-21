@@ -11,19 +11,19 @@
             </select>
         </section>
         <div class="input">
+            <!-- input til første koordinat (kan indeholde 3 separate felter) -->
             <CoordinateInputField
-                @coords-changed="emit('input-coords-changed', inputCoords)"
-                :unit="northDegreeUnit"
-                :epsgIsDegrees="epsgIsDegrees"
-                :degrees="degrees"
-                :minutes="minutes"
-                :seconds="seconds"
-                :element="0"
-                :degreesChecked="degreesChecked"
-                :minutes-checked="minutesChecked"
-                :seconds-checked="secondsChecked"
+            @coords-changed="emit('input-coords-changed', inputCoords)"
+            :unit="northDegreeUnit"
+            :epsgIsDegrees="epsgIsDegrees"
+            :degrees="degrees"
+            :minutes="minutes"
+            :seconds="seconds"
+            :element="0"
+            :format="format"
             />
-
+            
+            <!-- input til andet koordinat (kan indeholde 3 separate felter) -->
             <CoordinateInputField
                 @coords-changed="emit('input-coords-changed', inputCoords)"
                 :unit="eastDegreeUnit"
@@ -32,11 +32,10 @@
                 :minutes="minutes"
                 :seconds="seconds"
                 :element="1"
-                :degrees-checked="degreesChecked"
-                :minutes-checked="minutesChecked"
-                :seconds-checked="secondsChecked"
+                :format="format"
             />
             
+            <!-- Input til højdekote, vises kun, hvis CRS er 3D -->
             <span
                 class="third-input"
                 :class="{
@@ -48,7 +47,7 @@
                 <span class="input-field">
                     <input
                     :class="{degreesInput: true}"
-                    v-model=meters
+                    v-model=heightInMeters
                     step="0.0001"
                     />
                     <span class="degrees">m</span>
@@ -59,23 +58,23 @@
         <div class="footer">
             <div class="searchbar">
                 <input class="searchbar-input" id="dawa-autocomplete-input"/>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19.5 19.5L16.5 16.5M18 12C18 15.3137 15.3137 18 12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12Z" stroke="hsl(171,70%,40%)" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <SearchIcon/>
             </div>
             <div class="radiogroup" v-show="epsgIsDegrees" :class="{radioGroupDisabled: !epsgIsDegrees}">
-                <label class="radio" @click="checkDegrees">
-                    <input type="radio" name="date-format">
-                    DD
-                </label>
-                <label class="radio" @click="checkMinutes">
-                    <input type="radio" name="date-format">
-                    min.
-                </label>
-                <label class="radio" @click="checkSeconds">
-                    <input type="radio" name="date-format">
-                    min. sek.
-                </label>
+                <input type="radio" 
+                    v-model="format" 
+                    value="degrees">
+                <label for="degrees" class="radio"> DD </label>
+
+                <input type="radio"
+                    v-model="format" 
+                    value="minutes">
+                <label for="minutes" class="radio"> min. </label>
+                
+                <input type="radio" 
+                    v-model="format" 
+                    value="seconds">
+                <label for="seconds" class="radio"> min. sek. </label>
             </div>
         </div>
     </section>
@@ -89,34 +88,32 @@
  * Det skal emitte til sin forældre CoordinateTransformation, hvis koordinaterne eller EPSG-koden ændres,
  * eller hvis der er sket en transformationsfejl (f.eks. out-of-bounds)
  */
-import { ref, inject, onUpdated, watch, onMounted, defineEmits } from 'vue'
+import { ref, inject, onUpdated, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 
 import { dawaAutocomplete } from 'dawa-autocomplete2'
 import CoordinateInputField from './CoordinateInputField.vue'
 import ArrowIcon from '../shared/icons/ArrowIcon.vue'
+import SearchIcon from '../shared/icons/SearchIcon.vue'
 
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
 const inputEPSG = ref('')
-const colors = inject('themeColors')
 const store = useStore()
 const route = useRoute()
 
 const northDegreeUnit = "°N"
 const eastDegreeUnit = "°E"
 
-// Formatknapperne
-const degreesChecked = ref(false)
-const minutesChecked = ref(false)
-const secondsChecked = ref(false)
+const format = ref('meters') // koordinater kan være i meter, grader, grader+minutter, grader+minutter+sekunder
 
 // DMS
 const degrees = ref([0, 0])
 const minutes = ref([0, 0])
 const seconds = ref([0, 0])
-const meters = ref(0)
+const heightInMeters = ref(0)
+
 const is3D = ref(true)
 const epsgIsDegrees = ref(false)
 const crs = ref([])
@@ -179,14 +176,8 @@ const getEpsgCodes = async () => {
  */
 const inputEPSGChanged = (event) => {
     const code = event.target.selectedOptions[0]._value
-    // check units. Er de grader eller meter
-    if (code.v1_unit === 'degree') {
-        epsgIsDegrees.value = true
-        checkDegrees()
-    } else {
-        epsgIsDegrees.value = false
-        disableRadioButtons()
-    }
+
+    updateUnits(code)
     // 3D eller 2D?
     is3D.value = code.v3 !== null
     if (is3D.value) {
@@ -201,6 +192,7 @@ const inputEPSGChanged = (event) => {
             inputCoords.value[0] = output.v1
             inputCoords.value[1] = output.v2
             inputCoords.value[2] = output.v3
+
             // Vi formaterer inputtet, så det ser pænt ud,
             // og gør CoordinateTransformation opmærksom på ændringen
             // så den kan fortælle Map samt Output om den nye EPSG-kode.
@@ -224,37 +216,13 @@ const inputEPSGChanged = (event) => {
     }
 }
 
-// Formatknapperne virker kun ved DMS
-const disableRadioButtons = () => {
-    degreesChecked.value = false
-    minutesChecked.value = false
-    secondsChecked.value = false
-}
-
-const checkDegrees = () => {
-    if (!degreesChecked.value) {
-        degreesChecked.value = true
-        minutesChecked.value = false
-        secondsChecked.value = false
-        setInput()
-    }
-}
-
-const checkMinutes = () => {
-    if (!minutesChecked.value) {
-        degreesChecked.value = false
-        minutesChecked.value = true
-        secondsChecked.value = false
-        setInput()
-    }
-}
-
-const checkSeconds = () => {
-    if (!secondsChecked.value) {
-        degreesChecked.value = false
-        minutesChecked.value = false
-        secondsChecked.value = true
-        setInput()
+const updateUnits = (code) => {
+    if (code.v1_unit === 'degree') {
+        epsgIsDegrees.value = true
+        format.value = 'degrees'
+    } else {
+        epsgIsDegrees.value = false
+        format.value = 'meters'
     }
 }
 
@@ -267,13 +235,13 @@ const setInput = () => {
         degrees.value[0] = deg0
         degrees.value[1] = deg1
     }
-    else if (!epsgIsDegrees.value || degreesChecked.value) {
+    else if (!epsgIsDegrees.value || format.value == 'degrees') {
         const deg0 = parseFloat(inputCoords.value[0]).toFixed(8)
         const deg1 = parseFloat(inputCoords.value[1]).toFixed(8)
 
         degrees.value[0] = deg0
         degrees.value[1] = deg1
-    } else if (minutesChecked.value) {
+    } else if (format.value == 'minutes') {
         const deg0 = Math.floor(inputCoords.value[0])
         const deg1 = Math.floor(inputCoords.value[1])
 
@@ -284,7 +252,7 @@ const setInput = () => {
         degrees.value[1] = deg1
         minutes.value[0] = min0
         minutes.value[1] = min1
-    } else {
+    } else if (format.value == 'seconds') {
         const deg0 = Math.floor(inputCoords.value[0])
         const deg1 = Math.floor(inputCoords.value[1])
 
@@ -324,7 +292,7 @@ const getCoordsFromAdress = async (location) => {
     .then(data => data[0].adgangsadresse.vejpunkt.koordinater)
     .then(coords => {
         if (is3D.value) {
-            store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0] + ',' + meters.value)
+            store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0] + ',' + heightInMeters.value)
             .then(() => {
                 const output = store.state.trans.data
                 // Abort hvis fejl
@@ -358,7 +326,6 @@ const getCoordsFromAdress = async (location) => {
 onMounted(() => {
     // Søgefeltet til indtastning af addresser (DAWA)
     inputEPSG.value = inject('inputEPSG')
-    // const dawaAutocomplete2 = require('dawa-autocomplete2')
     const inputElm = document.getElementById('dawa-autocomplete-input')
 
     dawaAutocomplete(inputElm, {
@@ -390,20 +357,20 @@ watch([degrees.value, minutes.value, seconds.value], () => {
     // Sørg for at lade koordinaterne være tal og aldrig bogstaver
     let v1 = degrees.value[0]
     let v2 = degrees.value[1]
-    if (minutesChecked.value || secondsChecked.value) {
+    if (format.value == 'minutes' || format.value == 'seconds') {
         v1 += minutes.value[0] / 60
         v2 += minutes.value[1] / 60
     }
-    if (secondsChecked.value) {
+    if (format.value == 'seconds') {
         v1 += seconds.value[0] / 3600
         v2 += seconds.value[1] / 3600
     }
-    inputCoords.value = [v1, v2, meters.value]
+    inputCoords.value = [v1, v2, heightInMeters.value]
 })
 
 // Højdeparameteren til 3D-projektering er særskildt.
-watch(meters, () => {
-    inputCoords.value = [inputCoords.value[0], inputCoords.value[1], meters.value]
+watch(heightInMeters, () => {
+    inputCoords.value = [inputCoords.value[0], inputCoords.value[1], heightInMeters.value]
 })
 
 // Gør CoordinateTransformation opmærksom på ændringer i inputkoordinaterne,
@@ -461,9 +428,6 @@ input {
 }
 input:focus {
     outline: none;
-}
-.hide {
-    margin: 0 0 0 auto;
 }
 .info-icon {
     border: var(--darkSteel) solid 1px;

@@ -12,7 +12,7 @@
             <form action=""></form>
             <input id="degreesInput"
                 class="coordinates"
-                :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+                :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
                 step="0.0001"
                 v-model=props.degrees[element]
                 @input="validateDegrees"
@@ -23,10 +23,10 @@
 
         <span class="input-field"
             :class="{degreesInput: epsgIsDegrees}"
-            v-show="props.epsgIsDegrees && (props.minutesChecked || props.secondsChecked)">
+            v-show="props.epsgIsDegrees && (props.format == 'minutes' || props.format == 'seconds')">
             <input id="minutesInput"
                 class="coordinates"
-                :class="{degreesInput: degreesChecked, metresInput: minutesChecked, secondsInput: secondsChecked}"
+                :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
                 v-model=props.minutes[element]
                 step="0.0001"
                 @input="validateMinutes"
@@ -34,10 +34,10 @@
             <span class="degrees">'</span>
         </span>
 
-        <span class="input-field" :class="{degreesInput: props.epsgIsDegrees}" v-show="props.epsgIsDegrees && secondsChecked">
+        <span class="input-field" :class="{degreesInput: props.epsgIsDegrees}" v-show="props.epsgIsDegrees && props.format == 'seconds'">
             <input id="secondsInput"
                 class="coordinates"
-                :class="{degreesInput: props.degreesChecked, metresInput: props.minutesChecked, secondsInput: props.secondsChecked}"
+                :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
                 v-model=props.seconds[element]
                 step="0.0001"
                 @input="validateSeconds"
@@ -59,9 +59,7 @@ const props = defineProps({
     minutes: [],
     seconds: [],
     element: Number,
-    degreesChecked: Boolean,
-    minutesChecked: Boolean,
-    secondsChecked: Boolean
+    format: ''
 })
 
 const emit = defineEmits([

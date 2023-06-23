@@ -1,4 +1,26 @@
 const Formatter = {
+    formatCoordinates (_coords, _format, _inputIs3D) {
+        let formattedCoordinates = []
+    
+        if (_format == 'meters') {
+            formattedCoordinates = this.toMetres(_coords)
+        } else {
+            if (_format == 'degrees') {
+                formattedCoordinates = this.toDegrees(_coords)
+            } else if (_format == 'minutes') {
+                formattedCoordinates = this.toDegreesAndMinutes(_coords)
+            } else {
+                formattedCoordinates = this.toDegreesMinutesAndSeconds(_coords)
+            }
+        }
+        if (_inputIs3D && _coords[2] != null) {
+            this.appendThirdParameter(formattedCoordinates, _coords[2].toFixed(4))
+        } else {
+            formattedCoordinates.push('')
+        }
+        return formattedCoordinates
+    },
+
     toMetres (coords) {
         let formatted = []
 

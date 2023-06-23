@@ -7,25 +7,27 @@
         }">
         <ArrowIcon :direction="arrowDirection()"/>
         
-        <span class="input-field"
+        <span 
+            class="input-segment" 
             :class="{degreesInput: epsgIsDegrees}">
-            <form action=""></form>
+            
             <input id="degreesInput"
-                class="coordinates"
+                class="coordinate-input"
                 :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
                 step="0.0001"
                 v-model=props.degrees[element]
                 @input="validateDegrees"
             />
+            
             <span class="unit" v-show="props.epsgIsDegrees"> {{ props.direction }} </span>
             <span class="unit" v-show="!props.epsgIsDegrees">m</span>
         </span>
 
-        <span class="input-field"
+        <span class="input-segment"
             :class="{degreesInput: epsgIsDegrees}"
             v-show="props.epsgIsDegrees && (props.format == 'minutes' || props.format == 'seconds')">
             <input id="minutesInput"
-                class="coordinates"
+                class="coordinate-input"
                 :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
                 v-model=props.minutes[element]
                 step="0.0001"
@@ -34,9 +36,9 @@
             <span class="degrees">'</span>
         </span>
 
-        <span class="input-field" :class="{degreesInput: props.epsgIsDegrees}" v-show="props.epsgIsDegrees && props.format == 'seconds'">
+        <span class="input-segment" :class="{degreesInput: props.epsgIsDegrees}" v-show="props.epsgIsDegrees && props.format == 'seconds'">
             <input id="secondsInput"
-                class="coordinates"
+                class="coordinate-input"
                 :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
                 v-model=props.seconds[element]
                 step="0.0001"
@@ -102,23 +104,20 @@ onUpdated(() => {
 })
 </script>
 
-<style scoped>
-.input-field {
-    border-bottom: var(--action) solid 1px;
+<style lang="scss">
+.input-segment {
     display: inline-flex;
     flex: 1;
     width: 10%;
     margin-right: 0.5rem;
     padding-bottom: 0.25rem;
-}
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-}
-input {
-    -moz-appearance: textfield;
-    appearance: textfield;
-    border: none;
-    width: 100%;
+    border-bottom: var(--aktion) solid 1px;
+    
+    .coordinate-input {
+        -moz-appearance: textfield;
+        appearance: textfield;
+        border: none;
+        width: 100%;
+    }
 }
 </style>

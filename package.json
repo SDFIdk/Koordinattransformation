@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "@dataforsyningen/css": "^3.6.0",
+        "@dataforsyningen/icons": "^0.6.0",
         "@popperjs/core": "^2.11.6",
         "dawa-autocomplete2": "^1.1.0",
         "mobile-device-detect": "0.4.3",

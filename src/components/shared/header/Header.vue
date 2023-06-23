@@ -1,34 +1,55 @@
+<!-- 
+    Denne komponent kunne gøres med en enkelt div og conditional rendering, 
+    men så kan vi ikke bruge @dataforsyningen css 
+-->
+
 <template>
-    <header class="layout-3col">
+    <div class="nav-container" style="display: flex; justify-content: space-between;">
+        <!-- HORIZONTAL NAVBAR -->
         <Brand />
-        <div>
-            <Nav />
-        </div>
-    </header>
+        <nav v-if='width > minWidth'>
+            <ul >
+                <li>
+                    <router-link to='/Denmark'>Danmark</router-link>
+                </li>
+                <li>
+                    <router-link to='/Greenland'>Grønland</router-link>
+                </li>
+                <li>
+                    <router-link to='/About'>Om Koordinattransformation</router-link>
+                </li>
+            </ul>
+        </nav>
+        <!-- VERTICAL NAVBAR (NÅR SKÆRMEN ER MEGET SMAL) -->
+        <nav class="ds-nav-vertical" v-if='verticalMenuIsOpen'>
+            <ul>
+                <li>
+                    <router-link @click="toggleVerticalMenu"  to='/Denmark'>Danmark</router-link>
+                </li>
+                <li>
+                    <router-link @click="toggleVerticalMenu" to='/Greenland'>Grønland</router-link>
+                </li>
+                <li>
+                    <router-link @click="toggleVerticalMenu" to='/About'>Om Koordinattransformation</router-link>
+                </li>
+            </ul>
+        </nav>
+        <BurgerIcon v-if='width < minWidth' @click='toggleVerticalMenu'/>
+    </div>
 </template>
 
 <script setup>
+import { onMounted, ref } from 'vue';
 import Brand from '@/components/shared/header/Brand.vue'
-import Nav from '@/components/shared/header/Nav.vue'
+import BurgerIcon from '../icons/BurgerIcon.vue'
+
+const width = ref(window.innerWidth)
+const minWidth = 880
+const verticalMenuIsOpen = ref(false)
+
+const toggleVerticalMenu = () => { verticalMenuIsOpen.value = !verticalMenuIsOpen.value; }
+
+const handleResize = () => { width.value = window.innerWidth }
+
+onMounted(() => window.addEventListener('resize', handleResize))
 </script>
-
-<style scoped>
-
-header{
-    width: 100%;
-    height: 4rem;
-    z-index: 0;
-    top: 0;
-    padding: 0 5vw 0 5vw;
-    align-items: flex-start;
-    grid-template-rows: auto;
-    border-bottom: 1px solid var(--action);
-}
-
-div {
-    grid-column: 2 / -1;
-    justify-content: flex-end;
-    display: flex;
-    flex-direction: row;
-}
-</style>

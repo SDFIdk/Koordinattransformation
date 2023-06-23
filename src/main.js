@@ -1,23 +1,15 @@
 import
 { createApp} from 'vue'
 
-// import '~@/RegisterServiceWorker'
-
 import css from '@dataforsyningen/css'
-
 import store from '@/store'
-
 import router from '@/router'
-
-import colors from '@/plugins/colors'
-
 import App from './App.vue'
 
 import('sanitize.css')
 import('sanitize.css/forms.css')
 import('sanitize.css/assets.css')
 import('sanitize.css/reduce-motion.css')
-
 
 import('@/assets/css/grid.css')
 
@@ -27,7 +19,7 @@ app.config.globalProperties.append = (path, pathToAppend) => path + (path.endsWi
 app.config.performance = (import.meta.env.NODE_ENV !== 'production')
 app.config.globalProperties.$store = store
 
-app.use(colors)
+app
 .use(css)
 .use(router)
 .use(store)

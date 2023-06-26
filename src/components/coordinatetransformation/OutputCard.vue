@@ -1,15 +1,9 @@
 <template>
-    <section class="output-coordinate">
+    <section class="output-card">
         <h3>Output</h3>
-        <section class="coordinate-selection-wrapper">
-            <select :class="{ isSelected: outputSelected }" id='epsg-output-select' @change="onEpsgSelect">
-                <option value="0" disabled selected>Vælg Koordinatsystem</option>
-                <option v-for="(code, index) in filteredOutputCodes" :key="index" :value='code' >
-                    {{ code.title_short }} ({{ code.srid }})
-                </option>
-            </select>
-        </section>
-        <div class="transformed-coordinates" :class="{ hasTransformed: hasTransformed }">
+        <CrsSelector :inOrOut="'out'" @crsSelected="onEpsgSelect"/>
+        
+        <div class="transformed-coordinates"  :class="{ hasTransformed: hasTransformed }">
             <div v-if="isLoading">
                 <Loader :isLoading=isLoading />
             </div>
@@ -19,27 +13,34 @@
                 <div class="output-coordinates">{{ output3 }}</div>
             </div>
         </div>
+        
         <article class="footer" :class="{isMetres: format == 'meters'}">
             <div class="radio-and-info-group" v-show="radiosVisible">
                 <div class="radiogroup">
                     <input type="radio" v-model="format" value="degrees">
-                    <label class="radio" for="degrees"> DD </label>
+                    <label class="radio-label" for="degrees"> DD </label>
                     <input type="radio" v-model="format" value="minutes">
-                    <label class="radio" for="minutes"> min. </label>
+                    <label class="radio-label" for="minutes"> min. </label>
                     <input type="radio" v-model="format" value="seconds">
-                    <label class="radio" for="seconds"> min. sek. </label>
+                    <label class="radio-label" for="seconds"> min. sek. </label>
                 </div>
                 <InfoIcon 
                     @mouseenter="hover = true"
                     @mouseleave="hover = false"/>
 
-                    <div class="info-text-container">
+                    <div class="info-popup">
                         <Transition>
-                            <p class="info-text" v-if="hover">Repræsentation af geografiske koordinater, vælg mellem decimalgrader, grader og decimalminutter eller grader, minutter og sekunder.</p>
+                            <p
+                                class="popup-text" 
+                                v-if="hover">
+                                Repræsentation af geografiske koordinater, vælg mellem decimalgrader, grader og decimalminutter eller grader, minutter og sekunder.
+                            </p>
                         </Transition>
                     </div>
                 </div>
-            <button class="copy-btn" @click="copyCoordinates" :class="{hasTransformed: hasTransformed && !isLoading}">
+            <button class="copy-btn" 
+                @click="copyCoordinates" 
+                :class="{hasTransformed: hasTransformed && !isLoading}">
                 Kopiér
                 <CopyIcon/>
             </button>
@@ -51,15 +52,15 @@
 /**
  * Ouput foretager den reelle transformation - den er vi er interesseret i
  */
-import { inject, onMounted, ref, watch } from 'vue'
+import { inject, ref, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
 import Formatter from './Formatting'
 import InfoIcon from '../shared/icons/InfoIcon.vue'
 import CopyIcon from '../shared/icons/CopyIcon.vue'
+import Loader from '../shared/icons/Loader.vue'
+import CrsSelector from './CrsSelector.vue'
 const store = useStore()
 const outputEPSG = ref('')
-import Loader from '../shared/Loader.vue'
 
 const format = ref('')
 const outputSelected = ref(false)
@@ -70,9 +71,6 @@ const output3 = ref('')
 const hasTransformed = ref(false)
 const isLoading = ref(false)
 const hover = ref(false)
-const crs = ref([])
-const filteredOutputCodes = ref([])
-const route = useRoute()
 const radiosVisible = ref(false)
 const outputIs3D = ref(false)
 
@@ -90,8 +88,7 @@ const emit = defineEmits([
 
 // En output-EPSG er valgt: Der skal foretages transformation,
 // og brugergrænsefladen opdateres ift. om output EPSG-koden er i meter eller DMS og 2D eller 3D
-const onEpsgSelect = (event) => {
-    const code = event.target.selectedOptions[0]._value
+const onEpsgSelect = (code) => {
 
     // check units
     if (code.v1_unit === 'metre') {
@@ -109,10 +106,10 @@ const onEpsgSelect = (event) => {
         outputIs3D.value = true
     }
 
-    outputSelected.value = true
     outputEPSG.value = code.srid
-    hasTransformed.value = true
+    outputSelected.value = true
     transform()
+    hasTransformed.value = true
 }
 
 // Mulighed for at kopiere outputtet efter transformation
@@ -126,28 +123,6 @@ const copyCoordinates = () => {
     }
 }
 
-const formatCoordinates = (_coords) => {
-    let formattedCoordinates = []
-
-    if (format.value == 'meters') {
-        formattedCoordinates = Formatter.toMetres(_coords)
-    } else {
-        if (format.value == 'degrees') {
-            formattedCoordinates = Formatter.toDegrees(_coords)
-        } else if (format.value == 'minutes') {
-            formattedCoordinates = Formatter.toDegreesAndMinutes(_coords)
-        } else {
-            formattedCoordinates = Formatter.toDegreesMinutesAndSeconds(_coords)
-        }
-    }
-    if (props.inputIs3D && _coords[2] != null) {
-        Formatter.appendThirdParameter(formattedCoordinates, _coords[2].toFixed(4))
-    } else {
-        formattedCoordinates.push('')
-    }
-    return formattedCoordinates
-}
-
 // fylder output feltet med de givne koordinater
 const updateOutputField = (_coords) => {
     isLoading.value = true // viser et animeret loader ikon.
@@ -156,55 +131,7 @@ const updateOutputField = (_coords) => {
         output1.value = _coords[0]
         output2.value = _coords[1]
         output3.value = _coords[2]
-    }, 500)
-}
-
-const getGreenlandCodes = async () => {
-    const tempCodes = []
-    for (let i = 0; i < crs.value.GL.length; ++i) {
-        await store
-        .dispatch('CRSInformation/get', crs.value.GL[i])
-        .then(() => {
-            tempCodes.push(store.state.CRSInformation.data)
-        })
-    }
-    for (let i = 0; i < crs.value.Global.length; ++i) {
-        await store
-        .dispatch('CRSInformation/get', crs.value.Global[i])
-        .then(() => {
-            tempCodes.push(store.state.CRSInformation.data)
-        })
-    }
-    return tempCodes
-}
-
-const getDenmarkCodes = async () => {
-    const codes = []
-    for (let i = 0; i < crs.value.DK.length; ++i) {
-        await store
-        .dispatch('CRSInformation/get', crs.value.DK[i])
-        .then(() => {
-            codes.push(store.state.CRSInformation.data)
-        })
-    }
-
-    for (let i = 0; i < crs.value.Global.length; ++i) {
-        await store
-        .dispatch('CRSInformation/get', crs.value.Global[i])
-        .then(() => {
-            codes.push(store.state.CRSInformation.data)
-        })
-    }
-    return codes
-}
-
-const updateFilteredCodes = async () => {
-    // Der er forskellige lister for Danmark og Grønland
-    if (route.name === 'Denmark' && crs.value.length !== 0) {
-        filteredOutputCodes.value = await getDenmarkCodes()
-    } else if (route.name === 'Greenland') {
-        filteredOutputCodes.value = await getGreenlandCodes()
-    }
+    }, 200)
 }
 
 const error = err => {
@@ -225,7 +152,7 @@ const setOutput3D = async () => {
         outputCoords.value[0] = parseFloat(output.v1)
         outputCoords.value[1] = parseFloat(output.v2)
         outputCoords.value[2] = parseFloat(output.v3)
-        updateOutputField(formatCoordinates(outputCoords.value))
+        updateOutputField(Formatter.formatCoordinates(outputCoords.value, format.value, props.inputIs3D))
     })
 }
 
@@ -240,17 +167,13 @@ const setOutput2D = async () => {
         outputCoords.value[0] = parseFloat(output.v1)
         outputCoords.value[1] = parseFloat(output.v2)
         outputCoords.value[2] = null
-        updateOutputField(formatCoordinates(outputCoords.value))
+        updateOutputField(Formatter.formatCoordinates(outputCoords.value, format.value, props.inputIs3D))
     })
 }
 
 const transform = () => {
-    if (!hasTransformed.value) {
-        return
-    }
     if (props.inputEPSG === outputEPSG.value) {
         setOutputDirect()
-        return
     }
     if (props.inputIs3D && outputIs3D.value) {
         setOutput3D()
@@ -267,18 +190,8 @@ const setOutputDirect = () => {
     } else {
         outputCoords.value[2] = null
     }
-    updateOutputField(formatCoordinates(outputCoords.value))
+    updateOutputField(Formatter.formatCoordinates(outputCoords.value, format.value, props.inputIs3D))
 }
-
-
-onMounted(() => {
-    store.dispatch('CRS/clear')
-    store.dispatch('CRS/get', '')
-    .then(() => {
-        crs.value = store.state.CRS.data
-        updateFilteredCodes()
-    })
-})
 
 // Holder øje med inputkoordinaterne og transformerer kun,
 // hvis der også er valgt en EPSG-kode for outputtet.
@@ -289,95 +202,67 @@ watch(() => props.inputCoords, () => {
     }
 })
 watch(format, () => {
-    updateOutputField(formatCoordinates(outputCoords.value))
+    updateOutputField(Formatter.formatCoordinates(outputCoords.value, format.value, props.inputIs3D))
 })
 </script>
 
-<style scoped>
-* {
-    margin: 0;
-    padding: 0;
-}
-
-option {
-    background: white;
-    color: black;
-}
-
-#epsg-output-select {
-    padding-left: 20px;
-    width: 100%;
-    height: 2.5rem;
-    border-radius: 30px;
-    border-color: var(--darkSteel);
-}
-
-.isSelected {
-    background: white;
-}
-
-.coordinate-selection-wrapper {
-    margin-top: 1.4rem;
-}
-.v-enter-active,
-.v-leave-active {
-    transition: opacity 0.5s ease;
-}
-.v-enter-from,
-.v-leave-to {
-    opacity: 0;
-}
+<style lang="scss">
 .info-icon {
-    border: var(--darkSteel) solid 1px;
+    border: var(--dark-steel) solid 1px;
     border-radius: 25px;
-    background: var(--white);
+    background: var(--hvid);
     margin-left: 0.5rem;
 }
-.info-text-container {
+
+.output-card {
+    border-radius: 0 0 0 0;
+    border-top: none;
+}
+
+.info-popup {
     position: relative;
     flex-grow: 1;
+    
+    .popup-text {
+        background-color: var(--hvid);
+        border: 1px solid var(--dark-steel);
+        position: absolute;
+        width: 20vw;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 0 2rem 0 0.5rem;
+    }
 }
-.info-text {
-    position: absolute;
-    width: 20vw;
-    padding: 10px;
-    border: 1px solid var(--darkSteel);
-    border-radius: 10px;
-    background-color: var(--white);
-    margin: 0 2rem 0 0.5rem;
-}
-label {
-    display: inline-flex;
-}
-.output-coordinate {
+.output-card {
+    background-color: var(--lys-steel);
+    border-radius: 0px, 25px, 25px, 0px;
     padding: 1rem 1.5rem;
-    background-color: var(--lightSteel);
 }
 .transformed-coordinates {
-    margin: 1rem 0 1rem 0.25rem;
+    background-color: var(--hvid);
     padding-left: 0.5rem;
     width: 98.75%;
-    height: 2.5rem;
+    height: 2rem;
     display: flex;
     align-items: center;
-    background-color: var(--white);
-    border: var(--darkSteel) solid 1px;
+    border: var(--dark-steel) solid 1px;
 }
+
 .transformed-coordinates.hasTransformed {
-    background-color: var(--action);
+    background-color: var(--aktion);
     color: var(--white);
 }
 .transformed-coordinates::selection {
-    background: var(--highlight2);
+    background: var(--highlight);
 }
 .output-coordinates {
     display: inline-flex;
     margin-right: 0.25rem;
 }
 .copy-btn {
-    background-color: var(--lightSteel);
-    color: var(--darkSteel);
-    border: var(--darkSteel) solid 1px;
+    background-color: var(--lys-steel); 
+    color: var(--dark-steel); 
+    border: var(--dark-steel) solid 1px; 
     border-radius: 25px;
     float: right;
     padding: 0.3rem 1rem;
@@ -385,11 +270,11 @@ label {
     align-items: center;
 }
 .copy-btn.hasTransformed {
-    background-color: var(--action);
-    color: var(--white);
+    background-color: var(--aktion);
+    color: var(--hvid);
 }
 
-.radio {
+.radio-label {
     display: inline-flex;
     white-space: nowrap;
 }

@@ -1,32 +1,31 @@
 <template>
-  <div class="content" @click="handleClose">
-    <div class="lines"></div> <!-- TODO: remake this into an icon? -->
-  </div>
+    <div class="closer-content" @click="handleClose">
+        <DropdownIcon :is-open="isOpen"/>
+    </div>
 </template>
 
 <script setup>
+import DropdownIcon from '../shared/icons/DropdownIcon.vue';
+import { ref } from 'vue';
+
+const isOpen = ref(true)
+
 const emit = defineEmits(['handle-close'])
 
-function handleClose () {
-  emit('handle-close')
+function handleClose() {
+    isOpen.value = !isOpen.value
+    emit('handle-close')
 }
 </script>
 
 <style>
-  .content {
+.closer-content {
+    border-radius: 0 0 25px 25px;
+    display: flex;
+    justify-content: center;
     position: relative;
     width: 100%;
     height: 1.5rem;
-    background: white;
-  }
-  .lines {
-    position: absolute;
-    right: 45%;
-    top: 35%;
-    height: 0.5rem;
-    width: 3rem;
-    border-bottom: 2px solid var(--action);
-    border-top: 2px solid var(--action);
-    cursor: pointer;
-  }
+    background: var(--hvid);
+}
 </style>

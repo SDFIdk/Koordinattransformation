@@ -1,83 +1,89 @@
-<template>
-    <section class="input-coordinate">
-        <div class="title-bar">
+<template >
+    <div class="input-card">
+        <section>
             <h3>Input</h3>
-        </div>
-        <section class="coordinate-selection-wrapper">
-            <select id="epsg-select" @change="inputEPSGChanged">
-                <option class="epsg-option" v-for="(code, index) in filteredCRS" :key="index" :value='code' >
-                    {{ code.title_short }} ({{ code.srid }})
-                </option>
-            </select>
-        </section>
-        <div class="input">
-            <!-- input til første koordinat (kan indeholde 3 separate felter) -->
-            <CoordinateInputField
-            @coords-changed="emit('input-coords-changed', inputCoords)"
-            :unit="northDegreeUnit"
-            :epsgIsDegrees="epsgIsDegrees"
-            :degrees="degrees"
-            :minutes="minutes"
-            :seconds="seconds"
-            :element="0"
-            :format="format"
-            />
+
+            <CrsSelector :inOrOut="'in'" @crs-selected="inputEPSGChanged"/>
             
-            <!-- input til andet koordinat (kan indeholde 3 separate felter) -->
-            <CoordinateInputField
+            <div class="coordinate-fields">
+                <!-- input til første koordinat (kan indeholde 3 separate felter) -->
+                <CoordinateInputField
                 @coords-changed="emit('input-coords-changed', inputCoords)"
-                :unit="eastDegreeUnit"
+                :unit="northDegreeUnit"
                 :epsgIsDegrees="epsgIsDegrees"
                 :degrees="degrees"
                 :minutes="minutes"
                 :seconds="seconds"
-                :element="1"
+                :element="0"
                 :format="format"
-            />
-            
-            <!-- Input til højdekote, vises kun, hvis CRS er 3D -->
-            <span
-                class="third-input"
-                :class="{
-                    isDegreesInput: epsgIsDegrees,
-                    isMetresInput: !epsgIsDegrees
-                }"
-                v-show = "is3D">
-                <ArrowIcon :direction="'angle'"/>
-                <span class="input-field">
-                    <input
-                    :class="{degreesInput: true}"
-                    v-model=heightInMeters
-                    step="0.0001"
-                    />
-                    <span class="degrees">m</span>
-                </span>
-            </span>
-        </div>
-
-        <div class="footer">
-            <div class="searchbar">
-                <input class="searchbar-input" id="dawa-autocomplete-input"/>
-                <SearchIcon/>
-            </div>
-            <div class="radiogroup" v-show="epsgIsDegrees" :class="{radioGroupDisabled: !epsgIsDegrees}">
-                <input type="radio" 
-                    v-model="format" 
-                    value="degrees">
-                <label for="degrees" class="radio"> DD </label>
-
-                <input type="radio"
-                    v-model="format" 
-                    value="minutes">
-                <label for="minutes" class="radio"> min. </label>
+                />
                 
-                <input type="radio" 
-                    v-model="format" 
-                    value="seconds">
-                <label for="seconds" class="radio"> min. sek. </label>
+                <!-- input til andet koordinat (kan indeholde 3 separate felter) -->
+                <CoordinateInputField
+                    @coords-changed="emit('input-coords-changed', inputCoords)"
+                    :unit="eastDegreeUnit"
+                    :epsgIsDegrees="epsgIsDegrees"
+                    :degrees="degrees"
+                    :minutes="minutes"
+                    :seconds="seconds"
+                    :element="1"
+                    :format="format"
+                />
+                
+                <!-- Input til højdekote, vises kun, hvis CRS er 3D -->
+                <span 
+                    :class="{
+                        isDegreesInput: epsgIsDegrees,
+                        isMetresInput: !epsgIsDegrees
+                    }"
+                    v-show = "is3D">
+                    <ArrowIcon :direction="'angle'"/>
+                    <span class="height-field">
+                        <input
+                            :class="{degreesInput: false}"
+                            v-model=heightInMeters
+                            step="0.0001"
+                        />
+                        m
+                    </span>
+                </span>
             </div>
-        </div>
-    </section>
+    
+            <div class="footer">
+                <div class="searchbar">
+                    <input class="searchbar-input" id="dawa-autocomplete-input"/>
+                    <SearchIcon/>
+                </div>
+                <div class="radiogroup" v-show="epsgIsDegrees">
+                    <input class="dms-radio" type="radio" 
+                        v-model="format" 
+                        value="degrees">
+                    <label for="degrees" class="radioLabel"> DD </label>
+    
+                    <input class="dms-radio" type="radio"
+                        v-model="format" 
+                        value="minutes">
+                    <label for="minutes" class="radioLabel"> min. </label>
+                    
+                    <input class="dms-radio" type="radio" 
+                        v-model="format" 
+                        value="seconds">
+                    <label for="seconds" class="radioLabel"> min. sek. </label>
+                    
+                    <!-- TODO: fix this -->
+                    <InfoIcon 
+                        @mouseenter="hover = true"
+                        @mouseleave="hover = false"/>
+    
+                    <div class="info-text-container">
+                        <Transition>
+                            <p class="info-text" v-if="hover">Repræsentation af geografiske koordinater, vælg mellem decimalgrader, grader og decimalminutter eller grader, minutter og sekunder.</p>
+                        </Transition>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 </template>
 
 <script setup>
@@ -90,18 +96,19 @@
  */
 import { ref, inject, onUpdated, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { useRoute } from 'vue-router'
 
 import { dawaAutocomplete } from 'dawa-autocomplete2'
+import CrsSelector from './CrsSelector.vue'
 import CoordinateInputField from './CoordinateInputField.vue'
+
 import ArrowIcon from '../shared/icons/ArrowIcon.vue'
 import SearchIcon from '../shared/icons/SearchIcon.vue'
+import InfoIcon from '../shared/icons/InfoIcon.vue'
 
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
 const inputEPSG = ref('')
 const store = useStore()
-const route = useRoute()
 
 const northDegreeUnit = "°N"
 const eastDegreeUnit = "°E"
@@ -116,8 +123,6 @@ const heightInMeters = ref(0)
 
 const is3D = ref(true)
 const epsgIsDegrees = ref(false)
-const crs = ref([])
-const filteredCRS = ref([])
 const addressSelected = ref('')
 
 const emit = defineEmits([
@@ -128,55 +133,11 @@ const emit = defineEmits([
     'toggled-dropdown'
 ])
 
-const getEpsgCodes = async () => {
-    const tempCRS = []
-    // Der er forskellige lister for Danmark og Grønland
-    if (route.name === 'Denmark' && crs.value.length !== 0) {
-        for (let i = 0, iEnd = crs.value.DK.length; i < iEnd; ++i) {
-            await store
-            .dispatch('CRSInformation/get', crs.value.DK[i])
-            .then(() => {
-                tempCRS.push(store.state.CRSInformation.data)
-            })
-        }
-
-        for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
-            await store
-            .dispatch('CRSInformation/get', crs.value.Global[i])
-            .then(() => {
-                tempCRS.push(store.state.CRSInformation.data)
-            })
-        }
-
-        filteredCRS.value = tempCRS
-        document.getElementById('epsg-select').value = filteredCRS.value[0].title
-    } else if (route.name === 'Greenland') {
-        for (let i = 0, iEnd = crs.value.GL.length; i < iEnd; ++i) {
-            await store
-            .dispatch('CRSInformation/get', crs.value.GL[i])
-            .then(() => {
-                tempCRS.push(store.state.CRSInformation.data)
-            })
-        }
-        for (let i = 0, iEnd = crs.value.Global.length; i < iEnd; ++i) {
-            await store
-            .dispatch('CRSInformation/get', crs.value.Global[i])
-            .then(() => {
-                tempCRS.push(store.state.CRSInformation.data)
-            })
-        }
-        filteredCRS.value = tempCRS
-        document.getElementById('epsg-select').value = filteredCRS.value[0].title
-    }
-}
-
 /**
  * UTranformation af inputkoordinaterne, når brugeren vælger ny EPSG
  * @param code
  */
-const inputEPSGChanged = (event) => {
-    const code = event.target.selectedOptions[0]._value
-
+const inputEPSGChanged = (code) => {
     updateUnits(code)
     // 3D eller 2D?
     is3D.value = code.v3 !== null
@@ -335,14 +296,8 @@ onMounted(() => {
             getCoordsFromAdress(addressSelected.value)
         }
     })
-    store.dispatch('CRS/clear')
-    store.dispatch('CRS/get', '')
-    .then(() => {
-        crs.value = store.state.CRS.data
-        getEpsgCodes()
-    })
+    setInput()
 })
-setInput()
 
 // Hold øje med kortmarkørens placering,
 // så inputkoordinaterne kan opdateres.
@@ -381,98 +336,72 @@ onUpdated(() => {
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
 
-.input-field {
-    border-bottom: var(--action) solid 1px;
-    display: inline-flex;
-    flex: 1;
-    width: 10%;
-    margin-bottom: -.5rem;
-    margin-right: 0.5rem;
-    padding-bottom: 0.25rem;
+.input-card {
+    background-color: var(--hvid);
+    border-bottom: var(--aktion) solid 2px;
+    border-radius: 25px 25px 0 0;
+    position: relative;
+    background: var(--hvid);
+    padding: 1rem 1.5rem;
+    border-right: none;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+
+.height-field {
+    display: inline-flex;
+    border: none;
+    border-bottom: 1px solid var(--aktion);
+    flex: 1;
+    width: 10%;
+    margin-bottom: -.3rem;
+    margin-right: 0.5rem;
+    
+    input {
+        border: none;
+    }
 }
-input {
+
+.searchbar-input {
     -moz-appearance: textfield;
     appearance: textfield;
     border: none;
     width: 100%;
 }
 
-#epsg-select {
-    padding-left: 20px;
-    width: 100%;
-    height: 2.5rem;
-    border-radius: 30px;
-    border-color: var(--darkSteel);
-}
-
-.coordinate-selection-wrapper {
-    margin: 1rem 0;
-}
-.title-bar {
-    display: inline-flex;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    width: 100%;
-}
 input:focus {
     outline: none;
 }
-.info-icon {
-    border: var(--darkSteel) solid 1px;
-    border-radius: 25px;
-    margin: 0 0 0 auto;
-    transform: rotate(90deg);
-}
-li {
-    list-style-type: none;
-    margin: 0;
-    border-bottom: var(--action) solid 1px;
-}
-li:hover {
-    background-color: var(--action);
-}
-ul {
-    list-style-type: none;
-}
 
 .searchbar {
+    border: 1px solid var(--dark-steel);
     display: inline-flex;
     justify-content: space-between;
     align-items: center;
     margin-right: 0.5rem;
-    border: var(--darkSteel) solid 1px;
     border-radius: 16px;
     flex-grow: 1;
     padding: 0rem 0.75rem 0.1rem 1rem;
 }
 
-.radio {
-    display: inline-flex;
-    white-space: nowrap;
-}
-input[type="radio"] {
-    transform: scale(.8);
-    display: inline-flex;
-}
-
 .radiogroup {
     display: inline-flex;
     flex-wrap: nowrap;
-}
-.radioGroupDisabled {
-    pointer-events: none;
+    
+    .radioLabel {
+        display: inline-flex;
+        white-space: nowrap;
+    }
+    input[type="radio"] {
+        transform: scale(.8);
+        display: inline-flex;
+    }
 }
 .footer {
     display: inline-flex;
@@ -489,8 +418,6 @@ input[type="radio"] {
 }
 .isMetresInput {
     width: 33%;
-}
-.isMetresInput {
     margin-top: 0.25rem;
     display: inline-flex;
     align-items: center;

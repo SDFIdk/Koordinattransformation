@@ -296,8 +296,8 @@ onMounted(() => {
             getCoordsFromAdress(addressSelected.value)
         }
     })
+    setInput()
 })
-setInput()
 
 // Hold øje med kortmarkørens placering,
 // så inputkoordinaterne kan opdateres.

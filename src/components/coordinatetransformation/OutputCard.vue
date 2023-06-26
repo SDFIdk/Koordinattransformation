@@ -108,7 +108,6 @@ const onEpsgSelect = (code) => {
 
     outputEPSG.value = code.srid
     outputSelected.value = true
-    
     transform()
     hasTransformed.value = true
 }
@@ -173,9 +172,6 @@ const setOutput2D = async () => {
 }
 
 const transform = () => {
-    if (!hasTransformed.value) {
-        return
-    }
     if (props.inputEPSG === outputEPSG.value) {
         setOutputDirect()
     }

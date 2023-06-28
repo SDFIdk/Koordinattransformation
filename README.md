@@ -54,7 +54,7 @@ Koderne fra WEBPROJ bliver derefter store'et i en VUEX store. Under runtime, kan
 [Edge](https://microsoftedge.microsoft.com/addons/detail/vuejs-devtools/olofadcdnkkjdfgjcmjaadnlehnnihnl)
 
 
-## formattering af koordinater
+## Formattering af koordinater
 | Koordinater                  | Antal decimaler   |
 | ---------------------------- | ----------------- |
 | Meter                        | 4 decimaler       |

@@ -101,4 +101,4 @@ Alle ikoner kommer fra [design-system-icons](https://sdfidk.github.io/design-sys
 Findes også på [Github](https://github.com/sdfidk/design-system-icons). Disse bliver i øjeblikket implementeret som separate Vue components i `components/shared/icons`, da farverne ikke kan tilpasses, hvis man hiver dem fra npm. Nogle ikoner som `ArrowIcon.vue` er implementeret med et par props til at vende den korrekt.
 
 ## Baggrundskort
-danmarkskortet kommer fra [dataforsyningen's API](https://dataforsyningen.dk/data/962), mens grønlandskortet er en OMS integration. Vi har indtil nu ikke haft en intern WMTS over grønland, men der ligger nu en [WMS version på dataforsyningen](https://dataforsyningen.dk/data/4771)
+Danmarkskortet kommer fra [Dataforsyningen's API](https://dataforsyningen.dk/data/962), mens grønlandskortet er en OMS integration. Vi har indtil nu ikke haft en intern WMTS over grønland, men der ligger nu en [WMS version på dataforsyningen](https://dataforsyningen.dk/data/4771)

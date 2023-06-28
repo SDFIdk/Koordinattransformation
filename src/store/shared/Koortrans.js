@@ -1,7 +1,7 @@
 import { environment } from '@/store/shared/Paths.js'
 
 const tokens = {
-    // get the token from the active environment
+    // Adgangstoken er afhængig af det aktive miljø. Develop miljø eller produktion miljø
     get: {
         production: import.meta.env.VITE_TOKEN,
         development: import.meta.env.VITE_TOKEN,

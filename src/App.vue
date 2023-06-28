@@ -6,13 +6,7 @@
 </template>
 
 <script setup>
-/**
- * Familietræet af forældrekomponenter og deres børn er som følgende:
- * Map -> CoordinateTransformation
- * CoordinateTransformation -> InputCoordinates -> CoordinateSelection
- * CoordinateTransformation -> OutputCoordinates -> CoordinateSelection
- * CoordinateTransformation -> MenuCloser
- */
+// Top komponenten i Vue familietræet. indeholder header og router-view (som varetager indhold for hver side)
 import { onErrorCaptured, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { isConsole, isIE, isSmartTV, isWearable } from 'mobile-device-detect'

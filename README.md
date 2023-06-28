@@ -31,6 +31,15 @@ module.export = {
 disse refereres efterfølgende med `import.meta.env.[field]` <br>
 læs mere om Vite og miljøvariable [her](https://vitejs.dev/guide/env-and-mode.html)
 
+# Diagram over programmet:
+Diagrammet ligger som en redigerbar drawio fil sammen med en .png i root directory. [Download vs code extention her](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio)<br>
+***Husk at opdatere diagrammet og exporter nyt billede, hvis programmet opdateres***  
+<br>
+![Diagram](/diagram.png)
+
+<br>
+<br>
+<br>
 
 - Naviger til projektet i terminalen <br>
 

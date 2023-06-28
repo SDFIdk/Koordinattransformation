@@ -3,14 +3,14 @@
         <section>
             <h3>Input</h3>
 
-            <CrsSelector :inOrOut="'in'" @crs-selected="inputEPSGChanged"/>
+            <CrsSelector :inOrOut="'in'" @crs-selected="inputCrsChanged"/>
             
             <div class="coordinate-fields">
                 <!-- input til første koordinat (kan indeholde 3 separate felter) -->
                 <CoordinateInputField
                 @coords-changed="emit('input-coords-changed', inputCoords)"
                 :unit="northDegreeUnit"
-                :epsgIsDegrees="epsgIsDegrees"
+                :epsgIsDegrees="crsIsDegrees"
                 :degrees="degrees"
                 :minutes="minutes"
                 :seconds="seconds"
@@ -22,7 +22,7 @@
                 <CoordinateInputField
                     @coords-changed="emit('input-coords-changed', inputCoords)"
                     :unit="eastDegreeUnit"
-                    :epsgIsDegrees="epsgIsDegrees"
+                    :epsgIsDegrees="crsIsDegrees"
                     :degrees="degrees"
                     :minutes="minutes"
                     :seconds="seconds"
@@ -33,8 +33,8 @@
                 <!-- Input til højdekote, vises kun, hvis CRS er 3D -->
                 <span 
                     :class="{
-                        isDegreesInput: epsgIsDegrees,
-                        isMetresInput: !epsgIsDegrees
+                        isDegreesInput: crsIsDegrees,
+                        isMetresInput: !crsIsDegrees
                     }"
                     v-show = "is3D">
                     <ArrowIcon :direction="'angle'"/>
@@ -48,13 +48,15 @@
                     </span>
                 </span>
             </div>
-    
+            
             <div class="footer">
+                <!-- DAWA -->
                 <div class="searchbar">
                     <input class="searchbar-input" id="dawa-autocomplete-input"/>
                     <SearchIcon/>
                 </div>
-                <div class="radiogroup" v-show="epsgIsDegrees">
+                <!-- DMS selector, bør komme i sin egen komponent -->
+                <div class="radiogroup" v-show="crsIsDegrees">
                     <input class="dms-radio" type="radio" 
                         v-model="format" 
                         value="degrees">
@@ -107,7 +109,7 @@ import InfoIcon from '../shared/icons/InfoIcon.vue'
 
 const mapMarkerInputCoords = inject('mapMarkerInputCoords')
 const inputCoords = ref(mapMarkerInputCoords.value)
-const inputEPSG = ref('')
+const inputCRS = ref('')
 const store = useStore()
 
 const northDegreeUnit = "°N"
@@ -122,7 +124,7 @@ const seconds = ref([0, 0])
 const heightInMeters = ref(0)
 
 const is3D = ref(true)
-const epsgIsDegrees = ref(false)
+const crsIsDegrees = ref(false)
 const addressSelected = ref('')
 
 const emit = defineEmits([
@@ -134,22 +136,21 @@ const emit = defineEmits([
 ])
 
 /**
- * UTranformation af inputkoordinaterne, når brugeren vælger ny EPSG
- * @param code
+ * Tranformation af inputkoordinaterne, når brugeren vælger ny CRS
  */
-const inputEPSGChanged = (code) => {
+const inputCrsChanged = (code) => {
     updateUnits(code)
     // 3D eller 2D?
     is3D.value = code.v3 !== null
     if (is3D.value) {
-        store.dispatch('trans/get', inputEPSG.value + '/' + code.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1])
+        store.dispatch('trans/get', inputCRS.value + '/' + code.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1])
         .then(() => {
             const output = store.state.trans.data
             if (output.message !== undefined) {
                 error(output.message)
                 return
             }
-            inputEPSG.value = code.srid
+            inputCRS.value = code.srid
             inputCoords.value[0] = output.v1
             inputCoords.value[1] = output.v2
             inputCoords.value[2] = output.v3
@@ -161,14 +162,14 @@ const inputEPSGChanged = (code) => {
             emit('input-epsg-changed', code)
         })
     } else {
-        store.dispatch('trans/get', inputEPSG.value + '/' + code.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1])
+        store.dispatch('trans/get', inputCRS.value + '/' + code.srid + '/' + inputCoords.value[0] + ',' + inputCoords.value[1])
         .then(() => {
             const output = store.state.trans.data
             if (output.message !== undefined) {
                 error(output.message)
                 return
             }
-            inputEPSG.value = code.srid
+            inputCRS.value = code.srid
             inputCoords.value[0] = output.v1.toString().replace(',', '.')
             inputCoords.value[1] = output.v2.toString().replace(',', '.')
             emit('input-epsg-changed', code)
@@ -177,26 +178,27 @@ const inputEPSGChanged = (code) => {
     }
 }
 
+// opdater enheder, når der vælges en crs.
 const updateUnits = (code) => {
     if (code.v1_unit === 'degree') {
-        epsgIsDegrees.value = true
+        crsIsDegrees.value = true
         format.value = 'degrees'
     } else {
-        epsgIsDegrees.value = false
+        crsIsDegrees.value = false
         format.value = 'meters'
     }
 }
 
 // Smuksering af inputkoordinaterne i de tre til syv tastefelter
 const setInput = () => {
-    if (!epsgIsDegrees.value) {
+    if (!crsIsDegrees.value) {
         const deg0 = parseFloat(inputCoords.value[0]).toFixed(4)
         const deg1 = parseFloat(inputCoords.value[1]).toFixed(4)
 
         degrees.value[0] = deg0
         degrees.value[1] = deg1
     }
-    else if (!epsgIsDegrees.value || format.value == 'degrees') {
+    else if (!crsIsDegrees.value || format.value == 'degrees') {
         const deg0 = parseFloat(inputCoords.value[0]).toFixed(8)
         const deg1 = parseFloat(inputCoords.value[1]).toFixed(8)
 
@@ -242,7 +244,7 @@ const error = err => {
 }
 
 /**
- * Henter koordinaterne for en given adresse,
+ * Henter koordinaterne for en given adresse igennem DAWA
  * sætter nålen på kortet
  * og foretager en transformation
  * @param url
@@ -253,7 +255,7 @@ const getCoordsFromAdress = async (location) => {
     .then(data => data[0].adgangsadresse.vejpunkt.koordinater)
     .then(coords => {
         if (is3D.value) {
-            store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0] + ',' + heightInMeters.value)
+            store.dispatch('trans/get', 'EPSG:4258/' + inputCRS.value + '/' + coords[1] + ',' + coords[0] + ',' + heightInMeters.value)
             .then(() => {
                 const output = store.state.trans.data
                 // Abort hvis fejl
@@ -268,7 +270,7 @@ const getCoordsFromAdress = async (location) => {
                 emit('input-coords-changed', [inputCoords.value[0].toString().replace(',', '.'), inputCoords.value[1].toString().replace(',', '.'), inputCoords.value[2].toString().replace(',', '.')])
             })
         } else {
-            store.dispatch('trans/get', 'EPSG:4258/' + inputEPSG.value + '/' + coords[1] + ',' + coords[0])
+            store.dispatch('trans/get', 'EPSG:4258/' + inputCRS.value + '/' + coords[1] + ',' + coords[0])
             .then(() => {
                 const output = store.state.trans.data
                 if (output.message !== undefined) {
@@ -286,7 +288,7 @@ const getCoordsFromAdress = async (location) => {
 
 onMounted(() => {
     // Søgefeltet til indtastning af addresser (DAWA)
-    inputEPSG.value = inject('inputEPSG')
+    inputCRS.value = inject('inputEPSG')
     const inputElm = document.getElementById('dawa-autocomplete-input')
 
     dawaAutocomplete(inputElm, {

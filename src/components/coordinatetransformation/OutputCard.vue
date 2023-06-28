@@ -1,7 +1,7 @@
 <template>
     <section class="output-card">
         <h3>Output</h3>
-        <CrsSelector :inOrOut="'out'" @crsSelected="onEpsgSelect"/>
+        <CrsSelector :inOrOut="'out'" @crsSelected="onCrsSelect"/>
         
         <div class="transformed-coordinates"  :class="{ hasTransformed: hasTransformed }">
             <div v-if="isLoading">
@@ -16,6 +16,7 @@
         
         <article class="footer" :class="{isMetres: format == 'meters'}">
             <div class="radio-and-info-group" v-show="radiosVisible">
+                <!-- formater outputtet med grader, grader+minutter, grader+minutter+sekunder -->
                 <div class="radiogroup">
                     <input type="radio" v-model="format" value="degrees">
                     <label class="radio-label" for="degrees"> DD </label>
@@ -60,7 +61,7 @@ import CopyIcon from '../shared/icons/CopyIcon.vue'
 import Loader from '../shared/icons/Loader.vue'
 import CrsSelector from './CrsSelector.vue'
 const store = useStore()
-const outputEPSG = ref('')
+const outputCRS = ref('')
 
 const format = ref('')
 const outputSelected = ref(false)
@@ -76,7 +77,7 @@ const outputIs3D = ref(false)
 
 
 const props = defineProps({
-    inputEPSG: { type: String, default () { return '' }},
+    inputCRS: { type: String, default () { return '' }},
     inputIs3D: { type: Boolean, default () { return true }},
     inputCoords: { type: Array, default () { return inject('mapMarkerInputCoords').value }}
 })
@@ -88,7 +89,7 @@ const emit = defineEmits([
 
 // En output-EPSG er valgt: Der skal foretages transformation,
 // og brugergrænsefladen opdateres ift. om output EPSG-koden er i meter eller DMS og 2D eller 3D
-const onEpsgSelect = (code) => {
+const onCrsSelect = (code) => {
 
     // check units
     if (code.v1_unit === 'metre') {
@@ -106,7 +107,7 @@ const onEpsgSelect = (code) => {
         outputIs3D.value = true
     }
 
-    outputEPSG.value = code.srid
+    outputCRS.value = code.srid
     outputSelected.value = true
     transform()
     hasTransformed.value = true
@@ -142,7 +143,7 @@ const error = err => {
 }
 
 const setOutput3D = async () => {
-    store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
+    store.dispatch('trans/get', props.inputCRS + '/' + outputCRS.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1] + ',' + props.inputCoords[2])
     .then(() => {
         const output = store.state.trans.data
         if (output.message !== undefined) {
@@ -157,7 +158,7 @@ const setOutput3D = async () => {
 }
 
 const setOutput2D = async () => {
-    store.dispatch('trans/get', props.inputEPSG + '/' + outputEPSG.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
+    store.dispatch('trans/get', props.inputCRS + '/' + outputCRS.value + '/' + props.inputCoords[0] + ',' + props.inputCoords[1])
     .then(() => {
         const output = store.state.trans.data
         if (output.message !== undefined) {
@@ -172,7 +173,7 @@ const setOutput2D = async () => {
 }
 
 const transform = () => {
-    if (props.inputEPSG === outputEPSG.value) {
+    if (props.inputCRS === outputCRS.value) {
         setOutputDirect()
     }
     if (props.inputIs3D && outputIs3D.value) {

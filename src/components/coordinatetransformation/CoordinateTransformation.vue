@@ -4,27 +4,33 @@
             <article class="coordinate-transformation-box" ref="mother">
                 <InputCard 
                     class="inputCard" 
-                    @input-epsg-changed="inputEPSGChanged" 
+                    @input-epsg-changed="inputCrsChanged" 
                     @error-occurred="errorOccurred"
                     @input-coords-changed="inputCoordsChanged" 
                     @is-3d-changed="isInput3DChanged" 
                 />
+
                 <OutputCard 
                     class="outputCard" 
-                    :inputEPSG=inputEPSG 
+                    :inputCRS=inputCRS 
                     :inputCoords=inputCoords 
                     @error-occurred="errorOccurred"
                     @coordinates-copied="coordinatesCopied" 
                     :inputIs3D=inputIs3D 
                 />
+
+                <!-- Et håndtag til at lukke menuen, når den er åben -->
                 <menu-closer class="menu-closer" @handle-close="menuClosed = true" />
             </article>
+
             <div v-show="popupVisible" class="message">Koordinater kopieret</div>
             <div v-show="mapErrorIsVisible" class="message">{{ mapError }}</div>
             <div v-show="errorVisible" class="message">{{ error }}</div>
         </section>
     </Transition>
+
     <Transition name="open">
+        <!-- Et håndtag til at åbne menuen, når den er lukket -->
         <menu-closer class="menu-closed" v-show="this.menuClosed && window.width < 704"
             @handle-close="this.menuClosed = false" />
     </Transition>
@@ -45,10 +51,10 @@ import MenuCloser from '@/components/coordinatetransformation/MenuCloser.vue'
 
 const inputCoords = ref(inject('inputCoords'))
 const inputIs3D = ref(true)
-const inputEPSG = ref(inject('inputEPSG'))
+const inputCRS = ref(inject('inputEPSG'))
 const popupVisible = ref(false)
 const menuClosed = ref(false)
-const window = ref({ width: 0, height: 0 })
+const window = ref({ width: 0, height: 0 }) // højde og bredde på vinduet
 const errorVisible = ref('')
 const error = ref('')
 
@@ -64,60 +70,52 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-    'input-epsg-changed',
+    'input-crs-changed',
     'input-coords-changed'
 ])
 
-const inputEPSGChanged = (code) => {
-    inputEPSG.value = code.srid
-    emit('input-epsg-changed', code.srid)
+const inputCrsChanged = (code) => {
+    inputCRS.value = code.srid
+    emit('input-crs-changed', code.srid)
 }
 
 /**
- * emits an event input-coord-changed
- * run when the input coordinates in the input card is changed
- * e.g. when choosing EPSG, when clicking map, when changed manually, when entering address
- * @param coords
+ * emit en event, når inputkoordinater ændrer sig. 
+ * Når man vælger ny crs, når man klikker på kortet, indtaster manuelt, indtaster addresse
  */
 const inputCoordsChanged = (coords) => {
     inputCoords.value = coords
     emit('input-coords-changed', coords)
 }
 
-const isInput3DChanged = (state) => {
-    inputIs3D.value = state
-}
+const isInput3DChanged = (newVal) => inputIs3D.value = newVal
 
 const errorOccurred = (state, err) => {
     error.value = err
     errorVisible.value = state
 }
 
-const coordinatesCopied = (state) => {
-    popupVisible.value = state
-}
+/** Vis popup vinduet, hvis brugeren kopierer koordinaterne til udklipsholderen */
+const coordinatesCopied = (state) => popupVisible.value = state
 
 </script>
 
 <style>
+/* lukke og åbne animation */
 .close-enter-active,
 .close-leave-active {
     transition: all 1s ease-in-out;
 }
-
 .close-enter-from,
 .close-leave-to {
     transform: translateY(-50vh);
 }
-
 .open-enter-active {
     transition: all 1s step-end;
 }
-
 .open-leave-active {
     transition: all 1s step-start;
 }
-
 .open-enter-from,
 .open-leave-to {
     opacity: 0;
@@ -151,6 +149,7 @@ const coordinatesCopied = (state) => {
     border-top: none;
 }
 
+/* turkis separator mellem in- og output VERTIKAL */
 .inputCard:after {
     content: "";
     position: absolute;
@@ -165,6 +164,7 @@ const coordinatesCopied = (state) => {
     transform: translateY(100%);
 }
 
+/* turkis separator mellem in- og output VERTIKAL */
 .inputCard:before {
     content: "";
     position: absolute;
@@ -181,8 +181,8 @@ const coordinatesCopied = (state) => {
 
 .menu-closed {
     border-radius: 25px;
-    border: 2px solid var(-dark-steel);
-    box-shadow: 0 0 0 4px rgba(191, 223, 227, 0.7);
+    border: 2px solid var(--dark-steel);
+    box-shadow: 0 0 0 4px var(--vibrant-steel);
 }
 
 @media screen and (min-width: 44rem) {
@@ -197,6 +197,7 @@ const coordinatesCopied = (state) => {
         border-bottom: none;
     }
 
+    /* hvid separator mellem in- og output HORISONTAL */
     .inputCard:after {
         content: "";
         position: absolute;
@@ -210,7 +211,8 @@ const coordinatesCopied = (state) => {
         z-index: 3;
         transform: translateY(50%);
     }
-
+    
+    /* turkis separator mellem in- og output HORISONTAL */
     .inputCard:before {
         content: "";
         position: absolute;

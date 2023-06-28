@@ -1,3 +1,8 @@
+/**
+ * Formattering af outputtet til outputfeltet. 
+ * Der formatteres forskelligt, afhængigt af om det er i meter, grader, grader+minutter, grader+minutter+sekunder
+ * Kun hvis der er en højdeparameter i både in- og output, sættes en tredje parameter.
+ */
 const Formatter = {
     formatCoordinates (_coords, _format, _inputIs3D) {
         let formattedCoordinates = []

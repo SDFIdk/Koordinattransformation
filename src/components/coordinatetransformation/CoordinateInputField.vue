@@ -2,14 +2,14 @@
     <span
         class="coordinate-fields"
         :class="{
-            isDegreesInput: props.epsgIsDegrees,
-            isMetresInput: !props.epsgIsDegrees
+            isDegreesInput: props.CrsIsDegrees,
+            isMetresInput: !props.CrsIsDegrees
         }">
-        <ArrowIcon :direction="arrowDirection()"/>
+        <ArrowIcon :direction="getArrowDirection()"/>
         
         <span 
             class="input-segment" 
-            :class="{degreesInput: epsgIsDegrees}">
+            :class="{degreesInput: CrsIsDegrees}">
             
             <input id="degreesInput"
                 class="coordinate-input"
@@ -19,13 +19,13 @@
                 @input="validateDegrees"
             />
             
-            <span class="unit" v-show="props.epsgIsDegrees"> {{ props.direction }} </span>
-            <span class="unit" v-show="!props.epsgIsDegrees">m</span>
+            <span class="unit" v-show="props.CrsIsDegrees"> {{ props.direction }} </span>
+            <span class="unit" v-show="!props.CrsIsDegrees">m</span>
         </span>
 
         <span class="input-segment"
-            :class="{degreesInput: epsgIsDegrees}"
-            v-show="props.epsgIsDegrees && (props.format == 'minutes' || props.format == 'seconds')">
+            :class="{degreesInput: CrsIsDegrees}"
+            v-show="props.CrsIsDegrees && (props.format == 'minutes' || props.format == 'seconds')">
             <input id="minutesInput"
                 class="coordinate-input"
                 :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
@@ -36,7 +36,7 @@
             <span class="degrees">'</span>
         </span>
 
-        <span class="input-segment" :class="{degreesInput: props.epsgIsDegrees}" v-show="props.epsgIsDegrees && props.format == 'seconds'">
+        <span class="input-segment" :class="{degreesInput: props.CrsIsDegrees}" v-show="props.CrsIsDegrees && props.format == 'seconds'">
             <input id="secondsInput"
                 class="coordinate-input"
                 :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
@@ -50,34 +50,46 @@
 </template>
 
 <script setup>
-import { onUpdated, ref } from 'vue';
+/** 
+ * En komponent, der indeholder 1 til tre inputs afhængig af, om inputtet er meter, grader, grader+minutter, grader+minutter+sekunder: 
+ * meter: 1 input
+ * grader: 1 input
+ * grader og minutter: 2 inputs
+ * grader, minutter og sekunder: 3 inputs.
+ */
+import { onUpdated } from 'vue';
 import ArrowIcon from '../shared/icons/ArrowIcon.vue';
 
 
 const props = defineProps({
     unit: String,
-    epsgIsDegrees: Boolean,
+    CrsIsDegrees: Boolean,
     degrees: [],
     minutes: [],
     seconds: [],
-    element: Number,
-    format: ''
+    element: Number, // bruges til at afgøre hvilket inputfelt en given værdi skal ind i.
+    format: '' // hvorvidt inputtet er m, d, dm, dms
 })
 
 const emit = defineEmits([
     'coords-changed'
 ])
 
-const arrowDirection = () => {
+const getArrowDirection = () => {
     let direction = ''
 
-    if      (props.epsgIsDegrees && props.element == 0)     { direction = 'right' }
-    else if (props.epsgIsDegrees && props.element == 1)     { direction = 'up' }    
-    else if (!props.epsgIsDegrees && props.element == 0)    { direction = 'up' }
-    else if (!props.epsgIsDegrees && props.element == 1)    { direction = 'right' }
+    if      (props.CrsIsDegrees && props.element == 0)     { direction = 'right' }
+    else if (props.CrsIsDegrees && props.element == 1)     { direction = 'up' }    
+    else if (!props.CrsIsDegrees && props.element == 0)    { direction = 'up' }
+    else if (!props.CrsIsDegrees && props.element == 1)    { direction = 'right' }
     return direction
 }
 
+/**
+ * Api'en tager kun punktummer pga. det er sådan koordinater noteres i international tradition.
+ * På dansk skriver vi dog gerne kommaer, der hvor international notation ville sætte punktummer.
+ * Det skal valideres, hver gang brugeren indtaster en værdi.
+ */
 const validateDegrees = () => {
     if (props.degrees[0].includes(','))
         props.degrees[0] = props.degrees[0].replace(',', '.')

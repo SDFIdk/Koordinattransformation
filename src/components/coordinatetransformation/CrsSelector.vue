@@ -5,13 +5,14 @@
             v-model="currentlySelected"
             @change="emit('crsSelected', currentlySelected)">
     
-            <!-- show this if used in OutputCard -->
+            <!-- hvis indlejret i outputkortet, sæt ikke en default kode -->
             <option v-show="props.inOrOut == 'out'" class="crs-option"
                 disabled value="default">
                 Vælg Koordinatsystem
             </option>
 
             <option v-for="(code, index) in filteredCodes" :key="index" :value='code' >
+                <!-- I feltet, vises både CRS'en og EPSG-koden -->
                 {{ code.title_short }} ({{ code.srid }})
             </option>
         </select>
@@ -28,8 +29,8 @@ const allCodes = ref([])
 const filteredCodes = ref([])
 const currentlySelected = ref({})
 
+// der er en liste over alle koder, som så deles i to. En for Danmark og en for Grønland
 const filterCodes = async () => {
-    // Der er forskellige lister for Danmark og Grønland
     if (route.name === 'Denmark' && allCodes.value.length !== 0) {
         filteredCodes.value = await getDenmarkCodes()
     } 
@@ -74,8 +75,8 @@ const getDenmarkCodes = async () => {
 }
 
 onMounted(() => {
-    store.dispatch('CRS/clear')
-    store.dispatch('CRS/get', '')
+    store.dispatch('CRS/clear') // Når siden loades, cleares alt data i Vuex
+    store.dispatch('CRS/get', '') // GET alle koderne fra webproj
     .then(() => {
         allCodes.value = store.state.CRS.data // get codes from store
     })
@@ -93,7 +94,7 @@ onMounted(() => {
 })
 
 const props = defineProps({
-    inOrOut: String
+    inOrOut: String // bor dette instance i in- eller outputkortet
 })
 
 const emit = defineEmits([

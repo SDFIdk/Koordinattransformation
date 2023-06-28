@@ -1,8 +1,7 @@
 <!-- 
-    Denne komponent kunne gøres med en enkelt div og conditional rendering, 
+    Denne header komponent kunne gøres med en enkelt div og conditional rendering, 
     men så kan vi ikke bruge @dataforsyningen css 
 -->
-
 <template>
     <div class="nav-container" style="display: flex; justify-content: space-between;">
         <!-- HORIZONTAL NAVBAR -->

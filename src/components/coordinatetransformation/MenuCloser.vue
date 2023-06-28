@@ -5,6 +5,9 @@
 </template>
 
 <script setup>
+/**
+ * Et lille håndtag til at åbne og lukke menuen i tilfældet, at brugeren er på en lille skærm og transformations-komponenten vises vertikalt.
+ */
 import DropdownIcon from '../shared/icons/DropdownIcon.vue';
 import { ref } from 'vue';
 

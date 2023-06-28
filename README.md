@@ -85,7 +85,7 @@ eksempelvis har `OutputCard` et output field, som har både inputkoordinater og 
 Disse inputkoordinater skal ikke forvirres med koordinaterne i `InputCard`. Vær opmærksom på, hvor ting kommer fra og skal hen.
 
 
-## integration af SDFI design system
+## Integration af SDFI design system
 Alt styling så vidt muligt (nogle ting er specifikke for Koordinattransformation) følger [SDFI design system](https://sdfidk.github.io/design-system-css/).
 Også at finde på [Github](https://github.com/SDFIdk/design-system-css). 
 

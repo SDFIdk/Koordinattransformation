@@ -96,7 +96,7 @@ Der er to måder hvorpå man kan bruge variabler fra @dataforsyningen:
 inline CSS er ikke muligt på pseudo elementer og heller ikke på conditional classes (`:class={someClass: booleanValue}`)
 Derfor giver det mening slet ikke at bruge `<style scoped>` for at holde koden strømlinet og ensformig.
 
-### ikoner
+### Ikoner
 Alle ikoner kommer fra [design-system-icons](https://sdfidk.github.io/design-system-icons/) <br>
 Findes også på [Github](https://github.com/sdfidk/design-system-icons). Disse bliver i øjeblikket implementeret som separate Vue components i `components/shared/icons`, da farverne ikke kan tilpasses, hvis man hiver dem fra npm. Nogle ikoner som `ArrowIcon.vue` er implementeret med et par props til at vende den korrekt.
 

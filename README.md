@@ -9,7 +9,7 @@ For at udvikle og bygge projektet skal man have følgende
 
 ---
 
-## setup a projektet
+## Setup a projektet
 For at kunne køre projektet, er der nogle miljøvariable, der skal føres ind i projektet.
 Disse ligger i [Koordinattransformation_config](https://github.com/SDFIdk/Koordinattransformation-config) og hedder henholdsvis: 
 - `.env.development`, 

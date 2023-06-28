@@ -46,10 +46,10 @@ npm run lint
 ```
 ***
 
-Selve transformationerne sker igennem [webproj](https://github.com/SDFIdk/WEBPROJ/tree/master) <br>
-dokumentation til webproj findes [her](https://docs.dataforsyningen.dk/#webproj)
+Selve transformationerne sker igennem [WEBPROJ](https://github.com/SDFIdk/WEBPROJ/tree/master) <br>
+dokumentation til WEBPROJ findes [her](https://docs.dataforsyningen.dk/#webproj)
 
-Koderne fra webproj bliver derefter store'et i en VUEX store. Under runtime, kan denne ses i developer tools i browseren med Vue extention til henholdsvis [Chrome](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd), 
+Koderne fra WEBPROJ bliver derefter store'et i en VUEX store. Under runtime, kan denne ses i developer tools i browseren med Vue extention til henholdsvis [Chrome](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd), 
 [firefox](https://devtools.vuejs.org/) 
 [Edge](https://microsoftedge.microsoft.com/addons/detail/vuejs-devtools/olofadcdnkkjdfgjcmjaadnlehnnihnl)
 

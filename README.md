@@ -64,7 +64,7 @@ Koderne fra WEBPROJ bliver derefter store'et i en VUEX store. Under runtime, kan
 
 ## Geodæsi
 Nogle gode generelle ting at vide:
-- [CRS](https://en.wikipedia.org/wiki/Spatial_reference_system) (coordinate reference system) er måde at vise data geospatial data på. det har formatet: DATUM/PROJEKTION[+HØJDESYSTEM] <br>
+- [CRS](https://en.wikipedia.org/wiki/Spatial_reference_system) (Coordinate Reference System) er en fællesbetegnelse for forskellige typer geografiske koordinatsystemer. Typisk tildeles CRS'er en unik kode, fx en EPSG-kode, der gør det let at give geospatial data en entydig geografisk reference.<br>
 - [EPSG](https://epsg.io/) er en database over CRS'er varetaget af 'International Association of Oil and Gas Producers'
 - En transformation, hvor et to-dimensionelt system indgår, enten som in- eller output, skal ikke have en højdeparameter på outputtet, selvom man umiddelbart har lyst. I en geodætisk sammenhæng er det meningsløst og i sidste ende misvisende at tage højdeparameteren med. 
 

@@ -9,14 +9,24 @@ For at udvikle og bygge projektet skal man have følgende
 
 ---
 
-## setup a projektet
-For at kunne køre projektet, er der nogle miljøvariable, der skal føres ind i projektet.
-Disse ligger i [Koordinattransformation_config](https://github.com/SDFIdk/Koordinattransformation-config) og hedder henholdsvis: 
-- `.env.development`, 
-- `.env.production` 
-- `.env.staging`. <br>
+## Setup a projektet
+For at kunne køre projektet, er der nogle miljøvariable, der skal føres ind i root directory i projeket.
 
-***kopier disse filer ind i root directory af projektet.***
+`.env.development` til development miljøet og 
+`.env.production` til produktionsmiljøet.
+Et eksempel på en miljøfil er:
+
+```
+module.export = {
+  VITE_NODE_ENV = development
+  VITE_VUE_APP_SHOW_UNPUBLISHED = true
+  VITE_NODE_OPTIONS = --openssl-legacy-provider
+  VITE_TOKEN = <token>
+  VITE_API_BASE_URL = https://api.dataforsyningen.dk/rest/webproj_test
+}
+```
+
+***Kopier disse filer fra config repoet ind i root directory af projektet.***
 
 disse refereres efterfølgende med `import.meta.env.[field]` <br>
 læs mere om Vite og miljøvariable [her](https://vitejs.dev/guide/env-and-mode.html)
@@ -46,15 +56,15 @@ npm run lint
 ```
 ***
 
-Selve transformationerne sker igennem [webproj](https://github.com/SDFIdk/WEBPROJ/tree/master) <br>
-dokumentation til webproj findes [her](https://docs.dataforsyningen.dk/#webproj)
+Selve transformationerne sker igennem [WEBPROJ](https://github.com/SDFIdk/WEBPROJ/tree/master) <br>
+dokumentation til WEBPROJ findes [her](https://docs.dataforsyningen.dk/#webproj)
 
-Koderne fra webproj bliver derefter store'et i en VUEX store. Under runtime, kan denne ses i developer tools i browseren med Vue extention til henholdsvis [Chrome](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd), 
+Koderne fra WEBPROJ bliver derefter store'et i en VUEX store. Under runtime, kan denne ses i developer tools i browseren med Vue extention til henholdsvis [Chrome](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd), 
 [firefox](https://devtools.vuejs.org/) 
 [Edge](https://microsoftedge.microsoft.com/addons/detail/vuejs-devtools/olofadcdnkkjdfgjcmjaadnlehnnihnl)
 
 
-## formattering af koordinater
+## Formattering af koordinater
 | Koordinater                  | Antal decimaler   |
 | ---------------------------- | ----------------- |
 | Meter                        | 4 decimaler       |
@@ -64,7 +74,7 @@ Koderne fra webproj bliver derefter store'et i en VUEX store. Under runtime, kan
 
 ## Geodæsi
 Nogle gode generelle ting at vide:
-- [CRS](https://en.wikipedia.org/wiki/Spatial_reference_system) (coordinate reference system) er måde at vise data geospatial data på. det har formatet: DATUM/PROJEKTION[+HØJDESYSTEM] <br>
+- [CRS](https://en.wikipedia.org/wiki/Spatial_reference_system) (Coordinate Reference System) er en fællesbetegnelse for forskellige typer geografiske koordinatsystemer. Typisk tildeles CRS'er en unik kode, fx en EPSG-kode, der gør det let at give geospatial data en entydig geografisk reference.<br>
 - [EPSG](https://epsg.io/) er en database over CRS'er varetaget af 'International Association of Oil and Gas Producers'
 - En transformation, hvor et to-dimensionelt system indgår, enten som in- eller output, skal ikke have en højdeparameter på outputtet, selvom man umiddelbart har lyst. I en geodætisk sammenhæng er det meningsløst og i sidste ende misvisende at tage højdeparameteren med. 
 
@@ -85,7 +95,7 @@ eksempelvis har `OutputCard` et output field, som har både inputkoordinater og 
 Disse inputkoordinater skal ikke forvirres med koordinaterne i `InputCard`. Vær opmærksom på, hvor ting kommer fra og skal hen.
 
 
-## integration af SDFI design system
+## Integration af SDFI design system
 Alt styling så vidt muligt (nogle ting er specifikke for Koordinattransformation) følger [SDFI design system](https://sdfidk.github.io/design-system-css/).
 Også at finde på [Github](https://github.com/SDFIdk/design-system-css). 
 
@@ -96,9 +106,9 @@ Der er to måder hvorpå man kan bruge variabler fra @dataforsyningen:
 inline CSS er ikke muligt på pseudo elementer og heller ikke på conditional classes (`:class={someClass: booleanValue}`)
 Derfor giver det mening slet ikke at bruge `<style scoped>` for at holde koden strømlinet og ensformig.
 
-### ikoner
+### Ikoner
 Alle ikoner kommer fra [design-system-icons](https://sdfidk.github.io/design-system-icons/) <br>
 Findes også på [Github](https://github.com/sdfidk/design-system-icons). Disse bliver i øjeblikket implementeret som separate Vue components i `components/shared/icons`, da farverne ikke kan tilpasses, hvis man hiver dem fra npm. Nogle ikoner som `ArrowIcon.vue` er implementeret med et par props til at vende den korrekt.
 
 ## Baggrundskort
-danmarkskortet kommer fra [dataforsyningen's API](https://dataforsyningen.dk/data/962), mens grønlandskortet er en OMS integration. Vi har indtil nu ikke haft en intern WMTS over grønland, men der ligger nu en [WMS version på dataforsyningen](https://dataforsyningen.dk/data/4771)
+Danmarkskortet kommer fra [Dataforsyningen's API](https://dataforsyningen.dk/data/962), mens grønlandskortet er en OMS integration. Vi har indtil nu ikke haft en intern WMTS over grønland, men der ligger nu en [WMS version på dataforsyningen](https://dataforsyningen.dk/data/4771)

@@ -2,7 +2,9 @@
 
 Koordinattransformation er en Vue.js applikation der gør det let at transformere koordinater mellem forskellige referencesystemer.
 Projektet er scaffolded med [Vite]{https://vitejs.dev/} og kørt igennem NPM
+Projektet er scaffolded med [Vite]{https://vitejs.dev/} og kørt igennem NPM
 
+For at udvikle og bygge projektet skal man have følgende
 For at udvikle og bygge projektet skal man have følgende
 - node.js version: >=17.6.0 [link til download](https://nodejs.org/en/)
 - npm version: >=8.5.2, dette gøres igennem node.js installeren.
@@ -31,6 +33,15 @@ module.export = {
 disse refereres efterfølgende med `import.meta.env.[field]` <br>
 læs mere om Vite og miljøvariable [her](https://vitejs.dev/guide/env-and-mode.html)
 
+# Diagram over programmet:
+Diagrammet ligger som en redigerbar drawio fil sammen med en .png i root directory. [Download vs code extention her](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio)<br>
+***Husk at opdatere diagrammet og exporter nyt billede, hvis programmet opdateres***  
+<br>
+![Diagram](/diagram.png)
+
+<br>
+<br>
+<br>
 
 - Naviger til projektet i terminalen <br>
 
@@ -71,7 +82,19 @@ Koderne fra WEBPROJ bliver derefter store'et i en VUEX store. Under runtime, kan
 | Grader                       | 8 decimaler       |
 | Grader og minutter           | 0, 6 decimaler    |
 | Grader, minutter og sekunder | 0, 0, 4 decimaler |
+## Formattering af koordinater
+| Koordinater                  | Antal decimaler   |
+| ---------------------------- | ----------------- |
+| Meter                        | 4 decimaler       |
+| Grader                       | 8 decimaler       |
+| Grader og minutter           | 0, 6 decimaler    |
+| Grader, minutter og sekunder | 0, 0, 4 decimaler |
 
+## Geodæsi
+Nogle gode generelle ting at vide:
+- [CRS](https://en.wikipedia.org/wiki/Spatial_reference_system) (Coordinate Reference System) er en fællesbetegnelse for forskellige typer geografiske koordinatsystemer. Typisk tildeles CRS'er en unik kode, fx en EPSG-kode, der gør det let at give geospatial data en entydig geografisk reference.<br>
+- [EPSG](https://epsg.io/) er en database over CRS'er varetaget af 'International Association of Oil and Gas Producers'
+- En transformation, hvor et to-dimensionelt system indgår, enten som in- eller output, skal ikke have en højdeparameter på outputtet, selvom man umiddelbart har lyst. I en geodætisk sammenhæng er det meningsløst og i sidste ende misvisende at tage højdeparameteren med. 
 ## Geodæsi
 Nogle gode generelle ting at vide:
 - [CRS](https://en.wikipedia.org/wiki/Spatial_reference_system) (Coordinate Reference System) er en fællesbetegnelse for forskellige typer geografiske koordinatsystemer. Typisk tildeles CRS'er en unik kode, fx en EPSG-kode, der gør det let at give geospatial data en entydig geografisk reference.<br>
@@ -79,6 +102,15 @@ Nogle gode generelle ting at vide:
 - En transformation, hvor et to-dimensionelt system indgår, enten som in- eller output, skal ikke have en højdeparameter på outputtet, selvom man umiddelbart har lyst. I en geodætisk sammenhæng er det meningsløst og i sidste ende misvisende at tage højdeparameteren med. 
 
 
+## Note om Vue
+Vue bliver hele tiden opdateret, og der er mange forskellige måder at gøre de samme ting på.
+Denne applikation kører på Vue 3 igennem [composition API'en](https://vuejs.org/guide/extras/composition-api-faq.html) med script setup syntax. Dette giver mindre boilerplate og exposer variable og functioner direkte til template'en uden explicit skulle expose dem. <br>
+***Vær opmærksom, når du finder referencer og tutorials rundt omkring på nettet, at der bliver snakket om den rigtige version.***
+### Liste over indlejrede teknologier
+- [Vuex](https://vuex.vuejs.org/) til state management
+- [Vite](https://vitejs.dev/) som det underliggende build-step
+- [Sass](https://sass-lang.com/) til nemmere styling
+- [Vue Router](https://router.vuejs.org/) til... ja... routing
 ## Note om Vue
 Vue bliver hele tiden opdateret, og der er mange forskellige måder at gøre de samme ting på.
 Denne applikation kører på Vue 3 igennem [composition API'en](https://vuejs.org/guide/extras/composition-api-faq.html) med script setup syntax. Dette giver mindre boilerplate og exposer variable og functioner direkte til template'en uden explicit skulle expose dem. <br>

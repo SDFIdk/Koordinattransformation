@@ -52,7 +52,7 @@
             <div class="footer">
                 <!-- DAWA -->
                 <div class="searchbar">
-                    <input class="searchbar-input" id="dawa-autocomplete-input"/>
+                    <input class="searchbar-input" id="dawa-autocomplete-input" name="dawa-autocomplete-input"/>
                     <SearchIcon/>
                 </div>
                 <!-- DMS selector, bør komme i sin egen komponent -->

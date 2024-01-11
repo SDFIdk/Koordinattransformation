@@ -33,7 +33,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: 1.25rem;
 }
 h1 {
-  font-size: 30px;
+  font-size: 1.875rem;
 }
 h3 {
   margin: 1.5rem 1.25rem;

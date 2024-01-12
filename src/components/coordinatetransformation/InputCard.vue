@@ -1,7 +1,7 @@
 <template >
     <div class="input-card">
         <section>
-            <h3>Input</h3>
+            <h3 class="InputTitle">Input</h3>
 
             <CrsSelector :inOrOut="'in'" @crs-selected="inputCrsChanged"/>
             
@@ -424,6 +424,9 @@ input:focus {
     margin-top: 0.25rem;
     display: inline-flex;
     align-items: center;
+}
+.InputTitle{
+    color: var(--sort)
 }
 @media screen and (max-width: 1180px) {
     .footer {

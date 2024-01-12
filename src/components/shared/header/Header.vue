@@ -9,13 +9,13 @@
         <nav v-if='width > minWidth'>
             <ul >
                 <li>
-                    <router-link to='/Denmark'>Danmark</router-link>
+                    <router-link class='Denmark' to='/Denmark'>Danmark</router-link>
                 </li>
                 <li>
-                    <router-link to='/Greenland'>Grønland</router-link>
+                    <router-link class='Greenland' to='/Greenland'>Grønland</router-link>
                 </li>
                 <li>
-                    <router-link to='/About'>Om Koordinattransformation</router-link>
+                    <router-link class='About' to='/About'>Om Koordinattransformation</router-link>
                 </li>
             </ul>
         </nav>

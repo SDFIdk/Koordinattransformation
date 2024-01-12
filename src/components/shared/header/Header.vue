@@ -17,7 +17,7 @@
                 <li>
                     <router-link class='About' to='/About'>Om Koordinattransformation</router-link>
                 </li>
-            </ul>
+            </ul>r
         </nav>
         <!-- VERTICAL NAVBAR (NÅR SKÆRMEN ER MEGET SMAL) -->
         <nav class="ds-nav-vertical" v-if='verticalMenuIsOpen'>
@@ -52,3 +52,14 @@ const handleResize = () => { width.value = window.innerWidth }
 
 onMounted(() => window.addEventListener('resize', handleResize))
 </script>
+
+<style scoped>
+.nav-container {
+  /* Add any other styles for nav-container as needed */
+}
+
+.nav-container ul li a {
+  color: black;
+  opacity: 1; /* Set opacity to 1 for no transparency */
+}
+</style>

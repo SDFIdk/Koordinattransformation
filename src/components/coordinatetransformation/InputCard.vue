@@ -40,6 +40,7 @@
                     <ArrowIcon :direction="'angle'"/>
                     <span class="height-field">
                         <input
+                            name="degreesInput"
                             :class="{degreesInput: false}"
                             v-model=heightInMeters
                             step="0.0001"

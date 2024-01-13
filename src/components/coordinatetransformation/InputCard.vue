@@ -1,7 +1,7 @@
 <template >
     <div class="input-card">
         <section>
-            <h3>Input</h3>
+            <h3 class="InputTitle">Input</h3>
 
             <CrsSelector :inOrOut="'in'" @crs-selected="inputCrsChanged"/>
             
@@ -40,6 +40,7 @@
                     <ArrowIcon :direction="'angle'"/>
                     <span class="height-field">
                         <input
+                            name="degreesInput"
                             :class="{degreesInput: false}"
                             v-model=heightInMeters
                             step="0.0001"
@@ -52,7 +53,7 @@
             <div class="footer">
                 <!-- DAWA -->
                 <div class="searchbar">
-                    <input class="searchbar-input" id="dawa-autocomplete-input"/>
+                    <input class="searchbar-input" id="dawa-autocomplete-input" name="dawa-autocomplete-input"/>
                     <SearchIcon/>
                 </div>
                 <!-- DMS selector, bør komme i sin egen komponent -->
@@ -423,6 +424,9 @@ input:focus {
     margin-top: 0.25rem;
     display: inline-flex;
     align-items: center;
+}
+.InputTitle{
+    color: var(--sort)
 }
 @media screen and (max-width: 1180px) {
     .footer {

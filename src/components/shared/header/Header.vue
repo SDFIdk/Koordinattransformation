@@ -9,15 +9,15 @@
         <nav v-if='width > minWidth'>
             <ul >
                 <li>
-                    <router-link to='/Denmark'>Danmark</router-link>
+                    <router-link class='Denmark' to='/Denmark'>Danmark</router-link>
                 </li>
                 <li>
-                    <router-link to='/Greenland'>Grønland</router-link>
+                    <router-link class='Greenland' to='/Greenland'>Grønland</router-link>
                 </li>
                 <li>
-                    <router-link to='/About'>Om Koordinattransformation</router-link>
+                    <router-link class='About' to='/About'>Om Koordinattransformation</router-link>
                 </li>
-            </ul>
+            </ul>r
         </nav>
         <!-- VERTICAL NAVBAR (NÅR SKÆRMEN ER MEGET SMAL) -->
         <nav class="ds-nav-vertical" v-if='verticalMenuIsOpen'>
@@ -52,3 +52,14 @@ const handleResize = () => { width.value = window.innerWidth }
 
 onMounted(() => window.addEventListener('resize', handleResize))
 </script>
+
+<style scoped>
+.nav-container {
+  /* Add any other styles for nav-container as needed */
+}
+
+.nav-container ul li a {
+  color: black;
+  opacity: 1; /* Set opacity to 1 for no transparency */
+}
+</style>

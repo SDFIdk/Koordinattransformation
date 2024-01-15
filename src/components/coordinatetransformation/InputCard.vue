@@ -40,7 +40,8 @@
                     <ArrowIcon :direction="'angle'"/>
                     <span class="height-field">
                         <input
-                            name="degreesInput"
+                            aria-label="height-input"
+                            name="height-input"
                             :class="{degreesInput: false}"
                             v-model=heightInMeters
                             step="0.0001"
@@ -53,7 +54,12 @@
             <div class="footer">
                 <!-- DAWA -->
                 <div class="searchbar">
-                    <input class="searchbar-input" id="dawa-autocomplete-input" name="dawa-autocomplete-input"/>
+                    <input
+                        class="searchbar-input"
+                        id="dawa-autocomplete-input"
+                        name="dawa-autocomplete-input"
+                        aria-label="dawa-autocomplete-input"
+                    />
                     <SearchIcon/>
                 </div>
                 <!-- DMS selector, bør komme i sin egen komponent -->

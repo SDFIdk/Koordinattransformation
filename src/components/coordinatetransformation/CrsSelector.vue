@@ -1,6 +1,6 @@
 <template>
     <div class="crs-selection-wrapper">
-        <select id='crs-select'
+        <select
             name='crs-select'
             :class="{ isSelected: outputSelected }" 
             v-model="currentlySelected"

@@ -1,7 +1,7 @@
 <template>
   <div data-theme="light" class="container">
     <h1>Koordinattransformation</h1>
-    <h3>Udviklet af <a href="https://sdfi.dk/" target="_blank">SDFI</a>.</h3>
+    <h3>Udviklet af <a href="https://sdfi.dk/" target="_blank">SDFI</a>. </h3>
     <h4>Muliggør transformation mellem forskellige aktuelle og historisk anvendte koordinatsystemer.</h4>
     <h4>
       1. Vælg et input- og outputkoordinatsystem. Vælg derefter et sæt inputkoordinater for at foretage transformationen.
@@ -12,6 +12,7 @@
       <div><h4>Ellers vil enheden stå som meter [m].</h4></div>
     </h4>
     <h4>3. Når de ønskede outputkoordinater er fundet, kan du trykke på 'Kopiér'-knappen og få koordinaterne kopieret til udklipsholderen.</h4>
+    <h6><router-link to="/was" target="_blank">Tilgængelighedserklæring</router-link></h6>
     <h6>Powered by <a href="https://docs.dataforsyningen.dk/#webproj" target="_blank">Webproj</a></h6>
   </div>
 </template>

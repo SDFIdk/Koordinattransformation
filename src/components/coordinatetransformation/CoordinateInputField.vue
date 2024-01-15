@@ -11,7 +11,8 @@
             class="input-segment" 
             :class="{degreesInput: CrsIsDegrees}">
             
-            <input name="degreesInput"
+            <input name="degrees-input"
+                aria-label="degrees-input"
                 class="coordinate-input"
                 :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
                 step="0.0001"
@@ -26,7 +27,8 @@
         <span class="input-segment"
             :class="{degreesInput: CrsIsDegrees}"
             v-show="props.CrsIsDegrees && (props.format == 'minutes' || props.format == 'seconds')">
-            <input name="minutesInput"
+            <input name="minutes-input"
+                aria-label="minutes-input"
                 class="coordinate-input"
                 :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
                 v-model=props.minutes[element]
@@ -37,7 +39,8 @@
         </span>
 
         <span class="input-segment" :class="{degreesInput: props.CrsIsDegrees}" v-show="props.CrsIsDegrees && props.format == 'seconds'">
-            <input name="secondsInput"
+            <input name="seconds-input"
+                aria-label="seconds-input"
                 class="coordinate-input"
                 :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
                 v-model=props.seconds[element]

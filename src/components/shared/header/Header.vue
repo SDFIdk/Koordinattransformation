@@ -17,7 +17,7 @@
                 <li>
                     <router-link class='About' to='/About'>Om Koordinattransformation</router-link>
                 </li>
-            </ul>r
+            </ul>
         </nav>
         <!-- VERTICAL NAVBAR (NÅR SKÆRMEN ER MEGET SMAL) -->
         <nav class="ds-nav-vertical" v-if='verticalMenuIsOpen'>

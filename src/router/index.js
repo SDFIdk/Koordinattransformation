@@ -37,6 +37,16 @@ const routes = [
     meta: {
       title: 'About'
     }
+  },
+  {
+    path: '/was',
+    beforeEnter () {
+      location.href = 'https://www.was.digst.dk/koordinattransformation-dk'
+    },
+    name: 'Webtilgaengelighed',
+    meta: {
+      title: 'Webtilgaengelighed'
+    }
   }
 ]
 

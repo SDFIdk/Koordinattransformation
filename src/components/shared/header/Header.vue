@@ -1,11 +1,7 @@
-<!-- 
-    Denne header komponent kunne gøres med en enkelt div og conditional rendering, 
-    men så kan vi ikke bruge @dataforsyningen css 
--->
 <template>
-    <header class="ds-header" v-if='width > minWidth'>
-      <nav class="ds-nav-main">
-        <Brand />
+    <header class="layout-2col">
+      <Brand />
+      <nav class="ds-nav-main" v-if='width>minWidth'>
         <ul>
             <li>
                 <router-link to='/Denmark'>Danmark</router-link>
@@ -18,10 +14,9 @@
             </li>
         </ul>
     </nav>
-    </header>
-    <header class="ds-header" v-if='width <= minWidth'>
-        <Brand />
-        <BurgerIcon v-if='width < minWidth' @click='toggleVerticalMenu'/>
+        <div class='burgerRight'>
+            <BurgerIcon v-if='width < minWidth' @click='toggleVerticalMenu'/>
+        </div>
     </header>
     <div class="nav-container" v-if='verticalMenuIsOpen'>
         <nav class="ds-nav-vertical">
@@ -38,44 +33,6 @@
                 </ul>
         </nav>
     </div>
-      <!--
-        <div class="nav-container" v-if='!verticalMenuIsOpen' style="display: flex; justify-content: space-between;">
-        -->
-            <!-- HORIZONTAL NAVBAR -->
-        <!--
-            <nav v-if='width > minWidth'>
-                <ul >
-                    <li>
-                        <router-link to='/Denmark'>Danmark</router-link>
-                    </li>
-                    <li>
-                        <router-link to='/Greenland'>Grønland</router-link>
-                    </li>
-                    <li>
-                        <router-link to='/About'>Om Koordinattransformation</router-link>
-                    </li>
-                </ul>
-            </nav>
-            -->
-            <!-- VERTICAL NAVBAR (NÅR SKÆRMEN ER MEGET SMAL) -->
-            <!--
-            <nav class="ds-nav-vertical" v-if='verticalMenuIsOpen'>
-                <ul>
-                    <li>
-                        <router-link @click="toggleVerticalMenu"  to='/Denmark'>Danmark</router-link>
-                    </li>
-                    <li>
-                        <router-link @click="toggleVerticalMenu" to='/Greenland'>Grønland</router-link>
-                    </li>
-                    <li>
-                        <router-link @click="toggleVerticalMenu" to='/About'>Om Koordinattransformation</router-link>
-                    </li>
-                </ul>
-            </nav>
-            <BurgerIcon v-if='width < minWidth' @click='toggleVerticalMenu'/>
-        </div>
-        -->
-
 </template>
 
 <script setup>
@@ -95,25 +52,29 @@ onMounted(() => window.addEventListener('resize', handleResize))
 </script>
 
 <style scoped>
+.burgerRight{
+    position: fixed;
+    right: 0;
+}
 .nav-container {
   text-align: left; 
-  width: 25%;
-  margin-top: 4rem;
+  margin-top: 3.5rem;
   display: flex; 
   justify-content: flex-end; 
   position: fixed;
   top: 0;
   right: 0;
   background-color: #fff; 
-}
-.ds-header{
-    display: flex;
+  z-index: 1;
+  border-radius: 10px; 
+  color-scheme: light;
+  border: 2px solid var(--aktion);
 }
 .nav-container ul li a {
   color: black;
   display: flex;
   align-items: center;
-  opacity: 1; /* Set opacity to 1 for no transparency */
+  opacity: 1;
   justify-content: space-between;
 }
 header  {
@@ -126,7 +87,6 @@ header  {
     grid-template-rows: auto;
     border-bottom: 1px solid var(--teal);
 }
-    /*new stuff*/
 .ds-nav-vertical ul li {
   align-content: right;
 }

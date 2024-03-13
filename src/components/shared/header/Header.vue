@@ -21,13 +21,13 @@
     <div class="nav-container" v-if='verticalMenuIsOpen'>
         <nav class="ds-nav-vertical">
                 <ul>
-                    <li>
-                        <router-link @click="toggleVerticalMenu" class ="route" to='/Denmark'>Danmark</router-link>
+                    <li class="route">
+                        <router-link @click="toggleVerticalMenu" to='/Denmark'>Danmark</router-link>
                     </li>
-                    <li>
+                    <li class="route">
                         <router-link @click="toggleVerticalMenu" class="route"  to='/Greenland'>Grønland</router-link>
                     </li>
-                    <li>
+                    <li class="route">
                         <router-link @click="toggleVerticalMenu" class="route" to='/About'>Om Koordinattransformation</router-link>
                     </li>
                 </ul>

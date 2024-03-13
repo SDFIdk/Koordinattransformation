@@ -39,7 +39,6 @@ if (isConsole || isWearable || isSmartTV) {
     height: 100%;
     margin: 0;
 }
-
 main {
     padding: 0;
 }

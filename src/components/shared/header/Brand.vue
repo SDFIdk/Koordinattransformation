@@ -48,7 +48,6 @@ function clearFilters() {
 <style scoped>
 .brand {
     padding: .5rem;
-
     display: flex;
     cursor: default;
     grid-column: 1;
@@ -69,4 +68,10 @@ function clearFilters() {
     line-break: strict;
     hyphens: none;
     color: var(--sort);
-}</style>
+}
+@media only screen and (max-width: 600px) {
+        .brand-h5 {
+            font-size: 0.8em; /* Adjust the font size as needed */
+        }
+}
+</style>

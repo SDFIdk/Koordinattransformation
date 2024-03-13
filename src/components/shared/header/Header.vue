@@ -3,13 +3,13 @@
       <Brand />
       <nav class="ds-nav-main" v-if='width>minWidth'>
         <ul>
-            <li>
+            <li class="route">
                 <router-link class='Denmark' to='/Denmark'>Danmark</router-link>
             </li>
-            <li>
+            <li class="route">
                 <router-link class='Greenland' to='/Greenland'>Grønland</router-link>
             </li>
-            <li>
+            <li class="route">
                 <router-link class='About' to='/About'>Om Koordinattransformation</router-link>
             </li>
         </ul>
@@ -22,13 +22,13 @@
         <nav class="ds-nav-vertical">
                 <ul>
                     <li>
-                        <router-link @click="toggleVerticalMenu"  to='/Denmark'>Danmark</router-link>
+                        <router-link @click="toggleVerticalMenu" class ="route" to='/Denmark'>Danmark</router-link>
                     </li>
                     <li>
-                        <router-link @click="toggleVerticalMenu" to='/Greenland'>Grønland</router-link>
+                        <router-link @click="toggleVerticalMenu" class="route"  to='/Greenland'>Grønland</router-link>
                     </li>
                     <li>
-                        <router-link @click="toggleVerticalMenu" to='/About'>Om Koordinattransformation</router-link>
+                        <router-link @click="toggleVerticalMenu" class="route" to='/About'>Om Koordinattransformation</router-link>
                     </li>
                 </ul>
         </nav>
@@ -53,11 +53,17 @@ onMounted(() => window.addEventListener('resize', handleResize))
 
 <style scoped>
 .burgerRight{
+    margin-top: 0.5rem;
+    display:inline-block;
     position: fixed;
     right: 0;
 }
+@media only screen and (max-width: 600px) {
+        .burderRight {
+            font-size: 0.8em;
+        }
+}
 .nav-container {
-  text-align: left; 
   margin-top: 3.5rem;
   display: flex; 
   justify-content: flex-end; 
@@ -69,6 +75,15 @@ onMounted(() => window.addEventListener('resize', handleResize))
   border-radius: 10px; 
   color-scheme: light;
   border: 2px solid var(--aktion);
+}
+.route a {
+    padding: var(--space) var(--space-md);
+    margin: 0px;
+    margin-top: 0px;
+    border-style: solid;
+    border-width: 0 0 var(--space-xs) 0;
+    border-color: rgba(0, 0, 0, 0);
+    color: var(--color) !important;
 }
 .nav-container ul li a {
   color: black;
@@ -95,5 +110,9 @@ header  {
   display: flex;
   align-items: center;
   opacity: 1; /* Set opacity to 1 for no transparency */
+}
+.ds-nav-main{
+    margin-top: 0.75rem;
+    justify-content: flex-end;
 }
 </style>

@@ -335,6 +335,7 @@ watch(heightInMeters, () => {
 onUpdated(() => {
     emit('is-3d-changed', is3D.value)
     emit('input-coords-changed', inputCoords.value)
+    setInput()
 })
 </script>
 

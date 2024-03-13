@@ -120,13 +120,13 @@ const coordinatesCopied = (state) => popupVisible.value = state
 .open-leave-to {
     opacity: 0;
 }
-
 .container {
+    max-width: 100%;
     display: flex;
     flex-direction: column;
 }
-
 .coordinate-transformation-box {
+    position: relative;
     display: grid;
     width: 100%;
     border: 2px solid var(-dark-steel);
@@ -188,6 +188,7 @@ const coordinatesCopied = (state) => popupVisible.value = state
 @media screen and (min-width: 44rem) {
     .coordinate-transformation-box {
         grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr;
         grid-template-areas: "input output"
     }
 

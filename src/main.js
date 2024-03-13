@@ -12,6 +12,7 @@ import('sanitize.css/assets.css')
 import('sanitize.css/reduce-motion.css')
 
 import('@/assets/css/grid.css')
+import('@/assets/css/base.css')
 
 const app = createApp(App)
 

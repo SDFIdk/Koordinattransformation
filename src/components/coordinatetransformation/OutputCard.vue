@@ -1,6 +1,6 @@
 <template>
     <section class="output-card">
-        <h3>Output</h3>
+        <h3 class="OutputTitle">Output</h3>
         <CrsSelector :inOrOut="'out'" @crsSelected="onCrsSelect"/>
         
         <div class="transformed-coordinates"  :class="{ hasTransformed: hasTransformed }">
@@ -301,6 +301,9 @@ input[type='radio'] {
 .radio-and-info-group {
     display: inline-flex;
     flex-grow: 1;
+}
+.OutputTitle{
+    color: var(--sort)
 }
 .radiogroup {
     display: inline-flex;

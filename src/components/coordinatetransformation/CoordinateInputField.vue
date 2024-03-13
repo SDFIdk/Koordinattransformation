@@ -11,7 +11,8 @@
             class="input-segment" 
             :class="{degreesInput: CrsIsDegrees}">
             
-            <input id="degreesInput"
+            <input name="degrees-input"
+                aria-label="degrees-input"
                 class="coordinate-input"
                 :class="{degreesInput: format == 'degrees', metresInput: format == 'minutes', secondsInput: format == 'seconds'}"
                 step="0.0001"

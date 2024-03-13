@@ -13,7 +13,7 @@
             
             <input id="degreesInput"
                 class="coordinate-input"
-                :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
+                :class="{degreesInput: format == 'degrees', metresInput: format == 'minutes', secondsInput: format == 'seconds'}"
                 step="0.0001"
                 v-model=props.degrees[element]
                 @input="validateDegrees"
@@ -25,10 +25,10 @@
 
         <span class="input-segment"
             :class="{degreesInput: CrsIsDegrees}"
-            v-show="props.CrsIsDegrees && (props.format == 'minutes' || props.format == 'seconds')">
+            v-show="props.CrsIsDegrees && (format == 'minutes' || format == 'seconds')">
             <input id="minutesInput"
                 class="coordinate-input"
-                :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
+                :class="{degreesInput: format == 'degrees', metresInput: format == 'minutes', secondsInput: format == 'seconds'}"
                 v-model=props.minutes[element]
                 step="0.0001"
                 @input="validateMinutes"
@@ -36,10 +36,10 @@
             <span class="degrees">'</span>
         </span>
 
-        <span class="input-segment" :class="{degreesInput: props.CrsIsDegrees}" v-show="props.CrsIsDegrees && props.format == 'seconds'">
+        <span class="input-segment" :class="{degreesInput: props.CrsIsDegrees}" v-show="props.CrsIsDegrees && format == 'seconds'">
             <input id="secondsInput"
                 class="coordinate-input"
-                :class="{degreesInput: props.format == 'degrees', metresInput: props.format == 'minutes', secondsInput: props.format == 'seconds'}"
+                :class="{degreesInput: format == 'degrees', metresInput: format == 'minutes', secondsInput: format == 'seconds'}"
                 v-model=props.seconds[element]
                 step="0.0001"
                 @input="validateSeconds"
@@ -57,7 +57,7 @@
  * grader og minutter: 2 inputs
  * grader, minutter og sekunder: 3 inputs.
  */
-import { onUpdated } from 'vue';
+import { onUpdated, computed } from 'vue';
 import ArrowIcon from '../shared/icons/ArrowIcon.vue';
 
 
@@ -70,14 +70,13 @@ const props = defineProps({
     element: Number, // bruges til at afgøre hvilket inputfelt en given værdi skal ind i.
     format: '' // hvorvidt inputtet er m, d, dm, dms
 })
-
+let format = computed(() => props.format)
 const emit = defineEmits([
     'coords-changed'
 ])
 
 const getArrowDirection = () => {
     let direction = ''
-
     if      (props.CrsIsDegrees && props.element == 0)     { direction = 'right' }
     else if (props.CrsIsDegrees && props.element == 1)     { direction = 'up' }    
     else if (!props.CrsIsDegrees && props.element == 0)    { direction = 'up' }
@@ -110,7 +109,6 @@ const validateSeconds = () => {
     if (props.seconds[1].includes(','))
         props.seconds[1] = props.seconds[1].replace(',', '.')
 }
-
 onUpdated(() => {
     emit('coords-changed')
 })

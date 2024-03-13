@@ -10,7 +10,7 @@
                 <CoordinateInputField
                 @coords-changed="emit('input-coords-changed', inputCoords)"
                 :unit="northDegreeUnit"
-                :epsgIsDegrees="crsIsDegrees"
+                :CrsIsDegrees="crsIsDegrees"
                 :degrees="degrees"
                 :minutes="minutes"
                 :seconds="seconds"
@@ -22,7 +22,7 @@
                 <CoordinateInputField
                     @coords-changed="emit('input-coords-changed', inputCoords)"
                     :unit="eastDegreeUnit"
-                    :epsgIsDegrees="crsIsDegrees"
+                    :CrsIsDegrees="crsIsDegrees"
                     :degrees="degrees"
                     :minutes="minutes"
                     :seconds="seconds"

@@ -84,7 +84,10 @@ const inputCoordsChanged = (coords) => {
         })
 
         overlay.setPosition([coords[0], coords[1]])
-        olMap.value.addOverlay(overlay)
+        //ugly workaround caused by lack of lifecycle coherance between vue components 
+        setTimeout(() => {
+            olMap.value.addOverlay(overlay)
+        }, 150)
     }
 }
 

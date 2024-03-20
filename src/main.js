@@ -1,5 +1,4 @@
-import
-{ createApp } from 'vue'
+import { createApp } from 'vue'
 
 import '@dataforsyningen/css'
 import store from '@/store'

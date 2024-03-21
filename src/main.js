@@ -1,7 +1,6 @@
-import
-{ createApp} from 'vue'
+import { createApp } from 'vue'
 
-import css from '@dataforsyningen/css'
+import '@dataforsyningen/css'
 import store from '@/store'
 import router from '@/router'
 import App from './App.vue'
@@ -21,7 +20,7 @@ app.config.performance = (import.meta.env.NODE_ENV !== 'production')
 app.config.globalProperties.$store = store
 
 app
-.use(css)
+.use('@dataforsyningen/css')
 .use(router)
 .use(store)
 

@@ -1,7 +1,7 @@
 <template>
   <div data-theme="light" class="container">
     <h1>Koordinattransformation</h1>
-    <h3>Udviklet af <a href="https://sdfi.dk/" target="_blank">SDFI</a>. </h3>
+    <h3>Udviklet af <a href="https://kds.dk/" target="_blank">Klimadatastyrelsen</a>. </h3>
     <h4>Muliggør transformation mellem forskellige aktuelle og historisk anvendte koordinatsystemer.</h4>
     <h4>
       1. Vælg et input- og outputkoordinatsystem. Vælg derefter et sæt inputkoordinater for at foretage transformationen.

@@ -14,7 +14,7 @@ For at udvikle og bygge projektet skal man have følgende
 ## Setup a projektet
 For at kunne køre projektet, er der nogle miljøvariable, der skal føres ind i root directory i projeket.
 
-`.env.development` til development miljøet og 
+`.env.development` til development miljøet og
 `.env.production` til produktionsmiljøet.
 Et eksempel på en miljøfil er:
 
@@ -35,7 +35,7 @@ læs mere om Vite og miljøvariable [her](https://vitejs.dev/guide/env-and-mode.
 
 # Diagram over programmet:
 Diagrammet ligger som en redigerbar drawio fil sammen med en .png i root directory. [Download vs code extention her](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio)<br>
-***Husk at opdatere diagrammet og exporter nyt billede, hvis programmet opdateres***  
+***Husk at opdatere diagrammet og exporter nyt billede, hvis programmet opdateres***
 <br>
 ![Diagram](/diagram.png)
 
@@ -54,7 +54,7 @@ dependencies er senere at finde i ./node_modules
 Herfra har man tre muligheder: <br>
 Kør projektet i localhost. (portnummeret vil blive vist i terminalvinduet):
 ```
-npm run dev 
+npm run dev
 ```
 Compile og minify projektet til produktion:
 ```
@@ -70,8 +70,8 @@ npm run lint
 Selve transformationerne sker igennem [WEBPROJ](https://github.com/SDFIdk/WEBPROJ/tree/master) <br>
 dokumentation til WEBPROJ findes [her](https://docs.dataforsyningen.dk/#webproj)
 
-Koderne fra WEBPROJ bliver derefter store'et i en VUEX store. Under runtime, kan denne ses i developer tools i browseren med Vue extention til henholdsvis [Chrome](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd), 
-[firefox](https://devtools.vuejs.org/) 
+Koderne fra WEBPROJ bliver derefter store'et i en VUEX store. Under runtime, kan denne ses i developer tools i browseren med Vue extention til henholdsvis [Chrome](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd),
+[firefox](https://devtools.vuejs.org/)
 [Edge](https://microsoftedge.microsoft.com/addons/detail/vuejs-devtools/olofadcdnkkjdfgjcmjaadnlehnnihnl)
 
 
@@ -94,12 +94,12 @@ Koderne fra WEBPROJ bliver derefter store'et i en VUEX store. Under runtime, kan
 Nogle gode generelle ting at vide:
 - [CRS](https://en.wikipedia.org/wiki/Spatial_reference_system) (Coordinate Reference System) er en fællesbetegnelse for forskellige typer geografiske koordinatsystemer. Typisk tildeles CRS'er en unik kode, fx en EPSG-kode, der gør det let at give geospatial data en entydig geografisk reference.<br>
 - [EPSG](https://epsg.io/) er en database over CRS'er varetaget af 'International Association of Oil and Gas Producers'
-- En transformation, hvor et to-dimensionelt system indgår, enten som in- eller output, skal ikke have en højdeparameter på outputtet, selvom man umiddelbart har lyst. I en geodætisk sammenhæng er det meningsløst og i sidste ende misvisende at tage højdeparameteren med. 
+- En transformation, hvor et to-dimensionelt system indgår, enten som in- eller output, skal ikke have en højdeparameter på outputtet, selvom man umiddelbart har lyst. I en geodætisk sammenhæng er det meningsløst og i sidste ende misvisende at tage højdeparameteren med.
 ## Geodæsi
 Nogle gode generelle ting at vide:
 - [CRS](https://en.wikipedia.org/wiki/Spatial_reference_system) (Coordinate Reference System) er en fællesbetegnelse for forskellige typer geografiske koordinatsystemer. Typisk tildeles CRS'er en unik kode, fx en EPSG-kode, der gør det let at give geospatial data en entydig geografisk reference.<br>
 - [EPSG](https://epsg.io/) er en database over CRS'er varetaget af 'International Association of Oil and Gas Producers'
-- En transformation, hvor et to-dimensionelt system indgår, enten som in- eller output, skal ikke have en højdeparameter på outputtet, selvom man umiddelbart har lyst. I en geodætisk sammenhæng er det meningsløst og i sidste ende misvisende at tage højdeparameteren med. 
+- En transformation, hvor et to-dimensionelt system indgår, enten som in- eller output, skal ikke have en højdeparameter på outputtet, selvom man umiddelbart har lyst. I en geodætisk sammenhæng er det meningsløst og i sidste ende misvisende at tage højdeparameteren med.
 
 
 ## Note om Vue
@@ -127,9 +127,9 @@ eksempelvis har `OutputCard` et output field, som har både inputkoordinater og 
 Disse inputkoordinater skal ikke forvirres med koordinaterne i `InputCard`. Vær opmærksom på, hvor ting kommer fra og skal hen.
 
 
-## Integration af SDFI design system
-Alt styling så vidt muligt (nogle ting er specifikke for Koordinattransformation) følger [SDFI design system](https://sdfidk.github.io/design-system-css/).
-Også at finde på [Github](https://github.com/SDFIdk/design-system-css). 
+## Integration af KDS' design system
+Alt styling så vidt muligt (nogle ting er specifikke for Koordinattransformation) følger [KDS' design system](https://sdfidk.github.io/design-system-css/).
+Også at finde på [Github](https://github.com/SDFIdk/design-system-css).
 
 Der er to måder hvorpå man kan bruge variabler fra @dataforsyningen:
 - `<style>` tag må ikke være scoped

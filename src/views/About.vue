@@ -2,18 +2,25 @@
   <div data-theme="light" class="container">
     <h1>Koordinattransformation</h1>
     <h3>Udviklet af <a href="https://kds.dk/" target="_blank">Klimadatastyrelsen</a>. </h3>
-    <h4>Muliggør transformation mellem forskellige aktuelle og historisk anvendte koordinatsystemer.</h4>
     <h4>
-      1. Vælg et input- og outputkoordinatsystem. Vælg derefter et sæt inputkoordinater for at foretage transformationen.
+      Koordinattransformation.dk muliggør transformation mellem forskellige aktuelle og historisk anvendte
+      koordinatsystemer i Danmark og Grønland. Applikationen giver adgang til et udvalg af de mest anvendte
+      koordinatsystemer og tilhørende transformationer. I det tilfælde en ønsket transformation
+      ikke er tilgængelig henvises til PROJ eller andre værktøjer der implementerer transformationer registeret
+      i EPSG-databasen.
+    </h4>
+    <h4>
+    1. Vælg hvilket land koordinaten, der skal transformeres, stammer fra. Det gøres øverst på siden, hvor der kan vælges mellem Danmark og Grønland
+    </h4>
+    <h4>
+      2. Vælg et input- og outputkoordinatsystem. Vælg derefter et sæt inputkoordinater for at foretage transformationen.
       <div><h4>Inputkoordinater vælges ved enten at indtaste dem selv, trykke på kortet, eller indtaste en addresse i søgefeltet.</h4></div>
     </h4>
     <h4>
-      2. Bruger det valgte koordinatsystem enheden decimalgrader (DD), kan koordinaterne formateres mellem grader, decimalminutter (min.) og grader, minutter, sekunder (min. sek.).
-      <div><h4>Ellers vil enheden stå som meter [m].</h4></div>
+      3. Er det valgte koordinatsystem givet med enheder i decimalgrader (DD), kan koordinaterne formateres mellem grader, decimalminutter (min.) og grader, minutter, sekunder (min. sek.).
     </h4>
-    <h4>3. Når de ønskede outputkoordinater er fundet, kan du trykke på 'Kopiér'-knappen og få koordinaterne kopieret til udklipsholderen.</h4>
+    <h4>4. Når de ønskede outputkoordinater er fundet, kan du trykke på 'Kopiér'-knappen og få koordinaterne kopieret til udklipsholderen.</h4>
     <h6><router-link to="/was" target="_blank">Tilgængelighedserklæring</router-link></h6>
-    <h6>Powered by <a href="https://docs.dataforsyningen.dk/#webproj" target="_blank">Webproj</a></h6>
   </div>
 </template>
 

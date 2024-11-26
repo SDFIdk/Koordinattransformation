@@ -221,7 +221,9 @@ const defaultOlView = new OlView({
 
 // Vores eget kort (hvis Danmmark)
 const fetchMap = async () => {
-    const mapUrl = `https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${import.meta.env.VITE_TOKEN}`
+    
+    const mapUrl = `https://services.datafordeler.dk/Dkskaermkort/topo_skaermkort_daempet/1.0.0/wmts?username=${ import.meta.env.VITE_DAF_TOKEN_A }&password=${ import.meta.env.VITE_DAF_TOKEN_B }&service=WMTS&request=GetCapabilities`
+    //const mapUrl = `https://api.dataforsyningen.dk/topo_skaermkort_daempet_DAF?service=WMTS&request=GetCapabilities&token=${import.meta.env.VITE_TOKEN}`
 
     const map = await fetch(mapUrl)
     const mapText = await map.text()

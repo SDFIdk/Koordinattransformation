@@ -18,8 +18,5 @@ Herfra har man tre muligheder:
 - `npm run build` for at compile og minify projektet til produktion
 - `npm run lint` for at linte med eslint
 
-
-
 For anden specifik konfiguration af Vue.js, se: [Configuration Reference](https://cli.vuejs.org/config/).
-
 

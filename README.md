@@ -24,9 +24,15 @@ module.export = {
   VITE_VUE_APP_SHOW_UNPUBLISHED = true
   VITE_NODE_OPTIONS = --openssl-legacy-provider
   VITE_TOKEN = <token>
+  VITE_DAF_TOKEN_A = <datafordeler tjenestebruger brugernavn>
+  VITE_DAF_TOKEN_B = <datafordeler tjenestebruger password>
   VITE_API_BASE_URL = https://api.dataforsyningen.dk/rest/webproj_test
 }
 ```
+`VITE_TOKEN` er en adgangstoken, som kan oprettes på https://dataforsyningen.dk/
+
+`VITE_DAF_TOKEN_A` og `VITE_DAF_TOKEN_B` er hhv. brugernavn/password for en Datafordeler-tjenestebruger. 
+En tjenestebruger kan oprettes her: https://datafordeler.dk/konto/dine-tjenestebrugere/
 
 ***Kopier disse filer fra config repoet ind i root directory af projektet.***
 

@@ -33,5 +33,6 @@ const CRSOptions = computed(() => {
     flex-direction: row;
     justify-content: space-between;
     min-height: 10rem;
+    width: 80%;
 }
 </style>

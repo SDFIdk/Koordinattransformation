@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="KT-output-segment">
     <h2>Output</h2>
     <select name="epsg-select" id="epsg-select" v-model="selectedOption">
         <option v-for="option in outputOptions" :key="option" :value="option">
@@ -43,4 +43,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.KT-output-segment {
+    width: 50%;
+}
 </style>

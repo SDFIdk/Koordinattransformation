@@ -1,25 +1,31 @@
 <template>
-<!-- Map shows only x and y in the 'direct' format -->
     <div class="KT-input-container">
-        <span class="KT-input-segment">
+      <span class="KT-input-segment">
+        <svg class="KT-icon">
+          <use href="@/assets/icons/icons.svg#direction-east" />
+        </svg>
         <input 
-            type="number"
-            step="0.0001"
-            v-model="inputCoor.v1"
-            @input="debounceUpdate"
+          type="number"
+          step="0.0001"
+          v-model="inputCoor.v1"
+          @input="debounceUpdate"
         />
-        </span>
-        <span class="KT-input-segment">
-        <input
-            type="number"
-            step="0.0001"
-            v-model="inputCoor.v2"
-            @input="debounceUpdate"
+      </span>
+  
+      <span class="KT-input-segment">
+        <svg class="KT-icon">
+          <use href="@/assets/icons/icons.svg#direction-north" />
+        </svg>
+        <input 
+          type="number"
+          step="0.0001"
+          v-model="inputCoor.v2"
+          @input="debounceUpdate"
         />
-        </span>
+      </span>
     </div>
-</template>
-
+  </template>
+  
 
 <script setup>
 import { computed, watch, ref } from 'vue'
@@ -83,12 +89,11 @@ watch(coorFrom, (to) => {
 <style scoped>
 .KT-input-container {
     display: flex;
-    gap: 0.5rem;
+    flex-direction: row;
 }
-
 .KT-input-segment {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 </style>
   

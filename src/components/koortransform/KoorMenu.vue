@@ -9,9 +9,9 @@
 import InputKoor from '@/components/koortransform/InputKoor.vue'
 import OutputKoor from '@/components/koortransform/OutputKoor.vue'
 import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { useKtStore } from '@/store/store.js'
 
-const store = useStore()
+const KtStore = useKtStore()
 
 const props = defineProps({
     coverArea: {
@@ -22,7 +22,7 @@ const props = defineProps({
 
 const CRSOptions = computed(() => {
     const getterName = 'getCRSDisplayOptions' + props.coverArea;
-    return store.getters[getterName]  || []
+    return KtStore[getterName]  || []
 })
 </script>
 

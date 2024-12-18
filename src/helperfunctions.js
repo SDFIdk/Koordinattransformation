@@ -22,7 +22,6 @@ export const mapListToCoor = (listObject) => {
     const res = keys.map((key, index) => ({
             [key]: listObject[index] || null
         }))
-    console.log(res)
     return res
 
 }

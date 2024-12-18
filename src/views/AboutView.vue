@@ -1,16 +1,14 @@
 <template>
-    <button @click="store.dispatch('temp/setTemp', 'hello')">
-        Set temp to hello
-    </button>
-    <p>{{ temp }}</p>
+    <p>{{ coor }}</p>
 </template>
 
 <script setup>
-import { useStore } from 'vuex'
-import { ref } from 'vue'
-const store = useStore()
+import { useKtStore } from '@/store/store.js'
+import { computed } from 'vue'
 
-const temp = ref(store.getters['temp/getTemp']);
+const KtStore = useKtStore()
+
+const coor = computed(() => KtStore.getCRSDisplayOptionsDK)
 
 
 </script>

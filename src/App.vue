@@ -8,12 +8,12 @@
 
 <script setup>
 import KoorHeader from "@/components/shared/KoorHeader.vue"
-import { useStore } from 'vuex'
+import { useKtStore } from '@/store/store.js'
 import { onBeforeMount } from "vue";
 
-const store = useStore()
+const KtStore = useKtStore()
 onBeforeMount(async () => {
-  await store.dispatch('fetchCRSOptions')
+  await KtStore.fetchCRSOptions()
 })
 
 </script>

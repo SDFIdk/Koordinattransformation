@@ -29,13 +29,13 @@
 
 <script setup>
 import { computed, watch, ref } from 'vue'
-import { useStore } from 'vuex'
+import { useKtStore } from '@/store/store.js'
 
-const store = useStore()
+const KtStore = useKtStore()
 const inputCoor = ref({ v1: 0.00, v2: 0.00, v3: 0.00, v4: 0.00 })
 const debounceTimeout = ref(null)
 
-const coorFrom = computed(() => store.getters['getCoordinatesFrom'])
+const coorFrom = computed(() => KtStore.getCoordinatesFrom)
 
 const props = defineProps({
     coordinateFormat: {
@@ -72,9 +72,9 @@ const debounceUpdate = () => {
     }
     debounceTimeout.value = setTimeout(() => {
         const storeRepresentation = reverseRepresentation(inputCoor.value, 'direct')
-        store.dispatch('setCoordinatesFrom', {
-        crs: store.getters['getCRSFrom'],
-        coordinates: storeRepresentation
+        KtStore.setCoordinatesFrom({
+          crs: KtStore.CRSFrom,
+          coordinates: storeRepresentation
         })
     }, 500)
 }

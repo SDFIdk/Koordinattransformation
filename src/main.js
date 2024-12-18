@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import store from '@/store'
+import { createPinia } from 'pinia'
 import router from '@/router'
 
 import App from './App.vue'
@@ -17,7 +17,7 @@ app.config.globalProperties.append = (path, pathToAppend) => path + (path.endsWi
 app.config.performance = (import.meta.env.VITE_NODE_ENV !== 'production')
 
 app.use(router)
-.use(store)
+.use(createPinia())
 
 window.addEventListener('DOMContentLoaded', () => {
   app.mount('#app')

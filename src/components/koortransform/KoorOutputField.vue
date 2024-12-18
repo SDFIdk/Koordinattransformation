@@ -13,13 +13,13 @@
 
 <script setup>
 import { computed, watch, ref } from 'vue'
-import { useStore } from 'vuex'
+import { useKtStore } from '@/store/store.js'
 
-const store = useStore()
+const KtStore = useKtStore()
 
 // Get the coordinates from the store
-const coorTo = computed(() => store.getters['getCoordinatesTo'])
-const coorFrom = computed(() => store.getters['getCoordinatesFrom'])
+const coorTo = computed(() => KtStore.getCoordinatesTo)
+const coorFrom = computed(() => KtStore.getCoordinatesFrom)
 const outputCoor = ref({ v1: null, v2: null, v3: null, v4: null })
 
 const props = defineProps({
@@ -44,11 +44,11 @@ const toRepresentation = (coordinates, repr) => {
 
 // Watchers for changes in input/output coordinates
 watch(coorFrom, () => {
-  store.dispatch('setCoordinatesTo')
+  KtStore.setCoordinatesTo()
 })
 
 watch(coorTo, () => {
-  outputCoor.value = toRepresentation(store.getters['getCoordinatesTo'], 'direct')
+  outputCoor.value = toRepresentation(KtStore.CoordinatesTo, 'direct')
 })
 </script>
 

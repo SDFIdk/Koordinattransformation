@@ -12,11 +12,11 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-import { useStore } from 'vuex'
+import { useKtStore } from '@/store/store.js'
 import { extractEPSGCode } from '@/helperfunctions.js';
 import KoorInputField from '@/components/koortransform/KoorInputField.vue'
 
-const store = useStore()
+const KtStore = useKtStore()
 
 const props = defineProps({
     coverArea: {
@@ -31,14 +31,12 @@ const props = defineProps({
 const selectedOption = ref(props.inputOptions[0] || '')
 
 watch(selectedOption, (to, from) => {
-    const crsOld = from.split(' ').at(-1).slice(1, -1)
-    const crsNew = to.split(' ').at(-1).slice(1, -1)
-    store.dispatch('setCRSFrom', extractEPSGCode(to))
-    store.dispatch('setCoordinatesFrom', {crs: extractEPSGCode(from), coordinates: store.getters['getCoordinatesFrom']})
-    console.log(store.getters['getCRS'])
+    KtStore.setCRSFrom(extractEPSGCode(to))
+    //not needed for reactive use, thus we don't use getter here
+    KtStore.setCoordinatesFrom({crs: extractEPSGCode(from), coordinates: KtStore.CoordinatesFrom})
 })
 onMounted(() => {
-    store.dispatch('setCRSFrom', selectedOption.value.split(' ').at(-1).slice(1, -1)) 
+    KtStore.setCRSFrom(extractEPSGCode(selectedOption.value))
 })
 </script>
 

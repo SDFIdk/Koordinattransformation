@@ -43,10 +43,10 @@ import proj4 from 'proj4'
 
 //vue
 import { onMounted, ref, computed, watch } from 'vue'
-import { useStore } from 'vuex'
+import { useKtStore } from '@/store/store.js'
 
 
-const store = useStore()
+const KtStore = useKtStore()
 
 //setting up projections for Skærmkortet / Åbent Land Grønland
 
@@ -97,7 +97,7 @@ const mapData = ref({
   }
 })
 
-const coorFrom = computed(() => store.getters['getCoordinatesFrom'])
+const coorFrom = computed(() => KtStore.getCoordinatesFrom)
 
 const fetchDKMap = async () => {
   const skaermkort = await fetch(mapData.value.DK.mapURL)
@@ -110,7 +110,6 @@ const fetchDKMap = async () => {
   }))
 }
 const fetchGLMap = async () => {
-  console.log(mapData.value.GL.mapURL)
   const groenlandTopoSource = await new TileWMS({
     attributions: '',
     url: mapData.value.GL.mapURL,
@@ -195,9 +194,8 @@ onMounted(async() => {
     olMap.value.on('click', (event) => {
         pinPointer.value = true;
         const coordinate = event.coordinate;
-        overlay.value.setPosition(coordinate)
-        console.log(event.coordinate)
-        store.dispatch('setCoordinatesFrom', {
+        overlay.value.setPosition(coordinate) 
+        KtStore.setCoordinatesFrom({
             crs: mapData.value[props.coverArea].projection,
             coordinates: {v1: event.coordinate[0], v2: event.coordinate[1], v3: null, v4: null}
         })
@@ -209,23 +207,19 @@ onMounted(async() => {
 //make call to api and set map marker where new coordinate is
 watch(coorFrom, async (to, from) => {
   //case that it is same epsg
-  const crsFrom = store.getters['getCRSFrom']
-  console.log('do we enter here')
+  const crsFrom = KtStore.CRSFrom
   
   if(crsFrom === mapData.value[props.coverArea].projection) {
     overlay.value.setPosition(mapCoorToList(to))
   }
 
   else{
-    console.log('do we enter else')
-    console.log(`${store.getters['getWebProj']}${store.getters['getCRSFrom']}/${mapData.value[props.coverArea].projection}/${mapCoorToList(to)}?token=${store.getters['getToken']}`)
     try {
-      const response = await fetch(`${store.getters['getWebProj']}${store.getters['getCRSFrom']}/${mapData.value[props.coverArea].projection}/${mapCoorToList(to)}?token=${store.getters['getToken']}`)
+      const response = await fetch(`${KtStore.webproj}${KtStore.CRSFrom}/${mapData.value[props.coverArea].projection}/${mapCoorToList(to)}?token=${KtStore.token}`)
       if(!response.ok){
         throw new Error(`Error fetching coordinates for map: ${response.statusText}`)
       }
       const data = await response.json()
-      console.log(data)
       overlay.value.setPosition(mapCoorToList(data))
 
     } catch (error) {

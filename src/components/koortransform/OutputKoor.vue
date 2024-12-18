@@ -13,10 +13,10 @@
 <script setup>
 import KoorOutputField from '@/components/koortransform/KoorOutputField.vue'
 import { ref, watch, onMounted } from 'vue'
-import { useStore } from 'vuex'
+import { useKtStore } from '@/store/store.js'
 import { extractEPSGCode } from '@/helperfunctions';
 
-const store = useStore()
+const KtStore = useKtStore()
 
 const props = defineProps({
     coverArea: {
@@ -32,12 +32,11 @@ const props = defineProps({
 const selectedOption = ref(props.outputOptions[0] || '');
 
 watch(selectedOption, (to, from) => {
-    store.dispatch('setCRSTo', extractEPSGCode(to))
-    store.dispatch('setCoordinatesTo')
-    console.log(store.getters['getCRS'])
+    KtStore.setCRSTo(extractEPSGCode(to))
+    KtStore.setCoordinatesTo()
 })
 onMounted(() => {
-    store.dispatch('setCRSTo', extractEPSGCode(selectedOption.value))  
+    KtStore.setCRSTo(extractEPSGCode(selectedOption.value)) 
 })
 
 </script>

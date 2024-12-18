@@ -20,7 +20,6 @@ const props = defineProps({
     }
 })
 
-// Now that props is defined, we can use it in a computed property
 const CRSOptions = computed(() => {
     const getterName = 'getCRSDisplayOptions' + props.coverArea;
     return store.getters[getterName]  || []

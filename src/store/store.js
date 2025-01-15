@@ -8,9 +8,11 @@ export const useKtStore = defineStore('KtStore', {
     
         // Authentication token, default to null if not provided
         token: import.meta.env.VITE_TOKEN || null,
-    
+
         // Coordinate Reference System options, loaded from localStorage or defaulting to an empty object
         CRSOptions: JSON.parse(localStorage.getItem('KoordinatTranformationCRSOptions')) || {},
+
+        CoverArea: '',
     
         // Selected CRS for transformation: From and To
         CRSFrom: '',
@@ -23,6 +25,8 @@ export const useKtStore = defineStore('KtStore', {
     getters: {
         getWebProj: (state) => state.webproj,
         getToken: (state) => state.token,
+
+        getCoverArea: (state) => state.CoverArea,
     
         getCRS: (state) => ({
           CRSFrom: state.CRSFrom,
@@ -63,8 +67,24 @@ export const useKtStore = defineStore('KtStore', {
     
         getCoordinatesFrom: (state) => state.CoordinatesFrom,
         getCoordinatesTo: (state) => state.CoordinatesTo,
+
+        getCRSFromDisplayInfo: (state) => {
+          if(state.CRSOptions[state.CoverArea][state.CRSFrom]){
+            return state.CRSOptions[state.CoverArea][state.CRSFrom]
+          }
+          return  state.CRSOptions.Global[state.CRSFrom]
+        },
+        getCRSToDisplayInfo: (state) => {
+          if(state.CRSOptions[state.CoverArea][state.CRSTo]) {
+            return state.CRSOptions[state.CoverArea][state.CRSTo]
+          }
+          return state.CRSOptions.Global[state.CRSTo]
+        }
     },
     actions: {
+        setCoverArea(area) {
+          this.CoverArea = area
+        },
         async fetchCRSOptions() {
             try {
               const response = await fetch(`https://api.dataforsyningen.dk/rest/webproj/v1.2/crs/?token=${this.token}`)
@@ -75,7 +95,6 @@ export const useKtStore = defineStore('KtStore', {
               const data = await response.json()
               const updatedCRSOptions = { ...this.CRSOptions }
               const coverAreas = ['DK', 'GL', 'Global']
-          
               for (const coverArea of coverAreas) {
                 if (!updatedCRSOptions[coverArea]) {
                   updatedCRSOptions[coverArea] = {}
@@ -103,7 +122,7 @@ export const useKtStore = defineStore('KtStore', {
         
               this.CRSOptions = updatedCRSOptions
               localStorage.setItem('KoordinatTranformationCRSOptions', JSON.stringify(updatedCRSOptions))
-          
+              console.log(this.CRSOptions)
             } catch (error) {
               console.error('Error fetching CRS Options: ', error)
             }
@@ -117,6 +136,7 @@ export const useKtStore = defineStore('KtStore', {
         },
     
         async setCoordinatesFrom({ crs, coordinates }) {
+            console.log("do we update?")
             if(crs === this.CRSFrom) {
                 this.CoordinatesFrom = coordinates
 

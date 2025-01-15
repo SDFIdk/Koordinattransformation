@@ -6,18 +6,15 @@
         class="olmap"
     >
     </div>
-    <Menu class="koor-menu" :cover-area="coverArea"/>
     <div
         v-show="pinPointer"
         id="placed-pin"
     >
-        <svg class="LocationIcon"><use href="@/assets/icons/icons.svg#pointer-position" /></svg>
+        <svg class="LocationIcon"><use href="../../assets/icons/icons.svg#pointer-position" /></svg>
     </div>
 </template>
 
 <script setup>
-
-import Menu from '@/components/koortransform/KoorMenu.vue'
 //ol basics
 
 import 'ol/ol.css'
@@ -37,13 +34,13 @@ import {
   ScaleLine
 } from 'ol/control'
 
-import { epsg25832proj, epsg32624proj, epsg3184proj, mapListToCoor, mapCoorToList } from '@/helperfunctions.js'
+import { epsg25832proj, epsg32624proj, epsg3184proj, mapListToCoor, mapCoorToList } from '../../helperfunctions.js'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
 
 //vue
 import { onMounted, ref, computed, watch } from 'vue'
-import { useKtStore } from '@/store/store.js'
+import { useKtStore } from '../../store/store.js'
 
 
 const KtStore = useKtStore()
@@ -55,14 +52,7 @@ epsg32624proj(proj4)
 epsg3184proj(proj4)
 register(proj4)
 
-const props = defineProps({
-    coverArea: {
-        type: String,
-        default () {
-            return 'DK'
-        }
-    }
-})
+
 
 const olMap = ref({})
 const overlay = ref({})
@@ -97,6 +87,7 @@ const mapData = ref({
   }
 })
 
+const coverArea = computed(() => KtStore.getCoverArea)
 const coorFrom = computed(() => KtStore.getCoordinatesFrom)
 
 const fetchDKMap = async () => {
@@ -124,12 +115,12 @@ const fetchGLMap = async () => {
 }
 const createView = async() => {
     return new OlView({
-        center: mapData.value[props.coverArea].center,
-        zoom: mapData.value[props.coverArea].zoom,
-        minZoom: mapData.value[props.coverArea].minZoom,
-        maxZoom: mapData.value[props.coverArea].maxZoom,
+        center: mapData.value[coverArea.value].center,
+        zoom: mapData.value[coverArea.value].zoom,
+        minZoom: mapData.value[coverArea.value].minZoom,
+        maxZoom: mapData.value[coverArea.value].maxZoom,
         showFullExtent: false,
-        projection: mapData.value[props.coverArea].projection
+        projection: mapData.value[coverArea.value].projection
     })
 }
 
@@ -139,7 +130,7 @@ const createMap = async() => {
     var mapView
     var mapTitle
 
-    if(props.coverArea === 'DK') {
+    if(coverArea.value === 'DK') {
         mapSource = await fetchDKMap()
         mapView = await createView()
         mapTitle = mapData.value.DK.title
@@ -188,7 +179,7 @@ onMounted(async() => {
     overlay.value = new Overlay({
         element: placedPin,
         positioning: 'center-center',
-        projection: mapData.value[props.coverArea].projection
+        projection: mapData.value[coverArea.value].projection
     })
 
     olMap.value.on('click', (event) => {
@@ -196,7 +187,7 @@ onMounted(async() => {
         const coordinate = event.coordinate;
         overlay.value.setPosition(coordinate) 
         KtStore.setCoordinatesFrom({
-            crs: mapData.value[props.coverArea].projection,
+            crs: mapData.value[coverArea.value].projection,
             coordinates: {v1: event.coordinate[0], v2: event.coordinate[1], v3: null, v4: null}
         })
     })
@@ -206,16 +197,17 @@ onMounted(async() => {
 
 //make call to api and set map marker where new coordinate is
 watch(coorFrom, async (to, from) => {
+  console.log('do we listen?')
   //case that it is same epsg
   const crsFrom = KtStore.CRSFrom
   
-  if(crsFrom === mapData.value[props.coverArea].projection) {
+  if(crsFrom === mapData.value[coverArea.value].projection) {
     overlay.value.setPosition(mapCoorToList(to))
   }
 
   else{
     try {
-      const response = await fetch(`${KtStore.webproj}${KtStore.CRSFrom}/${mapData.value[props.coverArea].projection}/${mapCoorToList(to)}?token=${KtStore.token}`)
+      const response = await fetch(`${KtStore.webproj}${KtStore.CRSFrom}/${mapData.value[coverArea.value].projection}/${mapCoorToList(to)}?token=${KtStore.token}`)
       if(!response.ok){
         throw new Error(`Error fetching coordinates for map: ${response.statusText}`)
       }
@@ -234,11 +226,6 @@ watch(coorFrom, async (to, from) => {
   cursor: crosshair;
   height: calc(100vh - (12vh - 2rem) );
   position: relative;
-}
-.koor-menu {
-  position: absolute;
-  z-index: 10;
-  top:10vh;
 }
 #mousePin {
   display: none;

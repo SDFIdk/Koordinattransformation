@@ -7,14 +7,14 @@
     />
     <ds-nav-responsive class="switch koor-nav">
         <button slot="toggle" title="Vis menu" class="secondary">
-            <svg><use href="@/assets/icons/icons.svg#burgerbar"></use></svg>
+            <svg><use href="../../assets/icons/icons.svg#burgerbar"></use></svg>
         </button>
         <nav class="ds-panel ds-nav">
             <router-link
                 to="/Denmark"
             >
                 <span class="medium">
-                    <svg><use href="@/assets/icons/icons.svg#denmark"/></svg>
+                    <svg><use href="../../assets/icons/icons.svg#denmark"/></svg>
                 </span>
                 <span> Danmark</span>
             </router-link>
@@ -22,7 +22,7 @@
                 to="/Greenland"
             >
                 <span class="medium">
-                    <svg><use href="@/assets/icons/icons.svg#greenland"/></svg>
+                    <svg><use href="../../assets/icons/icons.svg#greenland"/></svg>
                 </span>
                 <span> Grønland</span>
             </router-link>
@@ -30,7 +30,7 @@
                 to="/About"
             >
                 <span class="medium">
-                    <svg><use href="@/assets/icons/icons.svg#info"></use></svg>
+                    <svg><use href="../../assets/icons/icons.svg#info"></use></svg>
                 </span>
                 <span> Om Koordinattransformation</span>
             </router-link>

@@ -14,9 +14,13 @@ export const epsg3184proj = (proj4object) => {
 
 
 export const mapCoorToList = (coorObject) => {
-    const res = ['v1', 'v2', 'v3', 'v4'].map(key => coorObject[key]).filter(value => value !== null)
+    const res = ['v1', 'v2', 'v3', 'v4']
+        .map(key => coorObject[key])
+        .filter(value => value !== null && value !== undefined)
+    console.log(res)
     return res
-}
+};
+
 export const mapListToCoor = (listObject) => {
     const keys = ['v1', 'v2', 'v3', 'v4'];
     const res = keys.map((key, index) => ({

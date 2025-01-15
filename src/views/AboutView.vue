@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { useKtStore } from '@/store/store.js'
+import { useKtStore } from '../store/store.js'
 import { computed } from 'vue'
 
 const KtStore = useKtStore()

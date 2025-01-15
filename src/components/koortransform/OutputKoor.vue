@@ -11,10 +11,10 @@
 </template>
 
 <script setup>
-import KoorOutputField from '@/components/koortransform/KoorOutputField.vue'
+import KoorOutputField from './KoorOutputField.vue'
 import { ref, watch, onMounted } from 'vue'
-import { useKtStore } from '@/store/store.js'
-import { extractEPSGCode } from '@/helperfunctions';
+import { useKtStore } from '../../store/store.js'
+import { extractEPSGCode } from '../../helperfunctions.js';
 
 const KtStore = useKtStore()
 

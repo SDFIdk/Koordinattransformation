@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-const Denmark = () => import('@/views/DenmarkView.vue')
-const Greenland = () => import('@/views/GreenlandView.vue')
-const About = () => import('@/views/AboutView.vue')
+const Denmark = () => import('../views/DenmarkView.vue')
+const Greenland = () => import('../views/GreenlandView.vue')
+const About = () => import('../views/AboutView.vue')
 
 const routes = [
     {

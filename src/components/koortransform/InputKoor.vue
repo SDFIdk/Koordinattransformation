@@ -12,9 +12,9 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-import { useKtStore } from '@/store/store.js'
-import { extractEPSGCode } from '@/helperfunctions.js';
-import KoorInputField from '@/components/koortransform/KoorInputField.vue'
+import { useKtStore } from '../../store/store.js'
+import { extractEPSGCode } from '../../helperfunctions.js';
+import KoorInputField from './KoorInputField.vue'
 
 const KtStore = useKtStore()
 

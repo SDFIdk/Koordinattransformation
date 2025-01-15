@@ -61,6 +61,21 @@
         @input='debounceUpdate'
       />
       <p> °N </p>
+      <input 
+        v-if="degreeFormat==='D.min' || degreeFormat === 'D.min.sec'"
+        type='number'
+        step='0.0001'
+        v-model='c1Coord.cD2'
+        @input='debounceUpdate'
+      />
+      <input 
+        v-if="degreeFormat === 'D.min.sec'"
+        type='number'
+        step='0.0001'
+        v-model='c1Coord.cD3'
+        @input='debounceUpdate'
+      />
+      
     </span>
 
     <span
@@ -76,6 +91,20 @@
         @input='debounceUpdate'
       />
       <p> °E </p>
+      <input 
+        v-if="degreeFormat==='D.min' || degreeFormat === 'D.min.sec'"
+        type='number'
+        step='0.0001'
+        v-model='c1Coord.cD2'
+        @input='debounceUpdate'
+      />
+      <input 
+        v-if="degreeFormat === 'D.min.sec'"
+        type='number'
+        step='0.0001'
+        v-model='c2Coord.cD3'
+        @input='debounceUpdate'
+      />
     </span>
 
     <span v-if="c3Coord.isActive" class='KT-input-row'>
@@ -150,9 +179,52 @@ const toRepresentation = (coordinates) => {
       c3Coord.value.cM = coordinates.v3;
     }
     else{
-      c1Coord.value.cD1 = coordinates.v1;
-      c2Coord.value.cD1 = coordinates.v2;
-      c3Coord.value.cM = coordinates.v3;
+      switch(degreeFormat.value) {
+        case 'D': {
+          c1Coord.value.cD1 = coordinates.v1;
+          c2Coord.value.cD1 = coordinates.v2;
+          c3Coord.value.cM = coordinates.v3;
+          break
+        }
+        case 'D.min': {
+          const d1 = Math.floor(coordinates.v1)
+          const d2 = Math.floor(coordinates.v2)
+
+          const m1 = parseFloat(((coordinates.v1 - d1) * 60)).toFixed(6)
+          const m2 = parseFloat(((coordinates.v1 - d2) * 60)).toFixed(6)
+          
+          c1Coord.value.cD1 = d1
+          c1Coord.value.cD2 = m1
+
+          c2Coord.value.cD1 = d2
+          c2Coord.value.cD2 = m2
+
+          c3Coord.value.cM = coordinates.v3
+          break
+        }
+        case 'D.min.sec': {
+          const d1 = Math.floor(coordinates.v1)
+          const d2 = Math.floor(coordinates.v2)
+
+          const m1 = Math.floor((coordinates.v1 - d1) * 60)
+          const m2 = Math.floor((coordinates.v2 - d2) * 60)
+
+          const s1 = parseFloat(((coordinates.v1 - d1 - m1 / 60) * 3600)).toFixed(4)
+          const s2 = parseFloat(((coordinates.v2 - d2 - m2 / 60) * 3600)).toFixed(4)
+
+          c1Coord.value.cD1 = d1
+          c1Coord.value.cD2 = m1
+          c1Coord.value.cD3 = s1
+
+          c2Coord.value.cD1 = d2
+          c2Coord.value.cD2 = m2
+          c2Coord.value.cD3 = s2
+
+          c3Coord.value.cM = coordinates.v3
+          
+          break
+        }
+      }
     }
 }
 
@@ -167,6 +239,22 @@ const reverseRepresentation = () => {
         }
     }
     else{
+      switch(degreeFormat.value) {
+        case 'D':
+          return {
+            v1: c1Coord.value.cD1,
+            v2: c2Coord.value.cD1,
+            v3: c3Coord.value.cD1,
+            v4: 0.0
+          }
+        case 'D.min':
+          break
+        case 'D.min.sec':
+          break
+
+        default:
+
+      }
       return {
         v1: c1Coord.value.cD1,
         v2: c2Coord.value.cD1,

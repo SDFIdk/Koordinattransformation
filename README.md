@@ -2,7 +2,7 @@
 
 Koordinattransformation er en Vue.js applikation der gør det let at transformere koordinater mellem forskellige referencesystemer.
 
-Projektet er scaffolded med [Vite]{https://vitejs.dev/} og kørt igennem NPM
+Projektet er scaffolded med [Vite](https://vitejs.dev/) og kørt igennem NPM
 
 For at udvikle og bygge projektet anbefales følgende setup
 - node.js version: >=21.05.0 [link til download](https://nodejs.org/en/)
@@ -29,7 +29,7 @@ module.export = {
   VITE_API_BASE_PATH = /v1.2/trans/
 }
 ```
-Et token kan genereres via [datforsyningen]{https://dataforsyningen.dk/}
+Et token kan genereres via [dataforsyningen](https://dataforsyningen.dk/)
 
 ***Kopier disse filer fra config repoet ind i root directory af projektet.***
 

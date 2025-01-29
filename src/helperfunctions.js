@@ -33,19 +33,20 @@ export const extractEPSGCode = (crsString) => {
 }
 
 export const getGSearchCenterPoint = (detail) => {
-  let coord = [0,0]
+  let coord = {v1: 0.0, v2: 0.0, v3: 0.0, v4: 0.0}
   if (detail.type === 'MultiPolygon') {
     const poly = new Polygon(detail.coordinates[0])
     const interior_point = poly.getInteriorPoint().flatCoordinates
-    coord = [Number(interior_point[0].toFixed(5)), Number(interior_point[1].toFixed(5))]
+    coord = {v1: Number(interior_point[0].toFixed(5)), v2: Number(interior_point[1].toFixed(5)), v3 : 0.0, v4: 0.0}
   } 
   else if (detail.type === 'MultiLineString') {
     const middlePoint = Math.floor(detail.coordinates[0].length / 2)
-    coord = detail.coordinates[0][middlePoint]
+    const middleCoords = detail.coordinates[0][middlePoint]
+    coord = {v1: middleCoords[0], v2: middleCoords[1], v3: 0.0, v4: 0.0} 
   }
   else {
     // It is assumed, that other geometries are of type multipoint
-    coord = detail.coordinates[0]
+    coord = {v1: detail.coordinates[0][0], v2: detail.coordinates[0][1], v3: 0.0, v4: 0.0}
   }
   return coord
 }

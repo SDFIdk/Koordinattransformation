@@ -59,12 +59,10 @@ const toRepresentation = (coordinates, repr) => {
 
 // Watchers for changes in input/output coordinates
 watch(coorFrom, () => {
-  console.log('do we go here?')
   KtStore.setCoordinatesTo()
 })
 
 watch(coorTo, () => {
-  //console.log(CRSInfo.value)
   outputCoor.value = toRepresentation(KtStore.CoordinatesTo, 'direct')
 })
 </script>

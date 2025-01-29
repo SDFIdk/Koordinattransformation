@@ -7,12 +7,12 @@
 import KoorMap from '../components/map/KoorMap.vue'
 import KoorForm from '../components/koortransform/KoorForm.vue'
 import { onBeforeMount } from 'vue'
-import { useKtStore } from '../store/store.js';
+import { useKtStore } from '../store/store.js'
 
 const KtStore = useKtStore()
 
 onBeforeMount(() => {
-    KtStore.setCoverArea('DK')
+  KtStore.setCoverArea('DK')
 })
 </script>
 

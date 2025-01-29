@@ -175,84 +175,84 @@ const svgPath = '/src/assets/icons/icons.svg#'
 const debounceTimeout = ref(null)
 
 const baseCoords  = ref({
-    v1: 0.0,
-    v2: 0.0,
-    v3: 0.0,
-    v4: 0.0
+  v1: 0.0,
+  v2: 0.0,
+  v3: 0.0,
+  v4: 0.0,
 })
 
 const c1 = ref({
-    cMeter: 0.0,
-    cDegree: 0.0,
-    cMinute: 0.0,
-    cSecond: 0.0,
-    dirIcon: '',
-    dirIndicator: ''
+  cMeter: 0.0,
+  cDegree: 0.0,
+  cMinute: 0.0,
+  cSecond: 0.0,
+  dirIcon: '',
+  dirIndicator: '',
 })
 const c2 = ref({
-    cMeter: 0.0,
-    cDegree: 0.0,
-    cMinute: 0.0,
-    cSecond: 0.0,
-    dirIcon: '',
-    dirIndicator: ''
+  cMeter: 0.0,
+  cDegree: 0.0,
+  cMinute: 0.0,
+  cSecond: 0.0,
+  dirIcon: '',
+  dirIndicator: '',
 })
 const c3 = ref({
-    cMeter: 0.0,
-    isHeight: false,
-    upIcon: svgPath + 'arrow-up'
+  cMeter: 0.0,
+  isHeight: false,
+  upIcon: svgPath + 'arrow-up',
 })
 
 const isMeter = ref(true)
 const degreeFormat = ref('D')
 
 const toRepresentation = () => {
-    c3.value.cMeter = baseCoords.value.v3
+  c3.value.cMeter = baseCoords.value.v3
 
-    let d1, d2, m1, m2, s1, s2
+  let d1, d2, m1, m2, s1, s2
 
-    if (isMeter.value) {
-        c1.value.cMeter = parseFloat(baseCoords.value.v1).toFixed(4)
-        c2.value.cMeter = parseFloat(baseCoords.value.v2).toFixed(4)
-    } else {
-        switch (degreeFormat.value) {
-            case 'D': 
-                c1.value.cDegree = parseFloat(baseCoords.value.v1).toFixed(8)
-                c2.value.cDegree = parseFloat(baseCoords.value.v2).toFixed(8)
-                break
-            case 'D.min':
-                d1 = Math.floor(baseCoords.value.v1)
-                d2 = Math.floor(baseCoords.value.v2)
+  if (isMeter.value) {
+    c1.value.cMeter = parseFloat(baseCoords.value.v1).toFixed(4)
+    c2.value.cMeter = parseFloat(baseCoords.value.v2).toFixed(4)
+  } else {
+    switch (degreeFormat.value) {
+    case 'D': 
+      c1.value.cDegree = parseFloat(baseCoords.value.v1).toFixed(8)
+      c2.value.cDegree = parseFloat(baseCoords.value.v2).toFixed(8)
+      break
+    case 'D.min':
+      d1 = Math.floor(baseCoords.value.v1)
+      d2 = Math.floor(baseCoords.value.v2)
 
-                m1 = parseFloat(((baseCoords.value.v1 - d1) * 60)).toFixed(6)
-                m2 = parseFloat(((baseCoords.value.v2 - d2) * 60)).toFixed(6)
+      m1 = parseFloat(((baseCoords.value.v1 - d1) * 60)).toFixed(6)
+      m2 = parseFloat(((baseCoords.value.v2 - d2) * 60)).toFixed(6)
 
-                c1.value.cDegree = d1
-                c1.value.cMinute = m1
+      c1.value.cDegree = d1
+      c1.value.cMinute = m1
 
-                c2.value.cDegree = d2
-                c2.value.cMinute = m2
-                break
-            case 'D.min.sec':
-                d1 = Math.floor(baseCoords.value.v1)
-                d2 = Math.floor(baseCoords.value.v2)
+      c2.value.cDegree = d2
+      c2.value.cMinute = m2
+      break
+    case 'D.min.sec':
+      d1 = Math.floor(baseCoords.value.v1)
+      d2 = Math.floor(baseCoords.value.v2)
 
-                m1 = Math.floor((baseCoords.value.v1 - d1) * 60)
-                m2 = Math.floor((baseCoords.value.v2 - d2) * 60)
+      m1 = Math.floor((baseCoords.value.v1 - d1) * 60)
+      m2 = Math.floor((baseCoords.value.v2 - d2) * 60)
 
-                s1 = ((baseCoords.value.v1 - d1 - m1 / 60) * 3600).toFixed(4)
-                s2 = ((baseCoords.value.v2 - d2 - m2 / 60) * 3600).toFixed(4)
+      s1 = ((baseCoords.value.v1 - d1 - m1 / 60) * 3600).toFixed(4)
+      s2 = ((baseCoords.value.v2 - d2 - m2 / 60) * 3600).toFixed(4)
 
-                c1.value.cDegree = d1
-                c1.value.cMinute = m1
-                c1.value.cSecond = s1
+      c1.value.cDegree = d1
+      c1.value.cMinute = m1
+      c1.value.cSecond = s1
 
-                c2.value.cDegree = d2
-                c2.value.cMinute = m2
-                c2.value.cSecond = s2
-                break
-        }
+      c2.value.cDegree = d2
+      c2.value.cMinute = m2
+      c2.value.cSecond = s2
+      break
     }
+  }
 }
 
 const fromRepresentation = () => {
@@ -262,23 +262,23 @@ const fromRepresentation = () => {
     baseCoords.value.v2 = parseFloat(c2.value.cMeter)
     baseCoords.value.v3 = parseFloat(c3.value.cMeter)
   } else {
-      switch (degreeFormat.value) {
-        case 'D': 
-            baseCoords.value.v1 = parseFloat(c1.value.cDegree).toFixed(8)
-            baseCoords.value.v2 = parseFloat(c2.value.cDegree).toFixed(8)
-            baseCoords.value.v3 = parseFloat(c3.value.cMeter)
-            break
-        case 'D.min':
-            baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60).toFixed(8)
-            baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60).toFixed(8)
-            baseCoords.value.v3 = parseFloat(c3.value.cMeter)
-            break
-        case 'D.min.sec':
-            baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60 + c1.value.cSecond / 3600).toFixed(8)
-            baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60 + c2.value.cSecond / 3600).toFixed(8)
-            baseCoords.value.v3 = parseFloat(c3.value.cMeter)
-            break
-      }
+    switch (degreeFormat.value) {
+    case 'D': 
+      baseCoords.value.v1 = parseFloat(c1.value.cDegree).toFixed(8)
+      baseCoords.value.v2 = parseFloat(c2.value.cDegree).toFixed(8)
+      baseCoords.value.v3 = parseFloat(c3.value.cMeter)
+      break
+    case 'D.min':
+      baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60).toFixed(8)
+      baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60).toFixed(8)
+      baseCoords.value.v3 = parseFloat(c3.value.cMeter)
+      break
+    case 'D.min.sec':
+      baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60 + c1.value.cSecond / 3600).toFixed(8)
+      baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60 + c2.value.cSecond / 3600).toFixed(8)
+      baseCoords.value.v3 = parseFloat(c3.value.cMeter)
+      break
+    }
   }
 }
 
@@ -293,34 +293,34 @@ const formatInputCoor = () => {
   }
 
   switch(CRSInfo.value.v1){
-    case 'Easting':
-      c1.value.dirIcon = svgPath + 'direction-east'
-      break
-    case 'Westing':
-      c1.value.dirIcon = svgPath + 'direction-west'
-      break
-    case 'Breddegrad':
-      c1.value.dirIcon= svgPath + 'direction-north'
-      c1.value.dirIndicator = '°N'
+  case 'Easting':
+    c1.value.dirIcon = svgPath + 'direction-east'
+    break
+  case 'Westing':
+    c1.value.dirIcon = svgPath + 'direction-west'
+    break
+  case 'Breddegrad':
+    c1.value.dirIcon= svgPath + 'direction-north'
+    c1.value.dirIndicator = '°N'
   }
 
   switch(CRSInfo.value.v2){
-    case 'Northing':
-      c2.value.dirIcon = svgPath + 'direction-north'
-      break
-    case 'Længdegrad':
-      c2.value.dirIcon = svgPath + 'direction-east'
-      c2.value.dirIndicator = '°E'
+  case 'Northing':
+    c2.value.dirIcon = svgPath + 'direction-north'
+    break
+  case 'Længdegrad':
+    c2.value.dirIcon = svgPath + 'direction-east'
+    c2.value.dirIndicator = '°E'
   }
   switch(CRSInfo.value.v3){
-    case 'Kote' : 
-      c3.value.isHeight = true
-      break
-    case 'Ellipsoidehøjde' :
-      c3.value.isHeight = true
-      break
-    default:
-      c3.value.isHeight = false
+  case 'Kote' : 
+    c3.value.isHeight = true
+    break
+  case 'Ellipsoidehøjde' :
+    c3.value.isHeight = true
+    break
+  default:
+    c3.value.isHeight = false
   }
 }
 
@@ -337,7 +337,7 @@ const debounceUpdate = () => {
     fromRepresentation()
     KtStore.setCoordinatesFrom({
       crs: KtStore.CRSFrom,
-      coordinates: baseCoords.value
+      coordinates: baseCoords.value,
     })
   }, 500)
 }
@@ -345,14 +345,14 @@ const debounceUpdate = () => {
 
 watch(coorFrom, (to) => {
 
-    baseCoords.value = {
-      v1: coorFrom.value.v1 || 0.0,
-      v2: coorFrom.value.v2 || 0.0,
-      v3: coorFrom.value.v3 || 0.0,
-      v4: coorFrom.value.v4 || 0.0
-    }
-    formatInputCoor()
-    toRepresentation()
+  baseCoords.value = {
+    v1: coorFrom.value.v1 || 0.0,
+    v2: coorFrom.value.v2 || 0.0,
+    v3: coorFrom.value.v3 || 0.0,
+    v4: coorFrom.value.v4 || 0.0,
+  }
+  formatInputCoor()
+  toRepresentation()
 })
 
 watch(degreeFormat, () => {
@@ -362,11 +362,11 @@ watch(degreeFormat, () => {
 onMounted(async() => {
   await CRSInfo.value
   baseCoords.value = {
-      v1: coorFrom.value.v1 || 0.0,
-      v2: coorFrom.value.v2 || 0.0,
-      v3: coorFrom.value.v3 || 0.0,
-      v4: coorFrom.value.v4 || 0.0
-    }
+    v1: coorFrom.value.v1 || 0.0,
+    v2: coorFrom.value.v2 || 0.0,
+    v3: coorFrom.value.v3 || 0.0,
+    v4: coorFrom.value.v4 || 0.0,
+  }
   formatInputCoor()
   toRepresentation()
 })

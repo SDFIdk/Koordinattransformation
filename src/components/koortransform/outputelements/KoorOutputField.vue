@@ -39,8 +39,8 @@ const heightFormat = ref('')
 const props = defineProps({
   coordinateFormat: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 // Convert coordinates into a desired representation

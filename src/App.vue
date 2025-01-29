@@ -7,9 +7,9 @@
 
 
 <script setup>
-import KoorHeader from "./components/shared/KoorHeader.vue"
+import KoorHeader from './components/shared/KoorHeader.vue'
 import { useKtStore } from './store/store.js'
-import { onBeforeMount } from "vue";
+import { onBeforeMount } from 'vue'
 
 const KtStore = useKtStore()
 onBeforeMount(async () => {

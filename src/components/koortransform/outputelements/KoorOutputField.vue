@@ -136,18 +136,18 @@ const toStringRepr = () => {
   }
   else{
     switch(degreeFormat.value) {
-      case 'D' :
-        coord1 = `${c1.value.cDegree}${c1.value.dirIndicator}`
-        coord2 = `${c2.value.cDegree}${c2.value.dirIndicator}`
-        break
-      case 'D.min':
-        coord1 = `${c1.value.cDegree}° ${c1.value.cMeter} \'${c1.value.dirIndicator}`
-        coord2 = `${c2.value.cDegree}° ${c2.value.cMeter} \'${c2.value.dirIndicator}`
-        break
-      case 'D.min.sec' :
-        coord1 = `${c1.value.cDegree}° ${c1.value.cMeter}\' ${c1.value.cSecond}\'\'${c1.value.dirIndicator}`
-        coord2 = `${c2.value.cDegree}° ${c2.value.cMeter}\' ${c2.value.cSecond}\'\'${c2.value.dirIndicator}`
-        break
+    case 'D' :
+      coord1 = `${c1.value.cDegree}${c1.value.dirIndicator}`
+      coord2 = `${c2.value.cDegree}${c2.value.dirIndicator}`
+      break
+    case 'D.min':
+      coord1 = `${c1.value.cDegree}° ${c1.value.cMeter} \'${c1.value.dirIndicator}`
+      coord2 = `${c2.value.cDegree}° ${c2.value.cMeter} \'${c2.value.dirIndicator}`
+      break
+    case 'D.min.sec' :
+      coord1 = `${c1.value.cDegree}° ${c1.value.cMeter}\' ${c1.value.cSecond}\'\'${c1.value.dirIndicator}`
+      coord2 = `${c2.value.cDegree}° ${c2.value.cMeter}\' ${c2.value.cSecond}\'\'${c2.value.dirIndicator}`
+      break
     }
   }
   height = c3.value.isHeight ? `, ${c3.value.cMeter} m` : ''

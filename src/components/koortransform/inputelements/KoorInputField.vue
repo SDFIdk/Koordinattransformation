@@ -141,7 +141,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-import { useKtStore } from '../../store/store.js'
+import { useKtStore } from '../../../store/store.js'
 
 const KtStore = useKtStore()
 
@@ -247,13 +247,13 @@ const fromRepresentation = () => {
             baseCoords.value.v3 = parseFloat(c3.value.cMeter)
             break
         case 'D.min':
-            baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60)
-            baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60).toFixed(6)
+            baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60).toFixed(8)
+            baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60).toFixed(8)
             baseCoords.value.v3 = parseFloat(c3.value.cMeter)
             break
         case 'D.min.sec':
-            baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60 + c1.value.cSecond / 3600)
-            baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60 + c2.value.cSecond / 3600).toFixed(6)
+            baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60 + c1.value.cSecond / 3600).toFixed(8)
+            baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60 + c2.value.cSecond / 3600).toFixed(8)
             baseCoords.value.v3 = parseFloat(c3.value.cMeter)
             break
       }

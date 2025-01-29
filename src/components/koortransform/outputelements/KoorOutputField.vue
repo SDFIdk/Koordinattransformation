@@ -14,7 +14,7 @@
 
 <script setup>
 import { computed, watch, ref } from 'vue'
-import { useKtStore } from '../../store/store.js'
+import { useKtStore } from '../../../store/store.js'
 
 const KtStore = useKtStore()
 

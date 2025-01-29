@@ -13,8 +13,8 @@
 <script setup>
 import KoorOutputField from './KoorOutputField.vue'
 import { ref, watch, onMounted } from 'vue'
-import { useKtStore } from '../../store/store.js'
-import { extractEPSGCode } from '../../helperfunctions.js';
+import { useKtStore } from '../../../store/store.js'
+import { extractEPSGCode } from '../../../helperfunctions.js';
 
 const KtStore = useKtStore()
 

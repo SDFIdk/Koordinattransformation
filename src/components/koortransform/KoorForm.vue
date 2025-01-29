@@ -6,8 +6,8 @@
 </template>
 
 <script setup>
-import InputKoor from './InputKoor.vue'
-import OutputKoor from './OutputKoor.vue'
+import InputKoor from './inputelements/InputKoor.vue'
+import OutputKoor from './outputelements/OutputKoor.vue'
 import { computed } from 'vue'
 import { useKtStore } from '../../store/store.js'
 

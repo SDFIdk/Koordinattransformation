@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [vue({
     template: {
       compilerOptions: {
-        isCustomElement: (tag) => tag.includes('ds-')
+        isCustomElement: (tag) => tag.includes('ds-') || tag.includes('g-')
       }
     }
   })],

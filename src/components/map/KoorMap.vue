@@ -1,17 +1,16 @@
 <template>
-    <div
-        id="map"
-        ref="map"
-        tabindex="1"
-        class="olmap"
-    >
-    </div>
-    <div
-        v-show="pinPointer"
-        id="placed-pin"
-    >
-        <svg class="LocationIcon"><use href="../../assets/icons/icons.svg#pointer-position" /></svg>
-    </div>
+  <div
+    id="map"
+    ref="map"
+    tabindex="1"
+    class="olmap"
+  />
+  <div
+    v-show="pinPointer"
+    id="placed-pin"
+  >
+    <svg class="LocationIcon"><use href="../../assets/icons/icons.svg#pointer-position" /></svg>
+  </div>
 </template>
 
 <script setup>

@@ -1,6 +1,6 @@
 <template>
-    <KoorMap />
-    <KoorForm class="KoorForm" />
+  <KoorMap />
+  <KoorForm class="KoorForm" />
 </template>
 
 <script setup>

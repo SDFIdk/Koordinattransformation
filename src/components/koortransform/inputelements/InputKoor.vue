@@ -1,13 +1,21 @@
 <template>
-    <div class="KT-input-segment">
-        <h2>Input</h2>
-        <select name="epsg-select" id="epsg-select" v-model="selectedOption">
-            <option v-for="option in inputOptions" :key="option" :value="option">
-                {{ option }}
-            </option>
-        </select>
-        <KoorInputField />
-    </div>
+  <div class="KT-input-segment">
+    <h2>Input</h2>
+    <select
+      id="epsg-select"
+      v-model="selectedOption"
+      name="epsg-select"
+    >
+      <option
+        v-for="option in inputOptions"
+        :key="option"
+        :value="option"
+      >
+        {{ option }}
+      </option>
+    </select>
+    <KoorInputField />
+  </div>
 </template>
 
 <script setup>

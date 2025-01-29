@@ -1,5 +1,5 @@
 <template>
-    <p>{{ coor }}</p>
+  <p>{{ coor }}</p>
 </template>
 
 <script setup>

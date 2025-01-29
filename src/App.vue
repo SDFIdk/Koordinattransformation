@@ -1,7 +1,7 @@
 <template>
   <KoorHeader />
   <main>
-    <router-view/>
+    <router-view />
   </main>
 </template>
 

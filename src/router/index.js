@@ -5,44 +5,44 @@ const Greenland = () => import('../views/GreenlandView.vue')
 const About = () => import('../views/AboutView.vue')
 
 const routes = [
-    {
-        path: '/Denmark',
-        name: 'DenmarkView',
-        alias: ['/', '/home'],
-        components: {
-            default: Denmark
-        }
+  {
+    path: '/Denmark',
+    name: 'DenmarkView',
+    alias: ['/', '/home'],
+    components: {
+      default: Denmark,
     },
-    {
-        path: '/Greenland',
-        name: 'GreenlandView',
-        components: {
-            default: Greenland
-        }
+  },
+  {
+    path: '/Greenland',
+    name: 'GreenlandView',
+    components: {
+      default: Greenland,
     },
-    {
-        path: '/About',
-        name: 'AboutView',
-        components: {
-            default: About
-        }
+  },
+  {
+    path: '/About',
+    name: 'AboutView',
+    components: {
+      default: About,
     },
-    {
-        path: '/was',
-        beforeEnter () {
-            location.href = 'https://www.was.digst.dk/koordinattransformation-dk'
-        },
-        name: 'Webtilgaengelighed',
-        meta: {
-          textColor: 'black',
-          domain: 'koordinattransformation.dk'
-        }
-      }
+  },
+  {
+    path: '/was',
+    beforeEnter () {
+      location.href = 'https://www.was.digst.dk/koordinattransformation-dk'
+    },
+    name: 'Webtilgaengelighed',
+    meta: {
+      textColor: 'black',
+      domain: 'koordinattransformation.dk',
+    },
+  },
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes
-  })
+  history: createWebHistory(),
+  routes,
+})
 
 export default router

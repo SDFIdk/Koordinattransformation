@@ -12,12 +12,15 @@ customElements.define('ds-logo-title', DSLogoTitle)
 customElements.define('ds-nav-responsive', DSNavResponsive)
 
 const app = createApp(App)
+app.config.compilerOptions = {
+  isCustomElement: (tag) => tag.startsWith('ds-'),
+}
 
 app.config.globalProperties.append = (path, pathToAppend) => path + (path.endsWith('/') ? '' : '/') + pathToAppend
 app.config.performance = (import.meta.env.VITE_NODE_ENV !== 'production')
 
 app.use(router)
-.use(createPinia())
+  .use(createPinia())
 
 window.addEventListener('DOMContentLoaded', () => {
   app.mount('#app')

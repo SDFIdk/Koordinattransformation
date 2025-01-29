@@ -6,34 +6,29 @@
       byline="Klimadatastyrelsen"
     />
     <ds-nav-responsive class="switch koor-nav">
-      <template #toggle>
-        <button 
-          title="Vis menu"
-          class="secondary"
-        >
-          <svg><use href="../../assets/icons/icons.svg#burgerbar" /></svg>
-        </button>
-      </template>
+      <!-- Use the #toggle slot inside a <template> -->
+      <button 
+        slot="toggle"
+        title="Vis menu"
+        class="secondary"
+      >
+        <svg><use href="../../assets/icons/icons.svg#burgerbar" /></svg>
+      </button>
+
       <nav class="ds-panel ds-nav">
-        <router-link
-          to="/Denmark"
-        >
+        <router-link to="/Denmark">
           <span class="medium">
             <svg><use href="../../assets/icons/icons.svg#denmark" /></svg>
           </span>
           <span> Danmark</span>
         </router-link>
-        <router-link
-          to="/Greenland"
-        >
+        <router-link to="/Greenland">
           <span class="medium">
             <svg><use href="../../assets/icons/icons.svg#greenland" /></svg>
           </span>
           <span> Grønland</span>
         </router-link>
-        <router-link
-          to="/About"
-        >
+        <router-link to="/About">
           <span class="medium">
             <svg><use href="../../assets/icons/icons.svg#info" /></svg>
           </span>

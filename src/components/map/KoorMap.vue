@@ -24,13 +24,13 @@ import OlView from 'ol/View'
 import WMTS, { optionsFromCapabilities } from 'ol/source/WMTS'
 import WMTSCapabilities from 'ol/format/WMTSCapabilities'
 import {Tile as TileLayer} from 'ol/layer'
-import TileWMS from 'ol/source/TileWMS.js';
+import TileWMS from 'ol/source/TileWMS.js'
 
 //overlays
 import Overlay from 'ol/Overlay'
 import {
   defaults as defaultControls,
-  ScaleLine
+  ScaleLine,
 } from 'ol/control'
 
 import { epsg25832proj, epsg32624proj, epsg3184proj, mapListToCoor, mapCoorToList } from '../../helperfunctions.js'
@@ -68,13 +68,13 @@ const mapData = ref({
     projection: 'EPSG:3184',
     zoom: 12,
     minZoom: 4,
-    maxZoom: 200
+    maxZoom: 200,
   },
   'DK' : {
     title: 'Skærmkortet',
     attributionText: 'Klimadatastyrelsen',
     attributionLink: 'https://www.klimadatastyrelsen.dk/',
-    mapURL: `https://services.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts?username=WVTWQAXVUY&password=FiskMangler1Ven*&service=WMTS&request=GetCapabilities`,
+    mapURL: 'https://services.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts?username=WVTWQAXVUY&password=FiskMangler1Ven*&service=WMTS&request=GetCapabilities',
     source: null,
     view: null,
     center: [587135, 6140617 + 50000],
@@ -82,8 +82,8 @@ const mapData = ref({
     projection: 'EPSG:25832',
     zoom: 8.2,
     minZoom: 8,
-    maxZoom: 23
-  }
+    maxZoom: 23,
+  },
 })
 
 const coverArea = computed(() => KtStore.getCoverArea)
@@ -95,8 +95,8 @@ const fetchDKMap = async () => {
   const capabilities = new WMTSCapabilities().read(mapText)
 
   return new WMTS(optionsFromCapabilities(capabilities, {
-      layer: 'topo_skaermkort_daempet',
-      matrixSet: 'View1'
+    layer: 'topo_skaermkort_daempet',
+    matrixSet: 'View1',
   }))
 }
 const fetchGLMap = async () => {
@@ -106,92 +106,92 @@ const fetchGLMap = async () => {
     params: {
       layers: 'gl_aabent_land',
       transparent: 'FALSE',
-      tiled: true
-    }
+      tiled: true,
+    },
   })
 
   return groenlandTopoSource
 }
 const createView = async() => {
-    return new OlView({
-        center: mapData.value[coverArea.value].center,
-        zoom: mapData.value[coverArea.value].zoom,
-        minZoom: mapData.value[coverArea.value].minZoom,
-        maxZoom: mapData.value[coverArea.value].maxZoom,
-        showFullExtent: false,
-        projection: mapData.value[coverArea.value].projection
-    })
+  return new OlView({
+    center: mapData.value[coverArea.value].center,
+    zoom: mapData.value[coverArea.value].zoom,
+    minZoom: mapData.value[coverArea.value].minZoom,
+    maxZoom: mapData.value[coverArea.value].maxZoom,
+    showFullExtent: false,
+    projection: mapData.value[coverArea.value].projection,
+  })
 }
 
 const createMap = async() => {
 
-    var mapSource
-    var mapView
-    var mapTitle
+  var mapSource
+  var mapView
+  var mapTitle
 
-    if(coverArea.value === 'DK') {
-        mapSource = await fetchDKMap()
-        mapView = await createView()
-        mapTitle = mapData.value.DK.title
+  if(coverArea.value === 'DK') {
+    mapSource = await fetchDKMap()
+    mapView = await createView()
+    mapTitle = mapData.value.DK.title
 
-        mapData.value.DK.source = mapSource
-        mapData.value.DK.view = mapView
-    }
-    else {
-        mapSource = await fetchGLMap()
-        mapView = await createView()
-        mapTitle = mapData.value.GL.title
+    mapData.value.DK.source = mapSource
+    mapData.value.DK.view = mapView
+  }
+  else {
+    mapSource = await fetchGLMap()
+    mapView = await createView()
+    mapTitle = mapData.value.GL.title
 
-        mapData.value.GL.source = mapSource
-        mapData.value.GL.view = mapView
-    }
+    mapData.value.GL.source = mapSource
+    mapData.value.GL.view = mapView
+  }
 
   
 
-    return new OlMap({
-        target: 'map',
-        controls: defaultControls({
-            zoom: false,
-            attribution: false,
-            rotate: false
-        }),
-        view: mapView,
-        layers:
+  return new OlMap({
+    target: 'map',
+    controls: defaultControls({
+      zoom: false,
+      attribution: false,
+      rotate: false,
+    }),
+    view: mapView,
+    layers:
             [
-                new TileLayer({
-                    opacity: 1,
-                    title: mapTitle,
-                    type: 'base',
-                    visible: true,
-                    source: mapSource
-                })
-            ]
-    })
+              new TileLayer({
+                opacity: 1,
+                title: mapTitle,
+                type: 'base',
+                visible: true,
+                source: mapSource,
+              }),
+            ],
+  })
 }
 
 onMounted(async() => {
-    olMap.value = await createMap()
+  olMap.value = await createMap()
 
-    olMap.value.addControl(new ScaleLine())
+  olMap.value.addControl(new ScaleLine())
     
-    const placedPin = document.getElementById('placed-pin')
-    overlay.value = new Overlay({
-        element: placedPin,
-        positioning: 'center-center',
-        projection: mapData.value[coverArea.value].projection
-    })
+  const placedPin = document.getElementById('placed-pin')
+  overlay.value = new Overlay({
+    element: placedPin,
+    positioning: 'center-center',
+    projection: mapData.value[coverArea.value].projection,
+  })
 
-    olMap.value.on('click', (event) => {
-        pinPointer.value = true;
-        const coordinate = event.coordinate;
-        overlay.value.setPosition(coordinate) 
-        KtStore.setCoordinatesFrom({
-            crs: mapData.value[coverArea.value].projection,
-            coordinates: {v1: event.coordinate[0], v2: event.coordinate[1], v3: null, v4: null}
-        })
+  olMap.value.on('click', (event) => {
+    pinPointer.value = true
+    const coordinate = event.coordinate
+    overlay.value.setPosition(coordinate) 
+    KtStore.setCoordinatesFrom({
+      crs: mapData.value[coverArea.value].projection,
+      coordinates: {v1: event.coordinate[0], v2: event.coordinate[1], v3: null, v4: null},
     })
+  })
 
-    olMap.value.addOverlay(overlay.value) 
+  olMap.value.addOverlay(overlay.value) 
 })
 
 //make call to api and set map marker where new coordinate is

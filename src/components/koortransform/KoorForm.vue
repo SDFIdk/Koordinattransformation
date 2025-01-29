@@ -25,8 +25,8 @@ const KtStore = useKtStore()
 const coverArea = computed(() => KtStore.getCoverArea)
 
 const CRSOptions = computed(() => {
-    const getterName = 'getCRSDisplayOptions' + coverArea.value
-    return KtStore[getterName]  || []
+  const getterName = 'getCRSDisplayOptions' + coverArea.value
+  return KtStore[getterName]  || []
 })
 </script>
 

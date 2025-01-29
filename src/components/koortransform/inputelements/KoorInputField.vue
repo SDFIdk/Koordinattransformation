@@ -159,16 +159,19 @@
         <label for="D.min.sec">D.min.sec</label>
       </span>
     </div>
-    <g-search />
+
+    <g-search v-if="route.fullPath==='/Denmark'"/>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useKtStore } from '../../../store/store.js'
 import { getGSearchCenterPoint } from '../../../helperfunctions.js'
 
 const KtStore = useKtStore()
+const route = useRoute()
 
 const coorFrom = computed(() => KtStore.getCoordinatesFrom)
 const CRSInfo = computed(() => KtStore.getCRSFromDisplayInfo)
@@ -377,8 +380,10 @@ onMounted(async() => {
     gSearch.setAttribute("data-token", import.meta.env.VITE_TOKEN);
   }
   document.querySelector("g-search").addEventListener('gsearch:select', (event) => {
-    console.log(getGSearchCenterPoint(event.detail.geometry))
-
+    KtStore.setCoordinatesFrom({
+      crs: 'EPSG:25832',
+      coordinates: getGSearchCenterPoint(event.detail.geometry)
+    })
   })
 })
 

@@ -31,3 +31,21 @@ export const mapListToCoor = (listObject) => {
 export const extractEPSGCode = (crsString) => {
   return crsString.split(' ').at(-1).slice(1, -1)
 }
+
+export const getGSearchCenterPoint = (detail) => {
+  let coord = [0,0]
+  if (detail.type === 'MultiPolygon') {
+    const poly = new Polygon(detail.coordinates[0])
+    const interior_point = poly.getInteriorPoint().flatCoordinates
+    coord = [Number(interior_point[0].toFixed(5)), Number(interior_point[1].toFixed(5))]
+  } 
+  else if (detail.type === 'MultiLineString') {
+    const middlePoint = Math.floor(detail.coordinates[0].length / 2)
+    coord = detail.coordinates[0][middlePoint]
+  }
+  else {
+    // It is assumed, that other geometries are of type multipoint
+    coord = detail.coordinates[0]
+  }
+  return coord
+}

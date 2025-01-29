@@ -126,45 +126,47 @@
     </span>
   </div>
 
-  <div class="KT-input-row">
-    <div />
-
-    <span
-      v-if="!isMeter"
-      class="KT-radio-row"
-    >
-      <input
-        id="D"
-        v-model="degreeFormat"
-        type="radio"
-        name="format"
-        value="D"
-        checked="checked"
+  <div class="KT-input-bottom-row">
+    <div>
+      <span
+        v-if="!isMeter"
+        class="KT-radio-row"
       >
-      <label for="D">D</label><br>
-      <input
-        id="D.min"
-        v-model="degreeFormat"
-        type="radio"
-        name="format"
-        value="D.min"
-      >
-      <label for="D.min">D.min </label><br>
-      <input
-        id="D.min.sec"
-        v-model="degreeFormat"
-        type="radio"
-        name="format"
-        value="D.min.sec"
-      >
-      <label for="D.min.sec">D.min.sec</label>
-    </span>
+        <input
+          id="D"
+          v-model="degreeFormat"
+          type="radio"
+          name="format"
+          value="D"
+          checked="checked"
+        >
+        <label for="D">D</label><br>
+        <input
+          id="D.min"
+          v-model="degreeFormat"
+          type="radio"
+          name="format"
+          value="D.min"
+        >
+        <label for="D.min">D.min </label><br>
+        <input
+          id="D.min.sec"
+          v-model="degreeFormat"
+          type="radio"
+          name="format"
+          value="D.min.sec"
+        >
+        <label for="D.min.sec">D.min.sec</label>
+      </span>
+    </div>
+    <g-search />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useKtStore } from '../../../store/store.js'
+import { getGSearchCenterPoint } from '../../../helperfunctions.js'
 
 const KtStore = useKtStore()
 
@@ -369,6 +371,15 @@ onMounted(async() => {
   }
   formatInputCoor()
   toRepresentation()
+
+  const gSearch = document.querySelector("g-search");
+  if (gSearch) {
+    gSearch.setAttribute("data-token", import.meta.env.VITE_TOKEN);
+  }
+  document.querySelector("g-search").addEventListener('gsearch:select', (event) => {
+    console.log(getGSearchCenterPoint(event.detail.geometry))
+
+  })
 })
 
 
@@ -397,5 +408,16 @@ onMounted(async() => {
   flex-wrap: nowrap;
   gap: 0.5rem;
   justify-content: flex-end;
+}
+.KT-input-bottom-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 1rem;
+  max-width: 100%;
+  max-height: 2.5rem;
+  margin-top: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

@@ -136,7 +136,6 @@ export const useKtStore = defineStore('KtStore', {
         },
     
         async setCoordinatesFrom({ crs, coordinates }) {
-            console.log("do we update?")
             if(crs === this.CRSFrom) {
                 this.CoordinatesFrom = coordinates
 

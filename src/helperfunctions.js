@@ -17,7 +17,6 @@ export const mapCoorToList = (coorObject) => {
     const res = ['v1', 'v2', 'v3', 'v4']
         .map(key => coorObject[key])
         .filter(value => value !== null && value !== undefined)
-    console.log(res)
     return res
 };
 

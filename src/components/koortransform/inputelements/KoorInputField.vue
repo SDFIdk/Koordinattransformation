@@ -1,142 +1,165 @@
 <template>
-    <div v-if="isMeter" class="KT-input-row">
-      <span 
-        class="KT-input-row"
+  <div
+    v-if="isMeter"
+    class="KT-input-row"
+  >
+    <span 
+      class="KT-input-row"
+    >
+      <svg class="KT-icon">
+        <use :href="c1.dirIcon" />
+      </svg>
+      <input 
+        v-model="c1.cMeter"
+        type="number"
+        step="0.0001"
+        @input="debounceUpdate"
       >
-        <svg class='KT-icon'>
-          <use :href='c1.dirIcon' />
-        </svg>
-        <input 
-          type='number'
-          step='0.0001'
-          v-model='c1.cMeter'
-          @input='debounceUpdate'
-        />
-        <p> {{c1.dirIndicator}} </p>
-      </span>
-      <span 
-        class="KT-input-row"
+      <p> {{ c1.dirIndicator }} </p>
+    </span>
+    <span 
+      class="KT-input-row"
+    >
+      <svg class="KT-icon">
+        <use :href="c2.dirIcon" />
+      </svg>
+      <input 
+        v-model="c2.cMeter"
+        type="number"
+        step="0.0001"
+        @input="debounceUpdate"
       >
-        <svg class='KT-icon'>
-          <use :href='c2.dirIcon' />
-        </svg>
-        <input 
-          type='number'
-          step='0.0001'
-          v-model='c2.cMeter'
-          @input='debounceUpdate'
-        />
-        <p> {{ c2.dirIndicator }} </p>
-      </span>
-      <span 
-        v-if="c3.isHeight"
-        class="KT-input-row"
+      <p> {{ c2.dirIndicator }} </p>
+    </span>
+    <span 
+      v-if="c3.isHeight"
+      class="KT-input-row"
+    >
+      <svg class="KT-icon">
+        <use :href="c3.upIcon" />
+      </svg>
+      <input 
+        v-model="c3.cMeter"
+        type="number"
+        step="0.0001"
+        @input="debounceUpdate"
       >
-        <svg class='KT-icon'>
-          <use :href='c3.upIcon' />
-        </svg>
-        <input 
-          type='number'
-          step='0.0001'
-          v-model='c3.cMeter'
-          @input='debounceUpdate'
-        />
-        <p> m </p>
-      </span>
-    </div>
+      <p> m </p>
+    </span>
+  </div>
 
-    <div v-else class="KT-input-column">
-      <span 
-        class="KT-input-row"
+  <div
+    v-else
+    class="KT-input-column"
+  >
+    <span 
+      class="KT-input-row"
+    >
+      <svg class="KT-icon">
+        <use :href="c1.dirIcon" />
+      </svg>
+      <input 
+        v-model="c1.cDegree"
+        type="number"
+        step="0.0001"
+        @input="debounceUpdate"
       >
-        <svg class='KT-icon'>
-          <use :href='c1.dirIcon' />
-        </svg>
-        <input 
-          type='number'
-          step='0.0001'
-          v-model='c1.cDegree'
-          @input='debounceUpdate'
-        />
-        <p> {{ c1.dirIndicator }} </p>
-        <input 
-          v-if="degreeFormat==='D.min' || degreeFormat === 'D.min.sec'"
-          type='number'
-          step='0.0001'
-          v-model='c1.cMinute'
-          @input='debounceUpdate'
-        />
-        <input 
-          v-if="degreeFormat === 'D.min.sec'"
-          type='number'
-          step='0.0001'
-          v-model='c1.cSecond'
-          @input='debounceUpdate'
-        />
-      </span>
-
-      <span 
-        class="KT-input-row"
+      <p> {{ c1.dirIndicator }} </p>
+      <input 
+        v-if="degreeFormat==='D.min' || degreeFormat === 'D.min.sec'"
+        v-model="c1.cMinute"
+        type="number"
+        step="0.0001"
+        @input="debounceUpdate"
       >
-        <svg class='KT-icon'>
-          <use :href='c2.dirIcon' />
-        </svg>
-        <input 
-          type='number'
-          step='0.0001'
-          v-model='c2.cDegree'
-          @input='debounceUpdate'
-        />
-        <p> {{ c2.dirIndicator }} </p>
-        <input 
-          v-if="degreeFormat==='D.min' || degreeFormat === 'D.min.sec'"
-          type='number'
-          step='0.0001'
-          v-model='c2.cMinute'
-          @input='debounceUpdate'
-        />
-        <input 
-          v-if="degreeFormat === 'D.min.sec'"
-          type='number'
-          step='0.0001'
-          v-model='c2.cSecond'
-          @input='debounceUpdate'
-        />
-      </span>
-      <span 
-        v-if="c3.isHeight"
-        class="KT-input-row"
+      <input 
+        v-if="degreeFormat === 'D.min.sec'"
+        v-model="c1.cSecond"
+        type="number"
+        step="0.0001"
+        @input="debounceUpdate"
       >
-        <svg class='KT-icon'>
-          <use :href='c3.upIcon' />
-        </svg>
-        <input 
-          type='number'
-          step='0.0001'
-          v-model='c3.cMeter'
-          @input='debounceUpdate'
-        />
-        <p> m </p>
-      </span>
-    </div>
+    </span>
 
-    <div class="KT-input-row">
-      <div>
+    <span 
+      class="KT-input-row"
+    >
+      <svg class="KT-icon">
+        <use :href="c2.dirIcon" />
+      </svg>
+      <input 
+        v-model="c2.cDegree"
+        type="number"
+        step="0.0001"
+        @input="debounceUpdate"
+      >
+      <p> {{ c2.dirIndicator }} </p>
+      <input 
+        v-if="degreeFormat==='D.min' || degreeFormat === 'D.min.sec'"
+        v-model="c2.cMinute"
+        type="number"
+        step="0.0001"
+        @input="debounceUpdate"
+      >
+      <input 
+        v-if="degreeFormat === 'D.min.sec'"
+        v-model="c2.cSecond"
+        type="number"
+        step="0.0001"
+        @input="debounceUpdate"
+      >
+    </span>
+    <span 
+      v-if="c3.isHeight"
+      class="KT-input-row"
+    >
+      <svg class="KT-icon">
+        <use :href="c3.upIcon" />
+      </svg>
+      <input 
+        v-model="c3.cMeter"
+        type="number"
+        step="0.0001"
+        @input="debounceUpdate"
+      >
+      <p> m </p>
+    </span>
+  </div>
 
-      </div>
+  <div class="KT-input-row">
+    <div />
 
-      <span v-if="!isMeter" class="KT-radio-row">
-        <input type="radio" id="D" name="format" value="D" checked="checked" v-model="degreeFormat">
-        <label for="D">D</label><br>
-        <input type="radio" id="D.min" name="format" value="D.min"  v-model="degreeFormat">
-        <label for="D.min">D.min </label><br>
-        <input type="radio" id="D.min.sec" name="format" value="D.min.sec" v-model="degreeFormat">
-        <label for="D.min.sec">D.min.sec</label>
-      </span>
-    </div>
-
-
-
+    <span
+      v-if="!isMeter"
+      class="KT-radio-row"
+    >
+      <input
+        id="D"
+        v-model="degreeFormat"
+        type="radio"
+        name="format"
+        value="D"
+        checked="checked"
+      >
+      <label for="D">D</label><br>
+      <input
+        id="D.min"
+        v-model="degreeFormat"
+        type="radio"
+        name="format"
+        value="D.min"
+      >
+      <label for="D.min">D.min </label><br>
+      <input
+        id="D.min.sec"
+        v-model="degreeFormat"
+        type="radio"
+        name="format"
+        value="D.min.sec"
+      >
+      <label for="D.min.sec">D.min.sec</label>
+    </span>
+  </div>
 </template>
 
 <script setup>
@@ -231,7 +254,6 @@ const toRepresentation = () => {
         }
     }
 }
-
 
 const fromRepresentation = () => {
   

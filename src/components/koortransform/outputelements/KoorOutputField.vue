@@ -8,7 +8,6 @@
       <use href="../../assets/icons/icons.svg#direction-north" />
     </svg>
     <span class="KT-coordinate">{{ outputCoor.v2 }}</span>
-
   </div>
 </template>
 

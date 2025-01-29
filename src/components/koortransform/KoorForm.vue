@@ -1,8 +1,17 @@
 <template>
-    <dialog open class="koor-menu-inner">
-        <InputKoor :cover-area="coverArea" :input-options="CRSOptions"/>
-        <OutputKoor :cover-area="coverArea" :output-options="CRSOptions"/>
-    </dialog>
+  <dialog
+    open
+    class="koor-menu-inner"
+  >
+    <InputKoor
+      :cover-area="coverArea"
+      :input-options="CRSOptions"
+    />
+    <OutputKoor
+      :cover-area="coverArea"
+      :output-options="CRSOptions"
+    />
+  </dialog>
 </template>
 
 <script setup>

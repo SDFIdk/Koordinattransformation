@@ -176,7 +176,8 @@ const route = useRoute()
 const coorFrom = computed(() => KtStore.getCoordinatesFrom)
 const CRSInfo = computed(() => KtStore.getCRSFromDisplayInfo)
 
-const svgPath = '/src/assets/icons/icons.svg#'
+
+const svgPath = import.meta.env.VITE_NODE_ENV === 'production' ?  KtStore.getURL + '/icons.svg#' : '/src/assets/icons/icons.svg#' 
 const debounceTimeout = ref(null)
 
 const baseCoords  = ref({

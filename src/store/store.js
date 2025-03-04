@@ -9,6 +9,9 @@ export const useKtStore = defineStore('KtStore', {
     // Authentication token, default to null if not provided
     token: import.meta.env.VITE_TOKEN || null,
 
+    //baseUrl to find statically copied members
+    baseUrl: new URL(import.meta.url).origin || null,
+
     // Coordinate Reference System options, loaded from localStorage or defaulting to an empty object
     CRSOptions: JSON.parse(localStorage.getItem('KoordinatTranformationCRSOptions')) || {},
 
@@ -80,6 +83,9 @@ export const useKtStore = defineStore('KtStore', {
       }
       return state.CRSOptions.Global[state.CRSTo]
     },
+    getURL: (state) => {
+      return state.baseUrl
+    } 
   },
   actions: {
     setCoverArea(area) {

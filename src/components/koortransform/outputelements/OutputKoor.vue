@@ -1,26 +1,32 @@
 <template>
   <div class="KT-output-segment">
+    <button v-if="isMobile" class="KT-min quiet" title="minimize" @click="isMinimized= !isMinimized">
+      <svg v-if="!isMinimized"><use href="../../../assets/icons/icons.svg#minus"></use></svg>
+      <svg v-else><use href="../../../assets/icons/icons.svg#plus"></use></svg>
+    </button>
     <h2>Output</h2>
-    <select
-      id="epsg-select"
-      v-model="selectedOption"
-      name="epsg-select"
-    >
-      <option
-        v-for="option in outputOptions"
-        :key="option"
-        :value="option"
+    <div v-show="!isMinimized">
+      <select
+        id="epsg-select"
+        v-model="selectedOption"
+        name="epsg-select"
       >
-        {{ option }}
-      </option>
-    </select>
-    <KoorOutputField />
+        <option
+          v-for="option in outputOptions"
+          :key="option"
+          :value="option"
+        >
+          {{ option }}
+        </option>
+      </select>
+      <KoorOutputField />
+    </div>
   </div>
 </template>
 
 <script setup>
 import KoorOutputField from './KoorOutputField.vue'
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, inject } from 'vue'
 import { useKtStore } from '../../../store/store.js'
 import { extractEPSGCode } from '../../../helperfunctions.js'
 
@@ -37,7 +43,9 @@ const props = defineProps({
   },
 })
 
+const isMobile = inject('isMobile')
 const selectedOption = ref(props.outputOptions[0] || '')
+const isMinimized = ref(false)
 
 watch(selectedOption, (to, from) => {
   KtStore.setCRSTo(extractEPSGCode(to))
@@ -53,12 +61,18 @@ onMounted(() => {
 .KT-output-segment {
     width: 50%;
     margin: var(--space);
+    position:relative;
 }
 @media only screen and (max-width: 66rem) {
   .KT-output-segment {
       width: 90%;
       height:50%;
       margin: var(--space);
+  }
+  .KT-min{
+    position: absolute;
+    right: -1rem;
+    top: -1rem;
   }
 }
 

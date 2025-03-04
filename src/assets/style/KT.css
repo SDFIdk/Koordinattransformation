@@ -1,0 +1,23 @@
+
+
+
+/* For most browsers */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none; /* Hide the spin buttons in WebKit browsers (Chrome, Safari) */
+  margin: 0;
+}
+
+/* For Firefox */
+input[type="number"] {
+  -moz-appearance: textfield; /* Hide the spin buttons in Firefox */
+}
+
+/* Optionally, reset appearance in Edge */
+input[type="number"]::-ms-expand {
+  display: none; /* Hide the spin buttons in Edge */
+}
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none; /* Hide the spin buttons in WebKit browsers (Chrome, Safari) */
+  margin: 0;
+}

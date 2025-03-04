@@ -1,10 +1,17 @@
 <template>
   <header class="ds-header koor-header">
-    <ds-logo-title
-      id="koor-hover-icon"
-      title="Koordinattransformation"
-      byline="Klimadatastyrelsen"
-    />
+    <router-link
+      to="/"
+      class="quiet KT-logo"
+      role="link"
+    >
+      <ds-logo-title
+        id="koor-hover-icon"
+        title="Koordinattransformation"
+        byline="Klimadatastyrelsen"
+        style="margin: 0;"
+      />
+    </router-link>
     <ds-nav-responsive class="switch koor-nav">
       <!-- Use the #toggle slot inside a <template> -->
       <button 
@@ -56,4 +63,12 @@
 .koor-nav {
     margin: var(--space)
 }
+.KT-logo {
+  display: flex;
+  align-self: center;
+  justify-self: space-around;
+  margin: var(--space) !important;
+}
+
+
 </style>

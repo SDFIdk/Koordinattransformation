@@ -218,7 +218,6 @@ onMounted(async() => {
 watch(coorFrom, async (to, from) => {
   //case that it is same epsg
   const crsFrom = KtStore.CRSFrom
-  
   if(crsFrom === mapData.value[coverArea.value].projection) {
     overlay.value.setPosition(mapCoorToList(to))
   }

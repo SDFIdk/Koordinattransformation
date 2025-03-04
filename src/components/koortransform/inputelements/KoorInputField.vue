@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isMeter"
-    class="KT-input-row"
+    class="KT-input-meter"
   >
     <span 
       class="KT-input-row"
@@ -160,7 +160,7 @@
       </span>
     </div>
 
-    <g-search v-if="route.fullPath==='/Denmark' || route.fullPath==='/'"/>
+    <g-search v-if="route.fullPath==='/Denmark' || route.fullPath==='/'" />
   </div>
 </template>
 
@@ -208,7 +208,7 @@ const c3 = ref({
   upIcon: svgPath + 'arrow-up',
 })
 
-const isMeter = ref(true)
+const isMeter = ref(false)
 const degreeFormat = ref('D')
 
 const toRepresentation = () => {
@@ -290,7 +290,6 @@ const fromRepresentation = () => {
 
 const formatInputCoor = () => {
   isMeter.value = CRSInfo.value.v1_unit === 'metre' && CRSInfo.value.v2_unit === 'metre'
-
   //if m is missing, something is wrong
   if(isMeter.value){
     c1.value.dirIndicator = 'm'
@@ -347,6 +346,9 @@ const debounceUpdate = () => {
   }, 500)
 }
 
+watch(CRSInfo, () => {
+  formatInputCoor()
+})
 
 watch(coorFrom, (to) => {
 
@@ -356,7 +358,6 @@ watch(coorFrom, (to) => {
     v3: coorFrom.value.v3 || 0.0,
     v4: coorFrom.value.v4 || 0.0,
   }
-  formatInputCoor()
   toRepresentation()
 })
 
@@ -406,6 +407,7 @@ onMounted(async() => {
   margin-top: 0.5rem;
   justify-content: flex-start;
 }
+.KT-input-meter,
 .KT-radio-row {
   display: flex;
   flex-direction: row;
@@ -423,5 +425,10 @@ onMounted(async() => {
   margin-top: 0.5rem;
   justify-content: space-between;
   align-items: center;
+}
+@media only screen and (max-width: 66rem) {
+  .KT-input-meter {
+    flex-direction: column;
+  }
 }
 </style>

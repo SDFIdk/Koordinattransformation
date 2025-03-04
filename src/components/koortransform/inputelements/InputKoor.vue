@@ -51,5 +51,13 @@ onMounted(() => {
 <style scoped>
 .KT-input-segment {
     width: 50%;
+    margin: var(--space);
+}
+@media only screen and (max-width: 66rem) {
+  .KT-input-segment {
+      width: 90%;
+      height:50%;
+      margin: var(--space);
+  }
 }
 </style>

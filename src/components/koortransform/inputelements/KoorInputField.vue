@@ -160,7 +160,7 @@
       </span>
     </div>
 
-    <g-search v-if="route.fullPath==='/Denmark'" />
+    <g-search v-if="route.fullPath==='/Denmark' || route.fullPath==='/'"/>
   </div>
 </template>
 
@@ -375,19 +375,18 @@ onMounted(async() => {
   formatInputCoor()
   toRepresentation()
 
+
   const gSearch = document.querySelector('g-search')
   if (gSearch) {
     gSearch.setAttribute('data-token', import.meta.env.VITE_TOKEN)
-  }
-  document.querySelector('g-search').addEventListener('gsearch:select', (event) => {
-    KtStore.setCoordinatesFrom({
-      crs: 'EPSG:25832',
-      coordinates: getGSearchCenterPoint(event.detail.geometry)
+    document.querySelector('g-search').addEventListener('gsearch:select', (event) => {
+      KtStore.setCoordinatesFrom({
+        crs: 'EPSG:25832',
+        coordinates: getGSearchCenterPoint(event.detail.geometry)
+      })
     })
-  })
+  }
 })
-
-
 
 </script>
 

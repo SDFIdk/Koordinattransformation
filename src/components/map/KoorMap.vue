@@ -108,6 +108,26 @@ const fetchGLMap = async () => {
       transparent: 'FALSE',
       tiled: true,
     },
+    tileLoadFunction: (imageTile, src) => {
+      const urlToPatch = new URL(src)
+
+      let newUrl = `${urlToPatch.protocol}//${urlToPatch.hostname}${urlToPatch.pathname}?`
+      const queryParams = []
+      let found = false
+      for (const [key, value] of urlToPatch.searchParams.entries()) {
+        if(key.toLowerCase() === 'service'){
+          if(found) {
+            continue
+          }
+          found = true
+        }
+        queryParams.push(`${key}=${value}`)
+      }
+      newUrl += queryParams.join('&')
+
+      
+      imageTile.getImage().src = newUrl
+    }
   })
 
   return groenlandTopoSource

@@ -52,5 +52,14 @@ onMounted(() => {
 <style scoped>
 .KT-output-segment {
     width: 50%;
+    margin: var(--space);
 }
+@media only screen and (max-width: 66rem) {
+  .KT-output-segment {
+      width: 90%;
+      height:50%;
+      margin: var(--space);
+  }
+}
+
 </style>

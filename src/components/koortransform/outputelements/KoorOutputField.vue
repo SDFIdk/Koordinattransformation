@@ -1,7 +1,18 @@
 <template>
   <div class="KT-output-column">
     <span class="KT-output-coord">
-      {{ outputCoor }}
+      <p
+        id="KT-output"
+        class="KT-p"
+      >{{ outputCoor || ' ' }}</p>
+      <button
+        v-if="outputCoor"
+        class="KT-cpy"
+        title="copy to clipboard"
+        @click="ktcopy()"
+      >
+        <svg><use href="../../../assets/icons/icons.svg#copy" /></svg>
+      </button>
     </span>
     <span
       v-if="!isMeter"
@@ -69,6 +80,9 @@ const c3 = ref({
 })
 
 const outputCoor = ref('')
+const ktcopy = () => {
+  navigator.clipboard.writeText(outputCoor.value)
+}
 
 const formatOutputCoor = () => {
   isMeter.value = CRSInfo.value.v1_unit === 'metre' && CRSInfo.value.v2_unit === 'metre'
@@ -153,15 +167,13 @@ const toStringRepr = () => {
   height = c3.value.isHeight ? `, ${c3.value.cMeter} m` : ''
   outputCoor.value = `${coord1}, ${coord2}${height}`
 }
-
+// Watchers for changes in input/output coordinates
 watch(CRSInfo, () => {
   formatOutputCoor()
 })
-// Watchers for changes in input/output coordinates
 watch(coorFrom, () => {
   KtStore.setCoordinatesTo()
 })
-
 watch(coorTo, () => {
   toRepresentation()
   toStringRepr()
@@ -195,12 +207,31 @@ watch(degreeFormat, () => {
   gap: 0.5rem;
   justify-content: flex-end;
 }
+.KT-output-coord,
+.KT-cpy, 
+.KT-p {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
 .KT-output-coord {
   background-color: var(--c7);
   color: var(--grey1);
-  border-radius: 1rem;
+  border-radius: 1.2rem;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 1rem;
-  margin-left: 1rem;
-  padding: 0.4rem;
+  margin-bottom: 1rem;
+  margin-left: 0.2rem;
+  margin-right: 0.2rem;
 }
+
+.KT-p {
+  color: white;
+  margin-left: 0.4rem;
+}
+
 </style>

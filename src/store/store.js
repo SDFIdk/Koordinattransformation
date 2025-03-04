@@ -128,7 +128,6 @@ export const useKtStore = defineStore('KtStore', {
         
         this.CRSOptions = updatedCRSOptions
         localStorage.setItem('KoordinatTranformationCRSOptions', JSON.stringify(updatedCRSOptions))
-        console.log(this.CRSOptions)
       } catch (error) {
         console.error('Error fetching CRS Options: ', error)
       }
@@ -142,8 +141,6 @@ export const useKtStore = defineStore('KtStore', {
     },
     
     async setCoordinatesFrom({ crs, coordinates }) {
-      console.log(this.webproj)
-      console.log(import.meta.env)
       if(crs === this.CRSFrom) {
         this.CoordinatesFrom = coordinates
 

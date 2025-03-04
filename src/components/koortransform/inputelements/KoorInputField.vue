@@ -344,7 +344,7 @@ const debounceUpdate = () => {
       crs: KtStore.CRSFrom,
       coordinates: baseCoords.value,
     })
-  }, 500)
+  }, 700)
 }
 
 watch(CRSInfo, () => {

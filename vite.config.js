@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig({
   resolve: {
@@ -8,11 +9,22 @@ export default defineConfig({
       'vue': 'vue/dist/vue.esm-bundler.js'
     }
   },
-  plugins: [vue({
-    template: {
-      compilerOptions: {
-        isCustomElement: (tag) => tag.includes('ds-') || tag.includes('g-')
+  plugins: [
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag.includes('ds-') || tag.includes('g-')
+        }
       }
-    }
-  })],
+    }),
+    viteStaticCopy({
+      targets: [
+        {
+          src: './src/assets/icons/icons.svg',
+          dest: ''
+        }
+      ]
+    })
+  ],
+  
 })

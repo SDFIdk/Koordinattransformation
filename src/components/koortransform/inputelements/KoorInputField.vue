@@ -6,7 +6,7 @@
     <span 
       class="KT-input-row"
     >
-      <svg class="KT-icon">
+      <svg class="KT-idc">
         <use :href="c1.dirIcon" />
       </svg>
       <input 
@@ -15,12 +15,12 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p> {{ c1.dirIndicator }} </p>
+      <p class="KT-idc"> {{ c1.dirIndicator }} </p>
     </span>
     <span 
       class="KT-input-row"
     >
-      <svg class="KT-icon">
+      <svg class="KT-idc">
         <use :href="c2.dirIcon" />
       </svg>
       <input 
@@ -29,13 +29,13 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p> {{ c2.dirIndicator }} </p>
+      <p class="KT-idc"> {{ c2.dirIndicator }} </p>
     </span>
     <span 
       v-if="c3.isHeight"
       class="KT-input-row"
     >
-      <svg class="KT-icon">
+      <svg class="KT-idc">
         <use :href="c3.upIcon" />
       </svg>
       <input 
@@ -44,7 +44,7 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p> m </p>
+      <p class="KT-idc"> m </p>
     </span>
   </div>
 
@@ -55,7 +55,7 @@
     <span 
       class="KT-input-row"
     >
-      <svg class="KT-icon">
+      <svg class="KT-idc">
         <use :href="c1.dirIcon" />
       </svg>
       <input 
@@ -64,7 +64,7 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p> {{ c1.dirIndicator }} </p>
+      <p class="KT-idc"> {{ c1.dirIndicator }} </p>
       <input 
         v-if="degreeFormat==='D.min' || degreeFormat === 'D.min.sec'"
         v-model="c1.cMinute"
@@ -84,7 +84,7 @@
     <span 
       class="KT-input-row"
     >
-      <svg class="KT-icon">
+      <svg class="KT-idc">
         <use :href="c2.dirIcon" />
       </svg>
       <input 
@@ -93,7 +93,7 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p> {{ c2.dirIndicator }} </p>
+      <p class="KT-idc"> {{ c2.dirIndicator }} </p>
       <input 
         v-if="degreeFormat==='D.min' || degreeFormat === 'D.min.sec'"
         v-model="c2.cMinute"
@@ -113,7 +113,7 @@
       v-if="c3.isHeight"
       class="KT-input-row"
     >
-      <svg class="KT-icon">
+      <svg class="KT-idc">
         <use :href="c3.upIcon" />
       </svg>
       <input 
@@ -122,7 +122,7 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p> m </p>
+      <p class="KT-idc"> m </p>
     </span>
   </div>
 
@@ -392,6 +392,13 @@ onMounted(async() => {
 </script>
 
 <style scoped>
+.KT-idc {
+  display: flex;
+  align-self: center;
+  min-width: 1rem;
+  min-height: 1rem;
+  margin: 0;
+}
 .KT-input-column {
   display: flex;
   flex-direction: column;

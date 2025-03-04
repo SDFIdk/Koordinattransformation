@@ -1,25 +1,31 @@
 <template>
   <div class="KT-input-segment">
+    <button v-if="isMobile" class="KT-min quiet" title="minimize" @click="isMinimized= !isMinimized">
+      <svg v-if="!isMinimized"><use href="../../../assets/icons/icons.svg#minus"></use></svg>
+      <svg v-else><use href="../../../assets/icons/icons.svg#plus"></use></svg>
+    </button>
     <h2>Input</h2>
-    <select
-      id="epsg-select"
-      v-model="selectedOption"
-      name="epsg-select"
-    >
-      <option
-        v-for="option in inputOptions"
-        :key="option"
-        :value="option"
+    <div v-show="!isMinimized">
+      <select
+        id="epsg-select"
+        v-model="selectedOption"
+        name="epsg-select"
       >
-        {{ option }}
-      </option>
-    </select>
-    <KoorInputField />
+        <option
+          v-for="option in inputOptions"
+          :key="option"
+          :value="option"
+        >
+          {{ option }}
+        </option>
+      </select>
+      <KoorInputField />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, inject } from 'vue'
 import { useKtStore } from '../../../store/store.js'
 import { extractEPSGCode } from '../../../helperfunctions.js'
 import KoorInputField from './KoorInputField.vue'
@@ -37,6 +43,8 @@ const props = defineProps({
   },
 })
 const selectedOption = ref(props.inputOptions[0] || '')
+const isMobile = inject('isMobile')
+const isMinimized = ref(false)
 
 watch(selectedOption, (to, from) => {
   KtStore.setCRSFrom(extractEPSGCode(to))
@@ -58,6 +66,11 @@ onMounted(() => {
       width: 90%;
       height:50%;
       margin: var(--space);
+  }
+  .KT-min{
+    position: absolute;
+    right: 1rem;
+    top: 0.1rem;
   }
 }
 </style>

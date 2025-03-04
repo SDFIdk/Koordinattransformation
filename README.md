@@ -56,6 +56,7 @@ npm run dev
 Compile og minify projektet til produktion:
 ```
 npm run build
+npm run preview
 ```
 ***
 

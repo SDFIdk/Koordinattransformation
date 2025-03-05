@@ -5,8 +5,8 @@ Koordinattransformation er en Vue.js applikation der gør det let at transformer
 Projektet er scaffolded med [Vite](https://vitejs.dev/) og kørt igennem NPM
 
 For at udvikle og bygge projektet anbefales følgende setup
-- node.js version: >=21.05.0 [link til download](https://nodejs.org/en/)
-- npm version: >=10.2.4, dette gøres igennem node.js installeren.
+- node.js version: >=23.09.0 [link til download](https://nodejs.org/en/)
+- npm version: >=10.9.2, dette gøres igennem node.js installeren.
 
 ---
 

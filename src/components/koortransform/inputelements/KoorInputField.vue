@@ -424,6 +424,20 @@ onMounted(async() => {
   margin-top: 0.5rem;
   justify-content: flex-start;
 }
+.KT-input-meter {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: row;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+.KT-input-meter span {
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 9vw;
+  max-width: 100%;
+}
 .KT-radio-row {
   display: flex;
   flex-direction: row;
@@ -431,16 +445,7 @@ onMounted(async() => {
   gap: 0.5rem;
   justify-content: flex-end;
 }
-.KT-input-meter {
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-  flex-wrap : wrap;
-  justify-content: flex-start;
-}
-.KT-input-meter span{
-  max-width: 31%;
-}
+
 .KT-input-bottom-row {
   display: flex;
   flex-direction: row;

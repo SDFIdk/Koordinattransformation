@@ -1,5 +1,13 @@
 
+body {
+  overflow: hidden;
+}
 
+.gs-result-list {
+  max-height: 15rem;
+  overflow-y: scroll;
+  z-index: 100;
+}
 
 /* For most browsers */
 input[type="number"]::-webkit-outer-spin-button,
@@ -11,6 +19,7 @@ input[type="number"]::-webkit-inner-spin-button {
 /* For Firefox */
 input[type="number"] {
   -moz-appearance: textfield; /* Hide the spin buttons in Firefox */
+  appearance: textfield;
 }
 
 /* Optionally, reset appearance in Edge */
@@ -20,4 +29,15 @@ input[type="number"]::-ms-expand {
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none; /* Hide the spin buttons in WebKit browsers (Chrome, Safari) */
   margin: 0;
+}
+input {
+  padding-left: 0.2rem !important;
+  padding-right: 0.2rem !important;
+}
+select, input, p {
+  text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  -ms-text-size-adjust: none;
+  font-size: 0.9em !important;
 }

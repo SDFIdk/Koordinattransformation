@@ -1,5 +1,5 @@
 <template>
-  <div class="KT-output-segment">
+  <div class="KT-output-wrapper">
     <button
       v-if="isMobile"
       class="KT-min quiet"
@@ -9,22 +9,24 @@
       <svg v-if="!isMinimized"><use href="../../../assets/icons/icons.svg#minus" /></svg>
       <svg v-else><use href="../../../assets/icons/icons.svg#plus" /></svg>
     </button>
-    <h2>Output</h2>
-    <div v-show="!isMinimized">
-      <select
-        id="epsg-select"
-        v-model="selectedOption"
-        name="epsg-select"
-      >
-        <option
-          v-for="option in outputOptions"
-          :key="option"
-          :value="option"
+    <div class="KT-output-segment">
+      <h2>Output</h2>
+      <div v-show="!isMinimized">
+        <select
+          id="epsg-select"
+          v-model="selectedOption"
+          name="epsg-select"
         >
-          {{ option }}
-        </option>
-      </select>
-      <KoorOutputField />
+          <option
+            v-for="option in outputOptions"
+            :key="option"
+            :value="option"
+          >
+            {{ option }}
+          </option>
+        </select>
+        <KoorOutputField />
+      </div>
     </div>
   </div>
 </template>
@@ -64,11 +66,18 @@ onMounted(() => {
 
 <style scoped>
 .KT-output-segment {
-    width: 50%;
     margin: var(--space);
-    position:relative;
+}
+.KT-output-wrapper {
+  width: 50%;
+  height:100%;
+  position:relative;
 }
 @media only screen and (max-width: 66rem) {
+  .KT-output-wrapper {
+    width:100%;
+    height: 50%;
+  }
   .KT-output-segment {
       width: 90%;
       height:50%;
@@ -76,8 +85,8 @@ onMounted(() => {
   }
   .KT-min{
     position: absolute;
-    right: -1rem;
-    top: -1rem;
+    right: 1rem;
+    top: 0;
   }
 }
 

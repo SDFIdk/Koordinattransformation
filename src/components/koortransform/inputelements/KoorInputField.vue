@@ -418,19 +418,28 @@ onMounted(async() => {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  gap: 1rem;
+  gap: 0.5rem;
   max-width: 100%;
   max-height: 2.5rem;
   margin-top: 0.5rem;
   justify-content: flex-start;
 }
-.KT-input-meter,
 .KT-radio-row {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   gap: 0.5rem;
   justify-content: flex-end;
+}
+.KT-input-meter {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  flex-wrap : wrap;
+  justify-content: flex-start;
+}
+.KT-input-meter span{
+  max-width: 31%;
 }
 .KT-input-bottom-row {
   display: flex;

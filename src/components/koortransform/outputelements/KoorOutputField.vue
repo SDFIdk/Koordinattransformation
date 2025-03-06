@@ -85,10 +85,10 @@ const ktcopy = () => {
 }
 
 const formatOutputCoor = () => {
-  isMeter.value = CRSInfo.value.v1_unit === 'metre' && CRSInfo.value.v2_unit === 'metre'
+  isMeter.value = (CRSInfo.value?.v1_unit ?? '') === 'metre' && (CRSInfo.value?.v2_unit ?? '') === 'metre'
 
-  c1.value.dirIndicator = CRSInfo.value.v1 === 'Breddegrad' ? 'N' : 'm'
-  c2.value.dirIndicator = CRSInfo.value.v2 === 'Længdegrad' ? 'E' : 'm'
+  c1.value.dirIndicator = (CRSInfo.value.v1 ?? '') === 'Breddegrad' ? 'N' : 'm'
+  c2.value.dirIndicator = (CRSInfo.value.v2 ?? '') === 'Længdegrad' ? 'E' : 'm'
   c3.value.isHeight = Boolean(CRSInfo.value.v3)
 }
 

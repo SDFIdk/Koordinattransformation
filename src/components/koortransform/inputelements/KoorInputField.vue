@@ -10,6 +10,7 @@
         <use :href="c1.dirIcon" />
       </svg>
       <input 
+        id="c1"
         v-model="c1.cMeter"
         type="number"
         step="0.0001"
@@ -24,6 +25,7 @@
         <use :href="c2.dirIcon" />
       </svg>
       <input 
+        id="c2"
         v-model="c2.cMeter"
         type="number"
         step="0.0001"
@@ -39,6 +41,7 @@
         <use :href="c3.upIcon" />
       </svg>
       <input 
+        id="c3"
         v-model="c3.cMeter"
         type="number"
         step="0.0001"
@@ -59,6 +62,7 @@
         <use :href="c1.dirIcon" />
       </svg>
       <input 
+        id="c1D"
         v-model="c1.cDegree"
         type="number"
         step="0.0001"
@@ -67,6 +71,7 @@
       <p class="KT-idc"> {{ c1.dirIndicator }} </p>
       <input 
         v-if="degreeFormat==='D.min' || degreeFormat === 'D.min.sec'"
+        id="c1Dm"
         v-model="c1.cMinute"
         type="number"
         step="0.0001"
@@ -74,6 +79,7 @@
       >
       <input 
         v-if="degreeFormat === 'D.min.sec'"
+        id="c1Dms"
         v-model="c1.cSecond"
         type="number"
         step="0.0001"
@@ -88,6 +94,7 @@
         <use :href="c2.dirIcon" />
       </svg>
       <input 
+        id="c2D"
         v-model="c2.cDegree"
         type="number"
         step="0.0001"
@@ -96,6 +103,7 @@
       <p class="KT-idc"> {{ c2.dirIndicator }} </p>
       <input 
         v-if="degreeFormat==='D.min' || degreeFormat === 'D.min.sec'"
+        id="c2Dm"
         v-model="c2.cMinute"
         type="number"
         step="0.0001"
@@ -103,6 +111,7 @@
       >
       <input 
         v-if="degreeFormat === 'D.min.sec'"
+        id="c2Dms"
         v-model="c2.cSecond"
         type="number"
         step="0.0001"
@@ -117,6 +126,7 @@
         <use :href="c3.upIcon" />
       </svg>
       <input 
+        id="c3"
         v-model="c3.cMeter"
         type="number"
         step="0.0001"
@@ -159,7 +169,7 @@
         <label for="D.min.sec">D.min.sec</label>
       </span>
     </div>
-
+    
     <g-search v-if="route.fullPath==='/Denmark' || route.fullPath==='/'" />
   </div>
 </template>
@@ -176,8 +186,7 @@ const route = useRoute()
 const coorFrom = computed(() => KtStore.getCoordinatesFrom)
 const CRSInfo = computed(() => KtStore.getCRSFromDisplayInfo)
 
-
-const svgPath = import.meta.env.VITE_NODE_ENV === 'production' ?  KtStore.getURL + '/icons.svg#' : '/src/assets/icons/icons.svg#' 
+const svgPath = import.meta.env.VITE_NODE_ENV === 'production' || import.meta.env.VITE_NODE_ENV === 'test' ?  KtStore.getURL + '/icons.svg#' : '/src/assets/icons/icons.svg#' 
 const debounceTimeout = ref(null)
 
 const baseCoords  = ref({
@@ -209,7 +218,7 @@ const c3 = ref({
   upIcon: svgPath + 'arrow-up',
 })
 
-const isMeter = ref(false)
+const isMeter = ref(true)
 const degreeFormat = ref('D')
 
 const toRepresentation = () => {
@@ -290,7 +299,7 @@ const fromRepresentation = () => {
 
 
 const formatInputCoor = () => {
-  isMeter.value = CRSInfo.value.v1_unit === 'metre' && CRSInfo.value.v2_unit === 'metre'
+  isMeter.value = (CRSInfo.value?.v1_unit ?? '') === 'metre' && (CRSInfo.value?.v2_unit ?? '') === 'metre'
   //if m is missing, something is wrong
   if(isMeter.value){
     c1.value.dirIndicator = 'm'

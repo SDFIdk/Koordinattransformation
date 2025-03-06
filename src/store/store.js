@@ -72,16 +72,14 @@ export const useKtStore = defineStore('KtStore', {
     getCoordinatesTo: (state) => state.CoordinatesTo,
 
     getCRSFromDisplayInfo: (state) => {
-      if(state.CRSOptions[state.CoverArea][state.CRSFrom]){
-        return state.CRSOptions[state.CoverArea][state.CRSFrom]
-      }
-      return  state.CRSOptions.Global[state.CRSFrom]
+      return state.CRSOptions?.[state.CoverArea]?.[state.CRSFrom]
+        ?? state.CRSOptions?.Global?.[state.CRSFrom]
+        ?? {}
     },
     getCRSToDisplayInfo: (state) => {
-      if(state.CRSOptions[state.CoverArea][state.CRSTo]) {
-        return state.CRSOptions[state.CoverArea][state.CRSTo]
-      }
-      return state.CRSOptions.Global[state.CRSTo]
+      return state.CRSOptions?.[state.CoverArea]?.[state.CRSTo]
+        ?? state.CRSOptions?.Global?.[state.CRSTo]
+        ?? {}
     },
     getURL: (state) => {
       return state.baseUrl
@@ -99,17 +97,36 @@ export const useKtStore = defineStore('KtStore', {
         }
           
         const data = await response.json()
-        const updatedCRSOptions = { ...this.CRSOptions }
+        //first, we preseed the CRSOptions to ensure the ordering
+        const updatedCRSOptions = {}
+
+        // Define cover areas
         const coverAreas = ['DK', 'GL', 'Global']
-        for (const coverArea of coverAreas) {
-          if (!updatedCRSOptions[coverArea]) {
+    
+        // Iterate over each cover area
+        coverAreas.forEach(coverArea => {
+          if (data[coverArea]) {
+            // Initialize the cover area in updatedCRSOptions
             updatedCRSOptions[coverArea] = {}
+    
+            // Iterate over each EPSG value in the cover area
+            data[coverArea].forEach(epsgValue => {
+              // Set the EPSG value as a key with null as its value
+              updatedCRSOptions[coverArea][epsgValue] = null
+            })
           }
+        })
+
+        for (const coverArea of coverAreas) {
           
           const crsOptions = data[coverArea] || []
 
           const fetchDetailsPromises = crsOptions.map(async (crsOption) => {
-            if (!updatedCRSOptions[coverArea][crsOption]) {
+            //copy over values if they already exist (important to have optional tags as each could possible have been added)
+            if(this.CRSOptions?.[coverArea]?.[crsOption]){
+              updatedCRSOptions[coverArea][crsOption] = this.CRSOptions[coverArea][crsOption]
+            }
+            else {
               try {
                 const detailsResponse = await fetch(`https://api.dataforsyningen.dk/rest/webproj/v1.2/crs/${crsOption}?token=${this.token}`)
                 if (!detailsResponse.ok) {
@@ -141,9 +158,11 @@ export const useKtStore = defineStore('KtStore', {
     },
     
     async setCoordinatesFrom({ crs, coordinates }) {
-      if(crs === this.CRSFrom) {
+      if(this.CRSFrom === '' ){
+        console.log('this should not happen')
+      }
+      else if(crs === this.CRSFrom) {
         this.CoordinatesFrom = coordinates
-
       }
       else{
         try {
@@ -162,7 +181,10 @@ export const useKtStore = defineStore('KtStore', {
     },
     
     async setCoordinatesTo() {
-      if(this.CRSFrom === this.CRSTo) {
+      if(this.CRSFrom === '' ){
+        console.log('this should not happen')
+      }
+      else if(this.CRSFrom === this.CRSTo) {
         this.CoordinatesTo = this.CoordinatesFrom
       }
       else {

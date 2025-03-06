@@ -67,6 +67,19 @@ Koderne fra WEBPROJ bliver derefter store'et i en Pinia store. Under runtime, ka
 [firefox](https://devtools.vuejs.org/)
 [Edge](https://microsoftedge.microsoft.com/addons/detail/vuejs-devtools/olofadcdnkkjdfgjcmjaadnlehnnihnl)
 
+### Test applicationen
+E2E test er implementeret via [Playwright]{https://playwright.dev/} <br>
+
+Test miljøet kører i 3 browsere, Edge, Chrome og Firefox, hvor Safari er udeladt grundet ustabilitet på Linux.
+Test kan køres via
+```
+npm run test
+```
+
+For debug setup, kør:
+```
+npm run test:debug
+```
 
 ## Formattering af koordinater
 | Koordinater                  | Antal decimaler   |

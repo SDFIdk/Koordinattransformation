@@ -9,7 +9,7 @@
 <script setup>
 import KoorHeader from './components/shared/KoorHeader.vue'
 import { useKtStore } from './store/store.js'
-import { onBeforeMount, onMounted, provide, onBeforeUnmount, ref } from 'vue'
+import { onBeforeMount, onMounted, provide, onBeforeUnmount, ref, nextTick } from 'vue'
 
 const KtStore = useKtStore()
 
@@ -18,6 +18,7 @@ provide('isMobile', isMobile)
 
 onBeforeMount(async () => {
   await KtStore.fetchCRSOptions()
+  await nextTick()
 })
 
 onMounted(() => {

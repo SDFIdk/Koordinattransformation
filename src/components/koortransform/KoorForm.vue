@@ -1,9 +1,11 @@
 <template>
   <dialog
+    v-if="CRSOptions.length>0"
     open
     class="koor-menu-inner"
   >
     <InputKoor
+      
       :cover-area="coverArea"
       :input-options="CRSOptions"
     />
@@ -24,6 +26,15 @@
       :cover-area="coverArea"
       :output-options="CRSOptions"
     />
+  </dialog>
+  <dialog
+    v-else
+    open
+    class="koor-menu-inner"
+  >
+    <div class="KT-load-wrapper">
+      <ds-spinner></ds-spinner>
+    </div>
   </dialog>
 </template>
 
@@ -74,7 +85,14 @@ const CRSOptions = computed(() => {
   --ds-icon-stroke : 3;
   margin: 0;
 }
-
+.KT-load-wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-height: 15rem;
+  width:100%;
+}
 @media only screen and (max-width: 66rem) {
   .koor-menu-inner {
       display: flex;

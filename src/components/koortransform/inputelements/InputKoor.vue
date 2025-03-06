@@ -1,8 +1,13 @@
 <template>
   <div class="KT-input-segment">
-    <button v-if="isMobile" class="KT-min quiet" title="minimize" @click="isMinimized= !isMinimized">
-      <svg v-if="!isMinimized"><use href="../../../assets/icons/icons.svg#minus"></use></svg>
-      <svg v-else><use href="../../../assets/icons/icons.svg#plus"></use></svg>
+    <button
+      v-if="isMobile"
+      class="KT-min quiet"
+      title="minimize"
+      @click="isMinimized= !isMinimized"
+    >
+      <svg v-if="!isMinimized"><use href="../../../assets/icons/icons.svg#minus" /></svg>
+      <svg v-else><use href="../../../assets/icons/icons.svg#plus" /></svg>
     </button>
     <h2>Input</h2>
     <div v-show="!isMinimized">

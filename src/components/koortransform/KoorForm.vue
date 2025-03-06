@@ -33,7 +33,7 @@
     class="koor-menu-inner"
   >
     <div class="KT-load-wrapper">
-      <ds-spinner></ds-spinner>
+      <ds-spinner />
     </div>
   </dialog>
 </template>
@@ -119,9 +119,7 @@ const CRSOptions = computed(() => {
     position: absolute;
     top: -0.2rem;
     margin: 0;
-    left: 45%;
+    left: 48%;
   }
 }
-
-
 </style>

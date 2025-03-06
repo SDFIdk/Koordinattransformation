@@ -220,6 +220,7 @@ watch(degreeFormat, () => {
   vertical-align: middle;
   margin-bottom: 0;
   padding-bottom: 0;
+  padding-top: 0;
 }
 
 .KT-output-coord {

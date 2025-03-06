@@ -4,3 +4,4 @@ public/
 .env*
 dist/
 playwright-report/
+test-results/

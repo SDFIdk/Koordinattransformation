@@ -456,5 +456,8 @@ onMounted(async() => {
   .KT-input-meter {
     flex-direction: column;
   }
+  .KT-input-meter span{
+  max-width: 100%;
+}
 }
 </style>

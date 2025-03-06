@@ -77,12 +77,12 @@ const mapData = ref({
     mapURL: 'https://services.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts?username=WVTWQAXVUY&password=FiskMangler1Ven*&service=WMTS&request=GetCapabilities',
     source: null,
     view: null,
-    center: [587135, 6140617 + 50000],
+    center: [587135, 6140617 + 80000],
     extent: [120000, 5900000, 1000000, 6500000],
     projection: 'EPSG:25832',
-    zoom: 8.2,
-    minZoom: 8,
-    maxZoom: 23,
+    zoom: 8.6,
+    minZoom: 8.5,
+    maxZoom: 20,
   },
 })
 

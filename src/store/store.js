@@ -152,9 +152,17 @@ export const useKtStore = defineStore('KtStore', {
     setCRSTo(payload) {
       this.CRSTo = payload
     },
-    
     setCRSFrom(payload) {
+      let v3 = null
+      if (Object.keys(this.CRSOptions[this.CoverArea]).includes(payload)) {
+        v3 = this.CRSOptions[this.CoverArea][payload].v3
+      } else if (Object.keys(this.CRSOptions.Global).includes(payload)) {
+        v3 = this.CRSOptions.Global[payload]
+      }
       this.CRSFrom = payload
+      if(v3 == null){
+        this.CoordinatesFrom.v3 = null
+      }
     },
     
     async setCoordinatesFrom({ crs, coordinates }) {
@@ -179,7 +187,31 @@ export const useKtStore = defineStore('KtStore', {
         }
       }
     },
-    
+    async setCoordinatesFrom_v3({ crs, coordinates }){
+      const v3 = this.CoordinatesFrom.v3 || 0
+      if(this.CRSFrom === '' ){
+        console.log('this should not happen')
+      }
+      else if(crs === this.CRSFrom) {
+        coordinates.v3 = v3
+        this.CoordinatesFrom = coordinates
+      }
+      else{
+        try {
+          const coordinateResponse = await fetch(
+            `${this.webproj}${crs}/${this.CRSFrom}/${mapCoorToList(coordinates)}?token=${this.token}`,
+          )
+          if(!coordinateResponse.ok){
+            throw new Error(`Error Fetching coordinatesFrom: ${coordinateResponse.statusText}`)
+          }
+          const coordinatesData = await coordinateResponse.json()
+          coordinatesData.v3 = v3
+          this.CoordinatesFrom = coordinatesData
+        } catch (error) {
+          console.error('Failed to fetch and update coordinateFrom', error)
+        }
+      }
+    },
     async setCoordinatesTo() {
       if(this.CRSFrom === '' ){
         console.log('this should not happen')

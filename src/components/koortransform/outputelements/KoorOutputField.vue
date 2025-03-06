@@ -56,7 +56,8 @@ const KtStore = useKtStore()
 // Get the coordinates from the store
 const coorTo = computed(() => KtStore.getCoordinatesTo)
 const coorFrom = computed(() => KtStore.getCoordinatesFrom)
-const CRSInfo = computed(() => KtStore.getCRSToDisplayInfo)
+const CRSToInfo = computed(() => KtStore.getCRSToDisplayInfo)
+const CRSFromInfo = computed(() => KtStore.getCRSFromDisplayInfo)
 
 const isMeter = ref(true)
 const degreeFormat = ref('D')
@@ -85,11 +86,12 @@ const ktcopy = () => {
 }
 
 const formatOutputCoor = () => {
-  isMeter.value = (CRSInfo.value?.v1_unit ?? '') === 'metre' && (CRSInfo.value?.v2_unit ?? '') === 'metre'
+  isMeter.value = (CRSToInfo.value?.v1_unit ?? '') === 'metre' && (CRSToInfo.value?.v2_unit ?? '') === 'metre'
 
-  c1.value.dirIndicator = (CRSInfo.value.v1 ?? '') === 'Breddegrad' ? 'N' : 'm'
-  c2.value.dirIndicator = (CRSInfo.value.v2 ?? '') === 'Længdegrad' ? 'E' : 'm'
-  c3.value.isHeight = Boolean(CRSInfo.value.v3)
+  c1.value.dirIndicator = (CRSToInfo.value.v1 ?? '') === 'Breddegrad' ? 'N' : 'm'
+  c2.value.dirIndicator = (CRSToInfo.value.v2 ?? '') === 'Længdegrad' ? 'E' : 'm'
+  //only add height if both have height attribute
+  c3.value.isHeight = Boolean(CRSToInfo.value.v3) && Boolean(CRSFromInfo.value.v3)
 }
 
 const toRepresentation = () => {
@@ -168,7 +170,10 @@ const toStringRepr = () => {
   outputCoor.value = `${coord1}, ${coord2}${height}`
 }
 // Watchers for changes in input/output coordinates
-watch(CRSInfo, () => {
+watch(CRSToInfo, () => {
+  formatOutputCoor()
+})
+watch(CRSFromInfo, () => {
   formatOutputCoor()
 })
 watch(coorFrom, () => {

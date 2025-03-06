@@ -205,7 +205,7 @@ onMounted(async() => {
     pinPointer.value = true
     const coordinate = event.coordinate
     overlay.value.setPosition(coordinate) 
-    KtStore.setCoordinatesFrom({
+    KtStore.setCoordinatesFrom_v3({
       crs: mapData.value[coverArea.value].projection,
       coordinates: {v1: event.coordinate[0], v2: event.coordinate[1], v3: null, v4: null},
     })

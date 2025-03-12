@@ -67,7 +67,7 @@ test.describe('Map Tests', () => {
       await expect(mapElement).toBeVisible()
       const box = await mapElement.boundingBox()
       const clickX = box.x + box.width / 2
-      const clickY = box.y + box.height / 2
+      const clickY = box.y + box.height / 1.5
 
       //Have tried to make this work for so long, but the only way is to wait... 
       await page.waitForLoadState('load')
@@ -80,7 +80,7 @@ test.describe('Map Tests', () => {
       const inputValue= await page.waitForFunction(
         async (selector) => {
           const input = document.querySelector(selector)
-          return input && input.value !== '0.0000'
+          return input && input.value !== '723910.4400'
         },
         inputSelector
       )
@@ -90,7 +90,7 @@ test.describe('Map Tests', () => {
       const outputValue = await page.waitForFunction(
         (selector) => {
           const output = document.querySelector(selector)
-          return output && output.innerHTML.trim() !== ''
+          return output && output.innerHTML.trim() !== '723910.4400m, 6179652.8900m, 0 m'
         },
         outputSelector
       )
@@ -106,5 +106,58 @@ test.describe('Map Tests', () => {
     }
   })
 
-  
+  test('Change CRS', async ({page}) => {
+    await page.goto('http://localhost:4173', { waitUntil: 'domcontentloaded' })
+    await page.waitForSelector('#map', { state: 'visible' })
+
+    await page.waitForSelector('.ol-overlaycontainer', {state: 'visible'})
+    
+    await page.waitForLoadState('load')
+    page.locator('#crs-in-select').selectOption('WGS84 (EPSG:4326)')
+    await page.waitForLoadState('networkidle')
+
+    // expect 55.71082041 and 12.56443644
+    const coordinateOneDegreesSelector = '#c1D'
+
+    const outputSelector = '#KT-output'
+
+    const outputText = await page.evaluate(selector => {
+      const element = document.querySelector(selector)
+      return element ? element.innerHTML.trim() : ''
+    }, outputSelector)
+    
+    expect(outputText).toBe('723910.4400m, 6179652.8900m, 0 m')
+
+    //allows for multiple attempts
+    const c1Expected= await page.waitForFunction(
+      async (selector) => {
+        const input = document.querySelector(selector)
+        return input && input.value === '55.71082041'
+      },
+      coordinateOneDegreesSelector
+    )
+
+    // expect 55.71082041 and 12.56443644
+    const coordinateTwoDegreesSelector = '#c2D'
+    //allows for multiple attempts
+    const c2Expected = await page.waitForFunction(
+      async (selector) => {
+        const input = document.querySelector(selector)
+        return input && input.value === '12.56443644'
+      },
+      coordinateTwoDegreesSelector
+    )
+
+    expect(c1Expected.jsonValue()).toBeTruthy()
+    expect(c2Expected.jsonValue()).toBeTruthy()
+
+
+    const changedOutputText = await page.evaluate(selector => {
+      const element = document.querySelector(selector)
+      return element ? element.innerHTML.trim() : ''
+    }, outputSelector)
+    
+    // We expect the output value to be unchanged (as we only change the input CRS)
+    expect(outputText).toBe(changedOutputText)
+  })
 })

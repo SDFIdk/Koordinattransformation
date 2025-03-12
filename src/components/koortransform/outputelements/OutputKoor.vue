@@ -13,9 +13,9 @@
       <h2>Output</h2>
       <div v-show="!isMinimized">
         <select
-          id="epsg-select"
+          id="crs-out-select"
           v-model="selectedOption"
-          name="epsg-select"
+          name="crs-out-select"
         >
           <option
             v-for="option in outputOptions"

@@ -12,9 +12,9 @@
     <h2>Input</h2>
     <div v-show="!isMinimized">
       <select
-        id="epsg-select"
+        id="crs-in-select"
         v-model="selectedOption"
-        name="epsg-select"
+        name="crs-in-select"
       >
         <option
           v-for="option in inputOptions"

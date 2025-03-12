@@ -167,7 +167,8 @@ export const useKtStore = defineStore('KtStore', {
     
     async setCoordinatesFrom({ crs, coordinates }) {
       if(this.CRSFrom === '' ){
-        console.log('this should not happen')
+        console.error('We should not set coordinate before CRS')
+        throw new Exception()
       }
       else if(crs === this.CRSFrom) {
         this.CoordinatesFrom = coordinates
@@ -191,6 +192,7 @@ export const useKtStore = defineStore('KtStore', {
       const v3 = this.CoordinatesFrom.v3 || 0
       if(this.CRSFrom === '' ){
         console.log('this should not happen')
+        throw new Error()
       }
       else if(crs === this.CRSFrom) {
         coordinates.v3 = v3

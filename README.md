@@ -20,16 +20,16 @@ For at kunne køre projektet, er der nogle miljøvariable, der skal føres ind i
 Et eksempel på en miljøfil er:
 
 ```
-module.export = {
   VITE_NODE_ENV = development
   VITE_VUE_APP_SHOW_UNPUBLISHED = true
   VITE_NODE_OPTIONS = --openssl-legacy-provider
   VITE_TOKEN = <token>
   VITE_API_BASE_URL = https://api.dataforsyningen.dk/rest/webproj_test
   VITE_API_BASE_PATH = /v1.2/trans/
-}
 ```
 Et token kan genereres via [dataforsyningen](https://dataforsyningen.dk/)
+Vær opmærksom på at projektet skældner mellem tre konfigurationer,
+'production', 'development' og 'test'
 
 ***Kopier disse filer fra config repoet ind i root directory af projektet.***
 

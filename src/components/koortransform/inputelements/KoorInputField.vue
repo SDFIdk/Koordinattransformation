@@ -409,7 +409,6 @@ onMounted(async() => {
   }
   document.addEventListener('keydown', (event) => {
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      console.log('do we trigger')
       const activeItem = document.querySelector('.gs-result-list')
       activeItem.childNodes.forEach((elem) => {
         if(elem.className.includes('active')) {

@@ -31,6 +31,7 @@ export const mapListToCoor = (listObject) => {
 export const extractEPSGCode = (crsString) => {
   return crsString.split(' ').at(-1).slice(1, -1)
 }
+import Polygon from 'ol/geom/Polygon'
 
 export const getGSearchCenterPoint = (detail) => {
   let coord = {v1: 0.0, v2: 0.0, v3: 0.0, v4: 0.0}
@@ -44,9 +45,11 @@ export const getGSearchCenterPoint = (detail) => {
     const middleCoords = detail.coordinates[0][middlePoint]
     coord = {v1: middleCoords[0], v2: middleCoords[1], v3: 0.0, v4: 0.0} 
   }
-  else {
-    // It is assumed, that other geometries are of type multipoint
+  else if(detail.type === 'MultiPoint') {
     coord = {v1: detail.coordinates[0][0], v2: detail.coordinates[0][1], v3: 0.0, v4: 0.0}
+  }
+  else {
+    console.error(`Error: handling for input geometry of type ${detail.type} missing. Please contact developers.`)
   }
   return coord
 }

@@ -136,7 +136,7 @@
     </span>
   </div>
 
-  <div class="KT-input-bottom-row">
+  <div class="KT-input-radio-row">
     <div>
       <span
         v-if="!isMeter"
@@ -468,14 +468,16 @@ onMounted(async() => {
   justify-content: flex-end;
 }
 
-.KT-input-bottom-row {
+.KT-input-radio-row {
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   flex-wrap: nowrap;
   gap: 1rem;
   max-width: 100%;
   max-height: 2.5rem;
-  margin-top: 0.5rem;
+  margin-left: var(--space);
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
   justify-content: space-between;
   align-items: center;
 }

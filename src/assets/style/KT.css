@@ -1,6 +1,32 @@
 
 body {
   overflow: hidden;
+  height: 100vh;
+}
+label {
+  margin-bottom: 0 !important;
+}
+.KT-gsearch {
+  position: relative;
+  background-color: var(--bg2);
+  width: 100%;
+  padding: 0.2rem 0.8rem;
+  margin-top: 0.2rem;
+  border-radius: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+#gSearch {
+  min-width: 60%;
+  margin: 0;
+  padding: 0;
+}
+
+.KT-gsearch-el {
+  margin: 0.3rem;
+  padding: 0.2rem 0.4rem;
 }
 
 .gs-result-list {
@@ -9,31 +35,26 @@ body {
   z-index: 100;
 }
 
-/* For most browsers */
+.gs-input-button {
+  display: none !important;
+} 
+
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none; /* Hide the spin buttons in WebKit browsers (Chrome, Safari) */
-  margin: 0;
+  -webkit-appearance: none;
 }
-
-/* For Firefox */
 input[type="number"] {
-  -moz-appearance: textfield; /* Hide the spin buttons in Firefox */
+  -moz-appearance: textfield;
   appearance: textfield;
 }
-
-/* Optionally, reset appearance in Edge */
 input[type="number"]::-ms-expand {
-  display: none; /* Hide the spin buttons in Edge */
+  display: none;
 }
+
 input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none; /* Hide the spin buttons in WebKit browsers (Chrome, Safari) */
-  margin: 0;
+  -webkit-appearance: none;
 }
-input {
-  padding-left: 0.2rem !important;
-  padding-right: 0.2rem !important;
-}
+
 select, input, p {
   text-size-adjust: none;
   -webkit-text-size-adjust: none;

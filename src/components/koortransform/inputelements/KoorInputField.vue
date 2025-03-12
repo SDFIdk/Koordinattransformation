@@ -169,8 +169,18 @@
         <label for="D.min.sec">D.min.sec</label>
       </span>
     </div>
-    
-    <g-search v-if="route.fullPath==='/Denmark' || route.fullPath==='/'" />
+  </div>
+  <div
+    v-if="route.fullPath==='/Denmark' || route.fullPath==='/'"
+    class="KT-gsearch"
+  >
+    <label for="gSearch">
+      <p class="KT-gsearch-el">Søg Koordinat via Adresse eller Stednavn</p>
+    </label>
+    <g-search
+      id="gSearch"
+      class="KT-gsearch-el"
+    />
   </div>
 </template>
 
@@ -397,6 +407,18 @@ onMounted(async() => {
       })
     })
   }
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      console.log('do we trigger')
+      const activeItem = document.querySelector('.gs-result-list')
+      activeItem.childNodes.forEach((elem) => {
+        if(elem.className.includes('active')) {
+          elem.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+        }
+      })
+    }
+  })
+
 })
 
 </script>
@@ -457,6 +479,7 @@ onMounted(async() => {
   justify-content: space-between;
   align-items: center;
 }
+
 @media only screen and (max-width: 66rem) {
   .KT-input-meter {
     flex-direction: column;

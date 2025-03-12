@@ -237,7 +237,7 @@ watch(degreeFormat, () => {
 
 .KT-p {
   color: white;
-  margin-left: 0.4rem;
+  margin-left: var(--space);
 }
 
 </style>

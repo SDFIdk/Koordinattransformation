@@ -33,12 +33,12 @@ import {
   ScaleLine,
 } from 'ol/control'
 
-import { epsg25832proj, epsg32624proj, epsg3184proj, mapListToCoor, mapCoorToList } from '../../helperfunctions.js'
+import { epsg25832proj, epsg32624proj, epsg3184proj, mapCoorToList } from '../../helperfunctions.js'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
 
 //vue
-import { onMounted, ref, computed, watch } from 'vue'
+import { onMounted, ref, computed, watch} from 'vue'
 import { useKtStore } from '../../store/store.js'
 
 
@@ -190,6 +190,13 @@ const createMap = async() => {
 }
 
 onMounted(async() => {
+  //map cannot set values in store before crs has been set elsewhere !
+  //the function yields for 70 milliseconds to allow continuation of other threads before checking again
+  const waitForCRS = async() => {
+    while(KtStore.CRSFrom === ''){
+      await new Promise(resolve => setTimeout(resolve, 70))
+    }
+  }
   olMap.value = await createMap()
 
   olMap.value.addControl(new ScaleLine())
@@ -210,6 +217,8 @@ onMounted(async() => {
       coordinates: {v1: event.coordinate[0], v2: event.coordinate[1], v3: null, v4: null},
     })
   })
+  await waitForCRS()
+  console.log('we got out')
   const startCoor = coverArea.value === 'DK' ? [723910.4400, 6179652.8900] : mapData.value.GL.center
   olMap.value.addOverlay(overlay.value) 
   overlay.value.setPosition(startCoor)

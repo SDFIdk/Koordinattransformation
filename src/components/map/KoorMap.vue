@@ -210,8 +210,14 @@ onMounted(async() => {
       coordinates: {v1: event.coordinate[0], v2: event.coordinate[1], v3: null, v4: null},
     })
   })
-
+  const startCoor = coverArea.value === 'DK' ? [723910.4400, 6179652.8900] : mapData.value.GL.center
   olMap.value.addOverlay(overlay.value) 
+  overlay.value.setPosition(startCoor)
+  pinPointer.value = true
+  KtStore.setCoordinatesFrom_v3({
+    crs: mapData.value[coverArea.value].projection,
+    coordinates: {v1: startCoor[0], v2: startCoor[1], v3: null, v4: null},
+  })
 })
 
 //make call to api and set map marker where new coordinate is

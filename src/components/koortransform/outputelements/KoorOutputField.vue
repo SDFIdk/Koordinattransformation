@@ -157,12 +157,12 @@ const toStringRepr = () => {
       coord2 = `${c2.value.cDegree}${c2.value.dirIndicator}`
       break
     case 'D.min':
-      coord1 = `${c1.value.cDegree}° ${c1.value.cMeter} \'${c1.value.dirIndicator}`
-      coord2 = `${c2.value.cDegree}° ${c2.value.cMeter} \'${c2.value.dirIndicator}`
+      coord1 = `${c1.value.cDegree}° ${c1.value.cMinute} \'${c1.value.dirIndicator}`
+      coord2 = `${c2.value.cDegree}° ${c2.value.cMinute} \'${c2.value.dirIndicator}`
       break
     case 'D.min.sec' :
-      coord1 = `${c1.value.cDegree}° ${c1.value.cMeter}\' ${c1.value.cSecond}\'\'${c1.value.dirIndicator}`
-      coord2 = `${c2.value.cDegree}° ${c2.value.cMeter}\' ${c2.value.cSecond}\'\'${c2.value.dirIndicator}`
+      coord1 = `${c1.value.cDegree}° ${c1.value.cMinute}\' ${c1.value.cSecond}\'\'${c1.value.dirIndicator}`
+      coord2 = `${c2.value.cDegree}° ${c2.value.cMinute}\' ${c2.value.cSecond}\'\'${c2.value.dirIndicator}`
       break
     }
   }

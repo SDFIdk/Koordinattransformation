@@ -140,41 +140,42 @@
       <p class="KT-p"> m </p>
     </span>
   </div>
-
-  <div class="KT-input-radio-row">
-    <div>
-      <span
-        v-if="!isMeter"
-        class="KT-radio-row"
-      >
-        <input
-          id="D"
-          v-model="degreeFormat"
-          type="radio"
-          name="format"
-          value="D"
-          checked="checked"
-        >
-        <label for="D">DD.DD°</label><br>
-        <input
-          id="DM"
-          v-model="degreeFormat"
-          type="radio"
-          name="format"
-          value="DM"
-        >
-        <label for="DM">DD° MM.MM'</label><br>
-        <input
-          id="DMS"
-          v-model="degreeFormat"
-          type="radio"
-          name="format"
-          value="DMS"
-        >
-        <label for="DMS">DD° MM' SS.SS"</label>
-      </span>
-    </div>
-  </div>
+  <span
+    v-if="!isMeter"
+    class="KT-radio-row"
+  >
+    <input
+      id="D"
+      v-model="degreeFormat"
+      type="radio"
+      name="format"
+      value="D"
+      checked="checked"
+    >
+    <label for="D">DD.DD°</label><br>
+    <input
+      id="DM"
+      v-model="degreeFormat"
+      type="radio"
+      name="format"
+      value="DM"
+    >
+    <label for="DM">DD° MM.MM'</label><br>
+    <input
+      id="DMS"
+      v-model="degreeFormat"
+      type="radio"
+      name="format"
+      value="DMS"
+    >
+    <label for="DMS">DD° MM' SS.SS"</label>
+    <span class="KT-tooltip-icon bg-secondary border-soft" :class="{'KT-tooltip-visible' : isVisible}" @click="isVisible = !isVisible">
+      <svg style="height:0.9rem;"><use href="../../../assets/icons/icons.svg#info"></use></svg>
+      <p class="KT-tooltip">
+        Repræsentationsformat for geografiske koordinater. Vælg mellem decimalgrader (DD.DD°), grader og minutter (DD° MM.MM') eller grader, minutter og sekunder (DD° MM' SS.SS").
+      </p>
+    </span>
+  </span>
   <div
     v-if="route.fullPath==='/Denmark' || route.fullPath==='/'"
     class="KT-gsearch"
@@ -233,6 +234,7 @@ const c3 = ref({
   upIcon: svgPath + 'arrow-up',
 })
 
+const isVisible = ref(false)
 const isMeter = ref(true)
 const degreeFormat = ref('D')
 

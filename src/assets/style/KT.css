@@ -57,7 +57,7 @@ input[type="number"]::-ms-expand {
   background-color: var(--bg2);
   width: 100%;
   padding: 0.2rem 0.8rem;
-  margin-top: 0.2rem;
+  margin-top: 0.6rem;
   border-radius: 1.5rem;
   display: flex;
   flex-direction: row;
@@ -157,13 +157,17 @@ input[type="number"]::-ms-expand {
   max-width: 100%;
 }
 
-.KT-radio-row,
-.KT-input-radio-row {
+.KT-radio-row{
   display: flex;
   flex-wrap: nowrap;
   gap: 0.5rem;
   justify-content: flex-end;
+  margin: 0.4rem;
+  position: relative;
+
+  align-items: center;
 }
+
 
 .KT-input-radio-row {
   flex-direction: row-reverse;
@@ -206,7 +210,7 @@ input[type="number"]::-ms-expand {
 }
 
 .KT-output-p {
-  margin-left: var(--space-sm);
+  margin-left: var(--space-md);
   color: white;
 }
 
@@ -250,4 +254,100 @@ input[type="number"]::-ms-expand {
   height: 100%;
   min-height: 15rem;
   width: 100%;
+}
+/* ========== Tooltip ========== */
+
+.KT-tooltip {
+  position:absolute;
+  visibility: hidden;
+  opacity: 0;
+  background-color: var(--bg2);
+  text-align: center;
+  border-radius: 1.2rem;
+  padding: var(--space);
+  top: 1.5rem;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 11;
+
+  /* Fade-in */
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  box-shadow: 0 var(--space-sm) var(--space-md) #00000054;
+
+  min-width: 23vw;
+}
+
+.KT-tooltip-icon {
+  position:relative;
+}
+.KT-tooltip-visible .KT-tooltip,
+.KT-tooltip-icon:hover .KT-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+/* ========== Responsive Styles ========== */
+@media only screen and (max-width: 66rem) {
+  .KT-input-meter {
+    flex-direction: column;
+  }
+
+  .KT-input-meter span {
+    max-width: 100%;
+  }
+
+  .KT-output-wrapper {
+    width: 100%;
+    height: 50%;
+  }
+
+  .KT-output-segment,
+  .KT-input-segment {
+    width: 90%;
+    height: 50%;
+    margin: var(--space);
+  }
+
+  .KT-min {
+    position: absolute;
+    right: 1rem;
+    top: 0;
+  }
+
+  .koor-menu-inner {
+    display: flex;
+    flex-flow: column nowrap !important;
+    justify-content: space-between;
+    min-height: 10rem;
+    min-width: 100%;
+    width: 80%;
+    margin-left: 0;
+  }
+
+  .KT-borderline {
+    min-width: 100%;
+    background-color: var(--c6);
+    min-height: 0.15rem;
+    max-height: 0.15rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-right: 0rem;
+    margin-left: 0rem;
+    position: relative;
+    overflow: visible;
+  }
+
+  .KT-ptr {
+    position: absolute;
+    top: -0.2rem;
+    margin: 0;
+    left: 48%;
+  }
+  .KT-tooltip {
+    border-radius: 1.2rem;
+    padding: var(--space);
+    bottom: 1.2rem;
+    right:1rem;
+    top: auto;
+  }
 }

@@ -17,10 +17,5 @@ onBeforeMount(() => {
 </script>
 
 <style>
-.KoorForm {
-  position: absolute;
-  top: 10%;
-  z-index: 10;
-}
 </style>
 

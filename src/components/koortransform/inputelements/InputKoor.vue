@@ -12,7 +12,7 @@
     <h2>Input</h2>
     <div v-show="!isMinimized">
       <select
-        id="crs-in-select"
+        id="KT-crs-in-select"
         v-model="selectedOption"
         name="crs-in-select"
       >
@@ -61,21 +61,6 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.KT-input-segment {
-    width: 46%;
-    margin: var(--space);
-}
-@media only screen and (max-width: 66rem) {
-  .KT-input-segment {
-      width: 90%;
-      height:50%;
-      margin: var(--space);
-  }
-  .KT-min{
-    position: absolute;
-    right: 1rem;
-    top: 0.1rem;
-  }
-}
+<style>
+
 </style>

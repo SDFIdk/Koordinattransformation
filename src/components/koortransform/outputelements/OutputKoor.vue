@@ -13,7 +13,7 @@
       <h2>Output</h2>
       <div v-show="!isMinimized">
         <select
-          id="crs-out-select"
+          id="KT-crs-out-select"
           v-model="selectedOption"
           name="crs-out-select"
         >
@@ -64,30 +64,5 @@ onMounted(() => {
 
 </script>
 
-<style scoped>
-.KT-output-segment {
-    margin: var(--space);
-}
-.KT-output-wrapper {
-  width: 50%;
-  height:100%;
-  position:relative;
-}
-@media only screen and (max-width: 66rem) {
-  .KT-output-wrapper {
-    width:100%;
-    height: 50%;
-  }
-  .KT-output-segment {
-      width: 90%;
-      height:50%;
-      margin: var(--space);
-  }
-  .KT-min{
-    position: absolute;
-    right: 1rem;
-    top: 0;
-  }
-}
-
+<style>
 </style>

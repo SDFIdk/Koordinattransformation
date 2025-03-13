@@ -218,7 +218,6 @@ onMounted(async() => {
     })
   })
   await waitForCRS()
-  console.log('we got out')
   const startCoor = coverArea.value === 'DK' ? [723910.4400, 6179652.8900] : mapData.value.GL.center
   olMap.value.addOverlay(overlay.value) 
   overlay.value.setPosition(startCoor)

@@ -160,4 +160,7 @@ test.describe('Map Tests', () => {
     // We expect the output value to be unchanged (as we only change the input CRS)
     expect(outputText).toBe(changedOutputText)
   })
+
+
+  test('Expect CRS to be invalid')
 })

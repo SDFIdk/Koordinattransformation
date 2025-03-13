@@ -3,7 +3,7 @@
     <span class="KT-output-coord">
       <p
         id="KT-output"
-        class="KT-p"
+        class="KT-p KT-output-p"
       >{{ outputCoor || ' ' }}</p>
       <button
         v-if="outputCoor"
@@ -26,23 +26,23 @@
         value="D"
         checked="checked"
       >
-      <label for="D">D</label><br>
+      <label for="D">DD.DD°</label><br>
       <input
-        id="D.min"
+        id="DM"
         v-model="degreeFormat"
         type="radio"
         name="outformat"
-        value="D.min"
+        value="DM"
       >
-      <label for="D.min">D.min </label><br>
+      <label for="DM">DD° MM.MM'</label><br>
       <input
-        id="D.min.sec"
+        id="DMS"
         v-model="degreeFormat"
         type="radio"
         name="outformat"
-        value="D.min.sec"
+        value="DMS"
       >
-      <label for="D.min.sec">D.min.sec</label>
+      <label for="DMS">DD° MM' SS.SS"</label>
     </span>
   </div>
 </template>
@@ -106,7 +106,7 @@ const toRepresentation = () => {
       c1.value.cDegree = parseFloat(coorTo.value.v1).toFixed(8)
       c2.value.cDegree = parseFloat(coorTo.value.v2).toFixed(8)
       break
-    case 'D.min':
+    case 'DM':
       d1 = Math.floor(coorTo.value.v1)
       d2 = Math.floor(coorTo.value.v2)
 
@@ -119,7 +119,7 @@ const toRepresentation = () => {
       c2.value.cDegree = d2
       c2.value.cMinute = m2
       break
-    case 'D.min.sec':
+    case 'DMS':
       d1 = Math.floor(coorTo.value.v1)
       d2 = Math.floor(coorTo.value.v2)
 
@@ -156,11 +156,11 @@ const toStringRepr = () => {
       coord1 = `${c1.value.cDegree}${c1.value.dirIndicator}`
       coord2 = `${c2.value.cDegree}${c2.value.dirIndicator}`
       break
-    case 'D.min':
+    case 'DM':
       coord1 = `${c1.value.cDegree}° ${c1.value.cMinute} \'${c1.value.dirIndicator}`
       coord2 = `${c2.value.cDegree}° ${c2.value.cMinute} \'${c2.value.dirIndicator}`
       break
-    case 'D.min.sec' :
+    case 'DMS' :
       coord1 = `${c1.value.cDegree}° ${c1.value.cMinute}\' ${c1.value.cSecond}\'\'${c1.value.dirIndicator}`
       coord2 = `${c2.value.cDegree}° ${c2.value.cMinute}\' ${c2.value.cSecond}\'\'${c2.value.dirIndicator}`
       break
@@ -189,55 +189,6 @@ watch(degreeFormat, () => {
 })
 </script>
 
-<style scoped>
-.KT-output-column {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.KT-output-row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  gap: 1rem;
-  max-width: 100%;
-  max-height: 2.5rem;
-  margin-top: 0.5rem;
-  justify-content: flex-start;
-}
-.KT-radio-row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
-.KT-output-coord,
-.KT-cpy, 
-.KT-p {
-  display: inline-flex;
-  align-items: center;
-  vertical-align: middle;
-  margin-bottom: 0;
-  padding-bottom: 0;
-  padding-top: 0;
-}
-
-.KT-output-coord {
-  background-color: var(--c7);
-  color: var(--grey1);
-  border-radius: 1.2rem;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  margin-left: 0.2rem;
-  margin-right: 0.2rem;
-}
-
-.KT-p {
-  color: white;
-  margin-left: var(--space);
-}
+<style>
 
 </style>

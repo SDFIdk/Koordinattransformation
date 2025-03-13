@@ -1,11 +1,57 @@
-
+/* ========== Global Styles ========== */
 body {
   overflow: hidden;
   height: 100vh;
 }
+
 label {
   margin-bottom: 0 !important;
 }
+
+/* ========== Typography ========== */
+h1, h2, h3, h4, h5, h6, ol {
+  margin: 1.25rem;
+}
+
+h1 {
+  font-size: 1.875rem;
+}
+
+h3 {
+  margin: 1.5rem 1.25rem;
+}
+
+h4 {
+  font-weight: normal;
+}
+
+h6 {
+  margin-top: 2rem;
+}
+
+/* ========== Input & Form Elements ========== */
+select, input, p, label {
+  text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  -ms-text-size-adjust: none;
+  font-size: 0.9em !important;
+}
+
+/* Remove number input spinners */
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-ms-expand {
+  -webkit-appearance: none;
+  display: none;
+}
+
+/* ========== Search Components ========== */
 .KT-gsearch {
   position: relative;
   background-color: var(--bg2);
@@ -18,47 +64,190 @@ label {
   justify-content: space-between;
   align-items: center;
 }
+
+.KT-gsearch-el {
+  margin: 0.5rem !important;
+}
+
 #gSearch {
   min-width: 60%;
   margin: 0;
   padding: 0;
 }
 
-.KT-gsearch-el {
-  margin: 0.3rem;
-  padding: 0.2rem 0.4rem;
-}
-
+/* Search result list */
 .gs-result-list {
   max-height: 15rem;
   overflow-y: scroll;
   z-index: 100;
 }
 
+/* Hide search button */
 .gs-input-button {
   display: none !important;
-} 
-
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-}
-input[type="number"] {
-  -moz-appearance: textfield;
-  appearance: textfield;
-}
-input[type="number"]::-ms-expand {
-  display: none;
 }
 
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+/* ========== Layout & Containers ========== */
+.KoorForm {
+  position: absolute;
+  top: 10%;
+  z-index: 10;
 }
 
-select, input, p {
-  text-size-adjust: none;
-  -webkit-text-size-adjust: none;
-  -moz-text-size-adjust: none;
-  -ms-text-size-adjust: none;
-  font-size: 0.9em !important;
+.KT-output-wrapper {
+  width: 50%;
+  height: 100%;
+  position: relative;
+}
+
+.KT-input-segment {
+  width: 46%;
+  margin: var(--space);
+}
+
+.KT-output-segment {
+  margin: var(--space);
+}
+
+#KT-crs-in-select,
+#KT-crs-out-select {
+  margin-bottom: var(--space-sm);
+}
+
+/* ========== Flexbox Layouts ========== */
+.KT-idc {
+  display: flex;
+  align-self: center;
+  min-width: 1rem;
+}
+
+.KT-input-column,
+.KT-output-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.KT-input-row,
+.KT-output-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  max-width: 100%;
+  max-height: 2.5rem;
+  min-height: 2rem;
+  margin-top: 0.4rem;
+  justify-content: flex-start;
+}
+
+.KT-input-meter {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: row;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.KT-input-meter span {
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 9vw;
+  max-width: 100%;
+}
+
+.KT-radio-row,
+.KT-input-radio-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.KT-input-radio-row {
+  flex-direction: row-reverse;
+  margin-left: var(--space);
+  margin-top: var(--space-sm);
+  margin-bottom: var(--space-xs);
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ========== Output Components ========== */
+.KT-output-coord {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--c7);
+  color: var(--grey1);
+  border-radius: 1.2rem;
+  justify-content: space-between;
+  margin: 1rem 0.2rem;
+}
+
+.KT-output-coord,
+.KT-cpy,
+.KT-p {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  z-index: 10;
+}
+
+.KT-p {
+  margin-right:0;
+}
+
+.KT-push-right {
+  margin-right: 0.6rem;
+}
+
+.KT-output-p {
+  margin-left: var(--space-sm);
+  color: white;
+}
+
+/* ========== Menu & Borders ========== */
+.koor-menu-inner {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  min-height: 10rem;
+  min-width: 80%;
+  width: 80%;
+  flex-flow: row nowrap !important;
+}
+
+.KT-borderline {
+  min-height: 100%;
+  background-color: var(--c6);
+  min-width: 0.15rem;
+  max-width: 0.15rem;
+  margin-right: 1rem;
+  margin-left: 1rem;
+  position: relative;
+  z-index: 10;
+  overflow: visible; 
+}
+
+.KT-ptr {
+  position: absolute;
+  top: 45%;
+  left: -0.2rem;
+  background-color: var(--grey2);
+  --ds-icon-color: var(--c6);
+  --ds-icon-stroke : 3;
+  margin: 0;
+}
+
+.KT-load-wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-height: 15rem;
+  width: 100%;
 }

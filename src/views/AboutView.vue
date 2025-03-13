@@ -45,20 +45,5 @@
 
 </script>
 
-<style scoped>
-h1, h2, h3, h4, h5, h6, ol{
-  margin: 1.25rem;
-}
-h1 {
-  font-size: 1.875rem;
-}
-h3 {
-  margin: 1.5rem 1.25rem;
-}
-h6 {
-  margin-top: 2rem;
-}
-h4 {
-  font-weight: normal;
-}
+<style>
 </style>

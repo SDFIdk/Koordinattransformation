@@ -68,25 +68,27 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p class="KT-idc"> {{ c1.dirIndicator }} </p>
+      <p class="KT-p KT-push-right">°</p>
       <input 
-        v-if="degreeFormat==='D.min' || degreeFormat === 'D.min.sec'"
+        v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
         id="c1Dm"
         v-model="c1.cMinute"
         type="number"
         step="0.0001"
         @input="debounceUpdate"
       >
+      <p v-if="degreeFormat==='DM' || degreeFormat === 'DMS'" class="KT-p KT-push-right">'</p>
       <input 
-        v-if="degreeFormat === 'D.min.sec'"
+        v-if="degreeFormat === 'DMS'"
         id="c1Dms"
         v-model="c1.cSecond"
         type="number"
         step="0.0001"
         @input="debounceUpdate"
       >
+      <p v-if="degreeFormat==='DMS'" class="KT-p">"</p>
+      <p class="KT-idc"> {{ c1.dirIndicator }} </p>
     </span>
-
     <span 
       class="KT-input-row"
     >
@@ -100,23 +102,26 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p class="KT-idc"> {{ c2.dirIndicator }} </p>
+      <p class="KT-p KT-push-right">°</p>
       <input 
-        v-if="degreeFormat==='D.min' || degreeFormat === 'D.min.sec'"
+        v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
         id="c2Dm"
         v-model="c2.cMinute"
         type="number"
         step="0.0001"
         @input="debounceUpdate"
       >
+      <p v-if="degreeFormat==='DM' || degreeFormat === 'DMS'" class="KT-p KT-push-right">'</p>
       <input 
-        v-if="degreeFormat === 'D.min.sec'"
+        v-if="degreeFormat === 'DMS'"
         id="c2Dms"
         v-model="c2.cSecond"
         type="number"
         step="0.0001"
         @input="debounceUpdate"
       >
+      <p v-if="degreeFormat==='DMS'" class="KT-p">"</p>
+      <p class="KT-idc"> {{ c2.dirIndicator }} </p>
     </span>
     <span 
       v-if="c3.isHeight"
@@ -132,7 +137,7 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p class="KT-idc"> m </p>
+      <p class="KT-p"> m </p>
     </span>
   </div>
 
@@ -150,23 +155,23 @@
           value="D"
           checked="checked"
         >
-        <label for="D">D</label><br>
+        <label for="D">DD.DD°</label><br>
         <input
-          id="D.min"
+          id="DM"
           v-model="degreeFormat"
           type="radio"
           name="format"
-          value="D.min"
+          value="DM"
         >
-        <label for="D.min">D.min </label><br>
+        <label for="DM">DD° MM.MM'</label><br>
         <input
-          id="D.min.sec"
+          id="DMS"
           v-model="degreeFormat"
           type="radio"
           name="format"
-          value="D.min.sec"
+          value="DMS"
         >
-        <label for="D.min.sec">D.min.sec</label>
+        <label for="DMS">DD° MM' SS.SS"</label>
       </span>
     </div>
   </div>
@@ -245,7 +250,7 @@ const toRepresentation = () => {
       c1.value.cDegree = parseFloat(baseCoords.value.v1).toFixed(8)
       c2.value.cDegree = parseFloat(baseCoords.value.v2).toFixed(8)
       break
-    case 'D.min':
+    case 'DM':
       d1 = Math.floor(baseCoords.value.v1)
       d2 = Math.floor(baseCoords.value.v2)
 
@@ -258,7 +263,7 @@ const toRepresentation = () => {
       c2.value.cDegree = d2
       c2.value.cMinute = m2
       break
-    case 'D.min.sec':
+    case 'DMS':
       d1 = Math.floor(baseCoords.value.v1)
       d2 = Math.floor(baseCoords.value.v2)
 
@@ -293,12 +298,12 @@ const fromRepresentation = () => {
       baseCoords.value.v2 = parseFloat(c2.value.cDegree).toFixed(8)
       baseCoords.value.v3 = parseFloat(c3.value.cMeter)
       break
-    case 'D.min':
+    case 'DM':
       baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60).toFixed(8)
       baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60).toFixed(8)
       baseCoords.value.v3 = parseFloat(c3.value.cMeter)
       break
-    case 'D.min.sec':
+    case 'DMS':
       baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60 + c1.value.cSecond / 3600).toFixed(8)
       baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60 + c2.value.cSecond / 3600).toFixed(8)
       baseCoords.value.v3 = parseFloat(c3.value.cMeter)
@@ -325,7 +330,7 @@ const formatInputCoor = () => {
     break
   case 'Breddegrad':
     c1.value.dirIcon= svgPath + 'direction-north'
-    c1.value.dirIndicator = '°N'
+    c1.value.dirIndicator = 'N'
   }
 
   switch(CRSInfo.value.v2){
@@ -334,7 +339,7 @@ const formatInputCoor = () => {
     break
   case 'Længdegrad':
     c2.value.dirIcon = svgPath + 'direction-east'
-    c2.value.dirIndicator = '°E'
+    c2.value.dirIndicator = 'E'
   }
   switch(CRSInfo.value.v3){
   case 'Kote' : 
@@ -422,71 +427,6 @@ onMounted(async() => {
 
 </script>
 
-<style scoped>
-.KT-idc {
-  display: flex;
-  align-self: center;
-  min-width: 1rem;
-  min-height: 1rem;
-  margin: 0;
-}
-.KT-input-column {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.KT-input-row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  gap: 0.5rem;
-  max-width: 100%;
-  max-height: 2.5rem;
-  margin-top: 0.5rem;
-  justify-content: flex-start;
-}
-.KT-input-meter {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: row;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-}
-.KT-input-meter span {
-  flex-grow: 1;
-  flex-shrink: 1;
-  min-width: 9vw;
-  max-width: 100%;
-}
-.KT-radio-row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
+<style>
 
-.KT-input-radio-row {
-  display: flex;
-  flex-direction: row-reverse;
-  flex-wrap: nowrap;
-  gap: 1rem;
-  max-width: 100%;
-  max-height: 2.5rem;
-  margin-left: var(--space);
-  margin-top: 0.6rem;
-  margin-bottom: 0.6rem;
-  justify-content: space-between;
-  align-items: center;
-}
-
-@media only screen and (max-width: 66rem) {
-  .KT-input-meter {
-    flex-direction: column;
-  }
-  .KT-input-meter span{
-  max-width: 100%;
-}
-}
 </style>

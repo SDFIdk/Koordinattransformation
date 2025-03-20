@@ -14,6 +14,7 @@
         v-model="c1.cMeter"
         type="number"
         step="0.0001"
+        aria-label="Input Coordinate One"
         @input="debounceUpdate"
       >
       <p
@@ -32,6 +33,7 @@
         v-model="c2.cMeter"
         type="number"
         step="0.0001"
+        aria-label="Input Coordinate Two"
         @input="debounceUpdate"
       >
       <p
@@ -51,6 +53,7 @@
         v-model="c3.cMeter"
         type="number"
         step="0.0001"
+        aria-label="Input Coordinate Three"
         @input="debounceUpdate"
       >
       <p
@@ -75,6 +78,7 @@
         v-model="c1.cDegree"
         type="number"
         step="0.0001"
+        aria-label="Input Coordinate One D.D° or D°"
         @input="debounceUpdate"
       >
       <p
@@ -87,6 +91,7 @@
         v-model="c1.cMinute"
         type="number"
         step="0.0001"
+        aria-label="Input Coordinate Two M' or M.M'"
         @input="debounceUpdate"
       >
       <p
@@ -100,6 +105,7 @@
         v-model="c1.cSecond"
         type="number"
         step="0.0001"
+        aria-label="Input Coordinate Two S.S&quot;"
         @input="debounceUpdate"
       >
       <p

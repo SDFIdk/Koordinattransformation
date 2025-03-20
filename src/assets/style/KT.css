@@ -183,7 +183,7 @@ input[type="number"]::-ms-expand {
   display: inline-flex;
   align-items: center;
   background-color: var(--c7);
-  color: var(--grey1);
+  color: var(white);
   border-radius: 1.2rem;
   justify-content: space-between;
   margin: 1rem 0.2rem;
@@ -212,6 +212,7 @@ input[type="number"]::-ms-expand {
 .KT-output-p {
   margin-left: var(--space-md);
   color: white;
+  background-color: var(--c7);
 }
 
 /* ========== Menu & Borders ========== */

@@ -266,6 +266,8 @@ watch(coorFrom, async (to, from) => {
 }
 #placed-pin {
   position: absolute;
-  transform: translateX(-50%) translateY(-85%);
+  transform: translate(-58%, -85%);
+  min-height:1rem;
+  min-width:1rem;
 }
 </style>

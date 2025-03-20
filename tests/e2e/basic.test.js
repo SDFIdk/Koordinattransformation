@@ -240,7 +240,6 @@ test.describe('Map Tests', () => {
       const evalEquals = await page.waitForFunction(
         async (selector) => {
           const input = document.querySelector(selector)
-          console.log(input)
           return input && input.value === c2Values.at(i)
         },
         c2Ids.at(i)
@@ -311,7 +310,6 @@ test.describe('Map Tests', () => {
     for(let i = 0; i < measureIndicators.length; i++) {
       const evalText = await page.evaluate(selector => {
         const element = document.querySelector(selector)
-        console.log(element)
         return element ? element.innerHTML.trim() : ''
       }, measureIndicators.at(i))
       expect(evalText).toBe(measureValues.at(i))

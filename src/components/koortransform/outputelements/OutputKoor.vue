@@ -16,6 +16,7 @@
           id="KT-crs-out-select"
           v-model="selectedOption"
           name="crs-out-select"
+          aria-label="Select Output Coordinate Reference System"
         >
           <option
             v-for="option in outputOptions"

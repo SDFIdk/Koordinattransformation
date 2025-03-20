@@ -1,7 +1,16 @@
+#repo files
 .vscode/
 node_modules
 public/
-.env*
 dist/
 playwright-report/
 test-results/
+.vscode/
+
+#config files
+nginx*
+.env*
+Dockerfile*
+Jenkinsfile*
+swarm*
+SecHeaders.conf

@@ -113,7 +113,7 @@ test.describe('Map Tests', () => {
     await page.waitForSelector('.ol-overlaycontainer', {state: 'visible'})
     
     await page.waitForLoadState('load')
-    page.locator('#crs-in-select').selectOption('WGS84 (EPSG:4326)')
+    page.locator('#KT-crs-in-select').selectOption('WGS84 (EPSG:4326)')
     await page.waitForLoadState('networkidle')
 
     // expect 55.71082041 and 12.56443644
@@ -162,5 +162,161 @@ test.describe('Map Tests', () => {
   })
 
 
-  test('Expect CRS to be invalid')
+  test('Correct display of Degree Formats', async({page}) => {
+    await page.goto('http://localhost:4173', { waitUntil: 'domcontentloaded' })
+    await page.waitForLoadState('load')
+
+    await page.waitForSelector('#c1', { state: 'visible' })
+
+    const dirIndicators = [
+      '#c1Indicator',
+      '#c2Indicator',
+      '#c3Indicator'
+    ]
+
+    for(const indicator of dirIndicators) {
+      const indicatorText = await page.evaluate(selector => {
+        const element = document.querySelector(selector)
+        return element? element.innerHTML.trim() : ''
+      }, indicator)
+        
+      //default state when application is opened
+      expect(indicatorText).toBe('m')
+    }
+
+  
+    page.locator('#KT-crs-in-select').selectOption('WGS84 (EPSG:4326)')
+    await page.waitForLoadState('networkidle')
+
+    const expectedDirIndicator = [
+      'N',
+      'E',
+      'm'
+    ]
+
+    for(let i = 0; i < dirIndicators.length; i++) {
+      const indicatorText = await page.evaluate(selector => {
+        const element = document.querySelector(selector)
+        return element? element.innerHTML.trim() : ''
+      }, dirIndicators.at(i))
+        
+      //default state when application is opened
+      expect(indicatorText).toBe(expectedDirIndicator.at(i))
+    }
+
+
+    await page.getByLabel('DD° MM.MM\'').check()
+    expect(page.getByLabel('DD° MM.MM\'')).toBeChecked()
+    await page.waitForLoadState('networkidle')
+
+    const c1Ids = [
+      'c1D',
+      'c1Dm'
+    ]
+    const c1Values = [
+      '55',
+      '42.649225'
+    ]
+    const c2Ids = [
+      'c2D',
+      'c2Dm'
+    ]
+    const c2Values = [
+      '12',
+      '33.866186'
+    ]
+
+    for(let i = 0; i < c1Ids.length; i++) {
+      const evalEquals = await page.waitForFunction(
+        async (selector) => {
+          const input = document.querySelector(selector)
+          return input && input.value === c1Values.at(i)
+        },
+        c1Ids.at(i)
+      )
+      expect(evalEquals).toBeTruthy()
+    }
+    for(let i = 0; i < c2Ids.length; i++) {
+      const evalEquals = await page.waitForFunction(
+        async (selector) => {
+          const input = document.querySelector(selector)
+          console.log(input)
+          return input && input.value === c2Values.at(i)
+        },
+        c2Ids.at(i)
+      )
+      expect(evalEquals).toBeTruthy()
+    }
+
+
+    await page.getByLabel('DD° MM\' SS.SS\"').check()
+    expect(page.getByLabel('DD° MM\' SS.SS\"')).toBeChecked()
+    await page.waitForLoadState('networkidle')
+
+    const c1Ids2 = [
+      'c1D',
+      'c1Dm',
+      'c1Dms'
+    ]
+    const c1Values2 = [
+      '55',
+      '42',
+      '38.9535'
+    ]
+    const c2Ids2 = [
+      'c2D',
+      'c2Dm',
+      'c2Dms'
+    ]
+    const c2Values2 = [
+      '12',
+      '33',
+      '51.9712'
+    ]
+
+    for(let i = 0; i < c1Ids2.length; i++) {
+      const evalEquals = await page.waitForFunction(
+        async (selector) => {
+          const input = document.querySelector(selector)
+          return input && input.value === c1Values2.at(i)
+        },
+        c1Ids2.at(i)
+      )
+      expect(evalEquals).toBeTruthy()
+    }
+    for(let i = 0; i < c2Ids2.length; i++) {
+      const evalEquals = await page.waitForFunction(
+        async (selector) => {
+          const input = document.querySelector(selector)
+          return input && input.value === c2Values2.at(i)
+        },
+        c2Ids2.at(i)
+      )
+      expect(evalEquals).toBeTruthy()
+    }
+
+
+    const measureIndicators = [
+      '#c1degreeIdc',
+      '#c1minuteIdc',
+      '#c1secondIdc'
+    ]
+
+    const measureValues = [
+      '°',
+      '\'',
+      '\"'
+    ]
+  
+    for(let i = 0; i < measureIndicators.length; i++) {
+      const evalText = await page.evaluate(selector => {
+        const element = document.querySelector(selector)
+        console.log(element)
+        return element ? element.innerHTML.trim() : ''
+      }, measureIndicators.at(i))
+      expect(evalText).toBe(measureValues.at(i))
+    }
+
+  })
+
 })

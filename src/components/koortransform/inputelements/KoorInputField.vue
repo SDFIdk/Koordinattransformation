@@ -16,7 +16,10 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p class="KT-idc"> {{ c1.dirIndicator }} </p>
+      <p
+        id="c1Indicator"
+        class="KT-idc"
+      > {{ c1.dirIndicator }} </p>
     </span>
     <span 
       class="KT-input-row"
@@ -31,7 +34,10 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p class="KT-idc"> {{ c2.dirIndicator }} </p>
+      <p
+        id="c2Indicator"
+        class="KT-idc"
+      > {{ c2.dirIndicator }} </p>
     </span>
     <span 
       v-if="c3.isHeight"
@@ -47,7 +53,10 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p class="KT-idc"> m </p>
+      <p
+        id="c3Indicator"
+        class="KT-idc"
+      > m </p>
     </span>
   </div>
 
@@ -68,7 +77,10 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p class="KT-p KT-push-right">°</p>
+      <p
+        id="c1degreeIdc"
+        class="KT-p KT-push-right"
+      >°</p>
       <input 
         v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
         id="c1Dm"
@@ -77,7 +89,11 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p v-if="degreeFormat==='DM' || degreeFormat === 'DMS'" class="KT-p KT-push-right">'</p>
+      <p
+        v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
+        id="c1minuteIdc"
+        class="KT-p KT-push-right"
+      >'</p>
       <input 
         v-if="degreeFormat === 'DMS'"
         id="c1Dms"
@@ -86,8 +102,15 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p v-if="degreeFormat==='DMS'" class="KT-p">"</p>
-      <p class="KT-idc"> {{ c1.dirIndicator }} </p>
+      <p
+        v-if="degreeFormat==='DMS'"
+        id="c1secondIdc"
+        class="KT-p"
+      >"</p>
+      <p
+        id="c1Indicator"
+        class="KT-idc"
+      > {{ c1.dirIndicator }} </p>
     </span>
     <span 
       class="KT-input-row"
@@ -102,7 +125,10 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p class="KT-p KT-push-right">°</p>
+      <p
+        id="c2degreeIdc"
+        class="KT-p KT-push-right"
+      >°</p>
       <input 
         v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
         id="c2Dm"
@@ -111,7 +137,11 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p v-if="degreeFormat==='DM' || degreeFormat === 'DMS'" class="KT-p KT-push-right">'</p>
+      <p
+        v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
+        id="c2minuteIdc"
+        class="KT-p KT-push-right"
+      >'</p>
       <input 
         v-if="degreeFormat === 'DMS'"
         id="c2Dms"
@@ -120,8 +150,15 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p v-if="degreeFormat==='DMS'" class="KT-p">"</p>
-      <p class="KT-idc"> {{ c2.dirIndicator }} </p>
+      <p
+        v-if="degreeFormat==='DMS'"
+        id="c2secondIdc"
+        class="KT-p"
+      >"</p>
+      <p
+        id="c2Indicator"
+        class="KT-idc"
+      > {{ c2.dirIndicator }} </p>
     </span>
     <span 
       v-if="c3.isHeight"
@@ -137,7 +174,10 @@
         step="0.0001"
         @input="debounceUpdate"
       >
-      <p class="KT-p"> m </p>
+      <p
+        id="c3Indicator"
+        class="KT-p"
+      > m </p>
     </span>
   </div>
   <span
@@ -169,8 +209,12 @@
       value="DMS"
     >
     <label for="DMS">DD° MM' SS.SS"</label>
-    <span class="KT-tooltip-icon bg-secondary border-soft" :class="{'KT-tooltip-visible' : isVisible}" @click="isVisible = !isVisible">
-      <svg style="height:0.9rem;"><use href="../../../assets/icons/icons.svg#info"></use></svg>
+    <span
+      class="KT-tooltip-icon bg-secondary border-soft"
+      :class="{'KT-tooltip-visible' : isVisible}"
+      @click="isVisible = !isVisible"
+    >
+      <svg style="height:0.9rem;"><use href="../../../assets/icons/icons.svg#info" /></svg>
       <p class="KT-tooltip">
         Repræsentationsformat for geografiske koordinater. Vælg mellem decimalgrader (DD.DD°), grader og minutter (DD° MM.MM') eller grader, minutter og sekunder (DD° MM' SS.SS").
       </p>

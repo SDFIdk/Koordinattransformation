@@ -44,8 +44,12 @@
       >
       <label for="DMS">DD° MM' SS.SS"</label>
 
-      <span class="KT-tooltip-icon bg-secondary border-soft" :class="{'KT-tooltip-visible' : isVisible}" @click="isVisible = !isVisible">
-        <svg style="height:0.9rem;"><use href="../../../assets/icons/icons.svg#info"></use></svg>
+      <span
+        class="KT-tooltip-icon bg-secondary border-soft"
+        :class="{'KT-tooltip-visible' : isVisible}"
+        @click="isVisible = !isVisible"
+      >
+        <svg style="height:0.9rem;"><use href="../../../assets/icons/icons.svg#info" /></svg>
         <p class="KT-tooltip">
           Repræsentationsformat for geografiske koordinater. Vælg mellem decimalgrader (DD.DD°), grader og minutter (DD° MM.MM') eller grader, minutter og sekunder (DD° MM' SS.SS").
         </p>

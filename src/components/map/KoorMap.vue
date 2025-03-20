@@ -135,7 +135,7 @@ const fetchGLMap = async () => {
 const createView = async() => {
   return new OlView({
     center: mapData.value[coverArea.value].center,
-    zoom: mapData.value[coverArea.value].zoom,
+    zoom: mapData.value[coverArea.value].zoom + Math.log2(1.2),
     minZoom: mapData.value[coverArea.value].minZoom,
     maxZoom: mapData.value[coverArea.value].maxZoom,
     showFullExtent: false,

@@ -3,30 +3,42 @@ body {
   overflow: hidden;
   height: 100vh;
 }
+:root {
+  --container-scale: 0.9;
+}
 
 label {
   margin-bottom: 0 !important;
 }
 
-/* ========== Typography ========== */
-h1, h2, h3, h4, h5, h6, ol {
-  margin: 1.25rem;
+/* ========== Header Styling =========== */
+.koor-header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
-h1 {
-  font-size: 1.875rem;
+.koor-header span {
+  font-size: 0.9em;
 }
 
-h3 {
-  margin: 1.5rem 1.25rem;
+#koor-hover-icon {
+  margin-left: 3rem;
+  margin-top: var(--space)
 }
-
-h4 {
-  font-weight: normal;
+.koor-nav {
+  margin: var(--space)
 }
+.KT-logo {
+  display: flex;
+  align-self: center;
+  justify-self: space-around;
+  margin: var(--space) !important;
+  }
 
-h6 {
-  margin-top: 2rem;
+.KT-route {
+  font-size: var(--container-scale);
 }
 
 /* ========== Input & Form Elements ========== */
@@ -92,6 +104,8 @@ input[type="number"]::-ms-expand {
   position: absolute;
   top: 10%;
   z-index: 10;
+  transform: scale(calc(var(--container-scale)*1.2), (var(--container-scale), var(--container-scale)*0.8));
+  transform-origin: center;
 }
 
 .KT-output-wrapper {
@@ -101,7 +115,7 @@ input[type="number"]::-ms-expand {
 }
 
 .KT-input-segment {
-  width: 46%;
+  width: 48%;
   margin: var(--space);
 }
 
@@ -128,25 +142,25 @@ input[type="number"]::-ms-expand {
   gap: 1rem;
 }
 
-.KT-input-row,
-.KT-output-row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  gap: 0.5rem;
-  max-width: 100%;
-  max-height: 2.5rem;
-  min-height: 2rem;
-  margin-top: 0.4rem;
-  justify-content: flex-start;
-}
-
 .KT-input-meter {
   display: flex;
   flex: 1 1 auto;
   flex-direction: row;
   gap: 0.5rem;
   flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.KT-input-row,
+.KT-output-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.3rem;
+  flex: 1 1 auto;
+  max-height: 2.5rem;
+  min-height: 2rem;
+  margin-top: 0.4rem;
   justify-content: flex-start;
 }
 

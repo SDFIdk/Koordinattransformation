@@ -1,31 +1,16 @@
-.DS_Store
-/dist
+#repo files
+.vscode/
+node_modules
+public/
+dist/
+playwright-report/
+test-results/
+.vscode/
 
-# Editor directories and files
-.idea/
-node_modules/
-
-package-lock.json
-
+#config files
+nginx*
 .env*
-
-nginx.prod.conf
-nginx.test.conf
-.env.development
-.env.production
-
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
-Dockerfile-prod
-Dockerfile-test
-Jenkinsfile.prod
-Jenkinsfile.test
-nginx.prod.conf
-nginx.test.conf
-swarm.prod.yml
+Dockerfile*
+Jenkinsfile*
+swarm*
 SecHeaders.conf
-swarm.test.yml

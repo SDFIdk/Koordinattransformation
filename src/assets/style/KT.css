@@ -4,7 +4,7 @@ body {
   height: 100vh;
 }
 :root {
-  --container-scale: 0.9;
+  --container-scale: 0.9em;
 }
 
 label {
@@ -20,7 +20,7 @@ label {
 }
 
 .koor-header span {
-  font-size: 0.9em;
+  font-size: var(--container-scale);
 }
 
 #koor-hover-icon {
@@ -36,10 +36,6 @@ label {
   justify-self: space-around;
   margin: var(--space) !important;
   }
-
-.KT-route {
-  font-size: var(--container-scale);
-}
 
 /* ========== Input & Form Elements ========== */
 select, input, p, label {
@@ -144,11 +140,14 @@ input[type="number"]::-ms-expand {
 
 .KT-input-meter {
   display: flex;
-  flex: 1 1 auto;
   flex-direction: row;
   gap: 0.5rem;
   flex-wrap: wrap;
   justify-content: flex-start;
+  margin-bottom: 1rem;
+}
+.KT-input {
+  min-width: 8vw; 
 }
 
 .KT-input-row,
@@ -157,18 +156,11 @@ input[type="number"]::-ms-expand {
   flex-direction: row;
   flex-wrap: nowrap;
   gap: 0.3rem;
-  flex: 1 1 auto;
+  flex: 1 0 30%;
   max-height: 2.5rem;
   min-height: 2rem;
   margin-top: 0.4rem;
   justify-content: flex-start;
-}
-
-.KT-input-meter span {
-  flex-grow: 1;
-  flex-shrink: 1;
-  min-width: 9vw;
-  max-width: 100%;
 }
 
 .KT-radio-row{
@@ -191,6 +183,9 @@ input[type="number"]::-ms-expand {
   justify-content: space-between;
   align-items: center;
 }
+
+
+
 
 /* ========== Output Components ========== */
 .KT-output-coord {

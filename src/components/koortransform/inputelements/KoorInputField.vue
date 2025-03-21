@@ -12,6 +12,7 @@
       <input 
         id="c1"
         v-model="c1.cMeter"
+        class="KT-input"
         type="number"
         step="0.0001"
         aria-label="Input Coordinate One"
@@ -31,6 +32,7 @@
       <input 
         id="c2"
         v-model="c2.cMeter"
+        class="KT-input"
         type="number"
         step="0.0001"
         aria-label="Input Coordinate Two"
@@ -51,6 +53,7 @@
       <input 
         id="c3"
         v-model="c3.cMeter"
+        class="KT-input"
         type="number"
         step="0.0001"
         aria-label="Input Coordinate Three"
@@ -126,6 +129,7 @@
       </svg>
       <input 
         id="c2D"
+        class="KT-input"
         v-model="c2.cDegree"
         type="number"
         step="0.0001"

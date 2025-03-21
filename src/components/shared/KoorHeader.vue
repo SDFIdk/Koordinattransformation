@@ -27,19 +27,19 @@
           <span class="medium">
             <svg><use href="../../assets/icons/icons.svg#denmark" /></svg>
           </span>
-          <span> Danmark</span>
+          <span class="KT-route"> Danmark</span>
         </router-link>
         <router-link to="/Greenland">
           <span class="medium">
             <svg><use href="../../assets/icons/icons.svg#greenland" /></svg>
           </span>
-          <span> Grønland</span>
+          <span class="KT-route"> Grønland</span>
         </router-link>
         <router-link to="/About">
           <span class="medium">
             <svg><use href="../../assets/icons/icons.svg#info" /></svg>
           </span>
-          <span> Om Koordinattransformation</span>
+          <span class="KT-route"> Om Koordinattransformation</span>
         </router-link>
       </nav>
     </ds-nav-responsive>
@@ -49,26 +49,5 @@
 <script setup>
 </script>
 
-<style scoped>
-.koor-header {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-#koor-hover-icon {
-    margin-left: 3rem;
-    margin-top: var(--space)
-}
-.koor-nav {
-    margin: var(--space)
-}
-.KT-logo {
-  display: flex;
-  align-self: center;
-  justify-self: space-around;
-  margin: var(--space) !important;
-}
-
-
+<style>
 </style>

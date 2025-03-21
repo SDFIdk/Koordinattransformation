@@ -13,7 +13,7 @@
     </h3>
     <p>
       Denne webapplikation tilbyder et simpelt interface til transformation af koordinater i forskellige koordinatsystemer. Der kan vælges mellem de mest udbredte koordinatsystemer brugt i Danmark og Grønland.
-      Læs mere om koordinattransformationer på <a href="https://www.klimadatastyrelsen.dk/kortlaegning/geodaesi/koordinattransformation">Klimadatastyrelsens webside</a>
+      Læs mere om koordinattransformationer på <a href="https://www.klimadatastyrelsen.dk/kortlaegning/geodaesi/koordinattransformation">Klimadatastyrelsens webside</a>.
     </p>
 
     <h4>Vejledning</h4>

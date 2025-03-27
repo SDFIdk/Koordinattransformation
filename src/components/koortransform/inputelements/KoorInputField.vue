@@ -12,14 +12,20 @@
       <input 
         id="c1"
         v-model="c1.cMeter"
+        class="KT-input"
         type="number"
         step="0.0001"
+        aria-label="Input Coordinate One"
         @input="debounceUpdate"
       >
       <p
         id="c1Indicator"
         class="KT-idc"
       > {{ c1.dirIndicator }} </p>
+
+      <p class="KT-tooltip-dir">
+        {{ c1.dirText }}
+      </p>
     </span>
     <span 
       class="KT-input-row"
@@ -30,14 +36,19 @@
       <input 
         id="c2"
         v-model="c2.cMeter"
+        class="KT-input"
         type="number"
         step="0.0001"
+        aria-label="Input Coordinate Two"
         @input="debounceUpdate"
       >
       <p
         id="c2Indicator"
         class="KT-idc"
       > {{ c2.dirIndicator }} </p>
+      <p class="KT-tooltip-dir">
+        {{ c2.dirText }}
+      </p>
     </span>
     <span 
       v-if="c3.isHeight"
@@ -49,14 +60,19 @@
       <input 
         id="c3"
         v-model="c3.cMeter"
+        class="KT-input"
         type="number"
         step="0.0001"
+        aria-label="Input Coordinate Three"
         @input="debounceUpdate"
       >
       <p
         id="c3Indicator"
         class="KT-idc"
       > m </p>
+      <p class="KT-tooltip-dir">
+        {{ c3.dirText }}
+      </p>
     </span>
   </div>
 
@@ -75,6 +91,7 @@
         v-model="c1.cDegree"
         type="number"
         step="0.0001"
+        aria-label="Input Coordinate One D.D° or D°"
         @input="debounceUpdate"
       >
       <p
@@ -87,6 +104,7 @@
         v-model="c1.cMinute"
         type="number"
         step="0.0001"
+        aria-label="Input Coordinate Two M' or M.M'"
         @input="debounceUpdate"
       >
       <p
@@ -100,6 +118,7 @@
         v-model="c1.cSecond"
         type="number"
         step="0.0001"
+        aria-label="Input Coordinate Two S.S&quot;"
         @input="debounceUpdate"
       >
       <p
@@ -111,6 +130,9 @@
         id="c1Indicator"
         class="KT-idc"
       > {{ c1.dirIndicator }} </p>
+      <p class="KT-tooltip-dir">
+        {{ c1.dirText }}
+      </p>
     </span>
     <span 
       class="KT-input-row"
@@ -121,6 +143,7 @@
       <input 
         id="c2D"
         v-model="c2.cDegree"
+        class="KT-input"
         type="number"
         step="0.0001"
         @input="debounceUpdate"
@@ -159,6 +182,9 @@
         id="c2Indicator"
         class="KT-idc"
       > {{ c2.dirIndicator }} </p>
+      <p class="KT-tooltip-dir">
+        {{ c2.dirText }}
+      </p>
     </span>
     <span 
       v-if="c3.isHeight"
@@ -178,6 +204,9 @@
         id="c3Indicator"
         class="KT-p"
       > m </p>
+      <p class="KT-tooltip-dir">
+        {{ c3.dirText }}
+      </p>
     </span>
   </div>
   <span
@@ -225,7 +254,7 @@
     class="KT-gsearch"
   >
     <label for="gSearch">
-      <p class="KT-gsearch-el">Søg Koordinat via Adresse eller Stednavn</p>
+      <p class="KT-gsearch-el">Søg koordinat via adresse eller stednavn</p>
     </label>
     <g-search
       id="gSearch"
@@ -263,6 +292,7 @@ const c1 = ref({
   cSecond: 0.0,
   dirIcon: '',
   dirIndicator: '',
+  dirText: ''
 })
 const c2 = ref({
   cMeter: 0.0,
@@ -271,11 +301,13 @@ const c2 = ref({
   cSecond: 0.0,
   dirIcon: '',
   dirIndicator: '',
+  dirText: ''
 })
 const c3 = ref({
   cMeter: 0.0,
   isHeight: false,
   upIcon: svgPath + 'arrow-up',
+  dirText: ''
 })
 
 const isVisible = ref(false)
@@ -397,6 +429,10 @@ const formatInputCoor = () => {
   default:
     c3.value.isHeight = false
   }
+
+  c1.value.dirText = CRSInfo.value.v1
+  c2.value.dirText = CRSInfo.value.v2
+  c3.value.dirText = CRSInfo.value.v3
 }
 
 

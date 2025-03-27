@@ -15,6 +15,7 @@
         id="KT-crs-in-select"
         v-model="selectedOption"
         name="crs-in-select"
+        aria-label="Choose a Coordinate Reference System"
       >
         <option
           v-for="option in inputOptions"

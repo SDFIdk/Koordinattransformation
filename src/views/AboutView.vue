@@ -17,8 +17,6 @@
       <br>
       Øverst til højre kan skiftes mellem Danmark og Grønland.
     </p>
-
-
     <h6>
       <router-link
         to="/was"

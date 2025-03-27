@@ -22,6 +22,10 @@
         id="c1Indicator"
         class="KT-idc"
       > {{ c1.dirIndicator }} </p>
+
+      <p class="KT-tooltip-dir">
+        {{ c1.dirText }}
+      </p>
     </span>
     <span 
       class="KT-input-row"
@@ -42,6 +46,9 @@
         id="c2Indicator"
         class="KT-idc"
       > {{ c2.dirIndicator }} </p>
+      <p class="KT-tooltip-dir">
+        {{ c2.dirText }}
+      </p>
     </span>
     <span 
       v-if="c3.isHeight"
@@ -63,6 +70,9 @@
         id="c3Indicator"
         class="KT-idc"
       > m </p>
+      <p class="KT-tooltip-dir">
+        {{ c3.dirText }}
+      </p>
     </span>
   </div>
 
@@ -120,6 +130,9 @@
         id="c1Indicator"
         class="KT-idc"
       > {{ c1.dirIndicator }} </p>
+      <p class="KT-tooltip-dir">
+        {{ c1.dirText }}
+      </p>
     </span>
     <span 
       class="KT-input-row"
@@ -169,6 +182,9 @@
         id="c2Indicator"
         class="KT-idc"
       > {{ c2.dirIndicator }} </p>
+      <p class="KT-tooltip-dir">
+        {{ c2.dirText }}
+      </p>
     </span>
     <span 
       v-if="c3.isHeight"
@@ -188,6 +204,9 @@
         id="c3Indicator"
         class="KT-p"
       > m </p>
+      <p class="KT-tooltip-dir">
+        {{ c3.dirText }}
+      </p>
     </span>
   </div>
   <span
@@ -235,7 +254,7 @@
     class="KT-gsearch"
   >
     <label for="gSearch">
-      <p class="KT-gsearch-el">Søg Koordinat via Adresse eller Stednavn</p>
+      <p class="KT-gsearch-el">Søg koordinat via adresse eller stednavn</p>
     </label>
     <g-search
       id="gSearch"
@@ -273,6 +292,7 @@ const c1 = ref({
   cSecond: 0.0,
   dirIcon: '',
   dirIndicator: '',
+  dirText: ''
 })
 const c2 = ref({
   cMeter: 0.0,
@@ -281,11 +301,13 @@ const c2 = ref({
   cSecond: 0.0,
   dirIcon: '',
   dirIndicator: '',
+  dirText: ''
 })
 const c3 = ref({
   cMeter: 0.0,
   isHeight: false,
   upIcon: svgPath + 'arrow-up',
+  dirText: ''
 })
 
 const isVisible = ref(false)
@@ -407,6 +429,10 @@ const formatInputCoor = () => {
   default:
     c3.value.isHeight = false
   }
+
+  c1.value.dirText = CRSInfo.value.v1
+  c2.value.dirText = CRSInfo.value.v2
+  c3.value.dirText = CRSInfo.value.v3
 }
 
 

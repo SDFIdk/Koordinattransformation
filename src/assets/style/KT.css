@@ -11,6 +11,8 @@ label {
   margin-bottom: 0 !important;
 }
 
+
+
 /* ========== Header Styling =========== */
 .koor-header {
   display: flex;
@@ -129,6 +131,7 @@ input[type="number"]::-ms-expand {
   display: flex;
   align-self: center;
   min-width: 1rem;
+  margin: 0 !important;
 }
 
 .KT-input-column,
@@ -152,6 +155,7 @@ input[type="number"]::-ms-expand {
 
 .KT-input-row,
 .KT-output-row {
+  position: relative;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -288,8 +292,33 @@ input[type="number"]::-ms-expand {
   min-width: 23vw;
 }
 
+.KT-tooltip-dir {
+  position:absolute;
+  visibility: hidden;
+  opacity: 0;
+  background-color: var(--bg2);
+  text-align: center;
+  border-radius: 1.2rem;
+  padding: var(--space);
+  top: 2rem;
+  left:10%;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 11;
+
+  /* Fade-in */
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  box-shadow: 0 var(--space-sm) var(--space-md) #00000054;
+}
 .KT-tooltip-icon {
   position:relative;
+}
+
+
+.KT-input-row:hover .KT-tooltip-dir {
+  visibility: visible;
+  opacity: 1;
 }
 .KT-tooltip-visible .KT-tooltip,
 .KT-tooltip-icon:hover .KT-tooltip {

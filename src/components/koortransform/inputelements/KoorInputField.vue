@@ -142,8 +142,8 @@
       </svg>
       <input 
         id="c2D"
-        class="KT-input"
         v-model="c2.cDegree"
+        class="KT-input"
         type="number"
         step="0.0001"
         @input="debounceUpdate"

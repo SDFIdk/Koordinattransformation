@@ -54,8 +54,10 @@ const isMinimized = ref(false)
 
 watch(selectedOption, (to, from) => {
   KtStore.setCRSFrom(extractEPSGCode(to))
-  //not needed for reactive use, thus we don't use getter here
   KtStore.setCoordinatesFrom({crs: extractEPSGCode(from), coordinates: KtStore.CoordinatesFrom})
+})
+watch(isMobile, () => {
+  isMinimized.value = false
 })
 onMounted(() => {
   KtStore.setCRSFrom(extractEPSGCode(selectedOption.value))

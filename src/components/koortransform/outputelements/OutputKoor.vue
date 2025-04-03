@@ -59,6 +59,9 @@ watch(selectedOption, (to, from) => {
   KtStore.setCRSTo(extractEPSGCode(to))
   KtStore.setCoordinatesTo()
 })
+watch(isMobile, () => {
+  isMinimized.value = false
+})
 onMounted(() => {
   KtStore.setCRSTo(extractEPSGCode(selectedOption.value)) 
 })

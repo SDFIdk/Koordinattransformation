@@ -5,13 +5,12 @@ body {
 }
 :root {
   --container-scale: 0.9em;
+  font-size: var(--container-scale) !important;
 }
 
 label {
   margin-bottom: 0 !important;
 }
-
-
 
 /* ========== Header Styling =========== */
 .koor-header {
@@ -20,11 +19,6 @@ label {
   flex-wrap: wrap;
   justify-content: space-between;
 }
-
-.koor-header span {
-  font-size: var(--container-scale);
-}
-
 #koor-hover-icon {
   margin-left: 3rem;
   margin-top: var(--space)
@@ -45,7 +39,6 @@ select, input, p, label {
   -webkit-text-size-adjust: none;
   -moz-text-size-adjust: none;
   -ms-text-size-adjust: none;
-  font-size: 0.9em !important;
 }
 
 /* Remove number input spinners */
@@ -102,7 +95,6 @@ input[type="number"]::-ms-expand {
   position: absolute;
   top: 10%;
   z-index: 10;
-  transform: scale(calc(var(--container-scale)*1.2), (var(--container-scale), var(--container-scale)*0.8));
   transform-origin: center;
 }
 
@@ -187,9 +179,6 @@ input[type="number"]::-ms-expand {
   justify-content: space-between;
   align-items: center;
 }
-
-
-
 
 /* ========== Output Components ========== */
 .KT-output-coord {
@@ -325,7 +314,8 @@ input[type="number"]::-ms-expand {
   visibility: visible;
   opacity: 1;
 }
-/* ========== Responsive Styles ========== */
+/* ==== Responsive Styles ========== */
+
 @media only screen and (max-width: 66rem) {
   .KT-input-meter {
     flex-direction: column;

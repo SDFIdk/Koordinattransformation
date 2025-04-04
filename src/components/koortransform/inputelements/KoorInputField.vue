@@ -1,4 +1,8 @@
 <template>
+  <!--
+    Note: lang="en"-attribute on input-fields is required for correct formating of numbers 
+    (with dot as seperator instead of ,)
+  -->
   <div
     v-if="isMeter"
     class="KT-input-meter"
@@ -15,6 +19,7 @@
         class="KT-input"
         type="number"
         step="0.0001"
+        lang="en"
         aria-label="Input Coordinate One"
         @input="debounceUpdate"
       >
@@ -38,6 +43,7 @@
         v-model="c2.cMeter"
         class="KT-input"
         type="number"
+        lang="en"
         step="0.0001"
         aria-label="Input Coordinate Two"
         @input="debounceUpdate"
@@ -62,6 +68,7 @@
         v-model="c3.cMeter"
         class="KT-input"
         type="number"
+        lang="en"
         step="0.0001"
         aria-label="Input Coordinate Three"
         @input="debounceUpdate"
@@ -90,6 +97,7 @@
         id="c1D"
         v-model="c1.cDegree"
         type="number"
+        lang="en"
         step="0.0001"
         aria-label="Input Coordinate One D.D° or D°"
         @input="debounceUpdate"
@@ -103,6 +111,7 @@
         id="c1Dm"
         v-model="c1.cMinute"
         type="number"
+        lang="en"
         step="0.0001"
         aria-label="Input Coordinate Two M' or M.M'"
         @input="debounceUpdate"
@@ -117,6 +126,7 @@
         id="c1Dms"
         v-model="c1.cSecond"
         type="number"
+        lang="en"
         step="0.0001"
         aria-label="Input Coordinate Two S.S&quot;"
         @input="debounceUpdate"
@@ -145,6 +155,7 @@
         v-model="c2.cDegree"
         class="KT-input"
         type="number"
+        lang="en"
         step="0.0001"
         @input="debounceUpdate"
       >
@@ -157,6 +168,7 @@
         id="c2Dm"
         v-model="c2.cMinute"
         type="number"
+        lang="en"
         step="0.0001"
         @input="debounceUpdate"
       >
@@ -170,6 +182,7 @@
         id="c2Dms"
         v-model="c2.cSecond"
         type="number"
+        lang="en"
         step="0.0001"
         @input="debounceUpdate"
       >
@@ -197,6 +210,7 @@
         id="c3"
         v-model="c3.cMeter"
         type="number"
+        lang="en"
         step="0.0001"
         @input="debounceUpdate"
       >

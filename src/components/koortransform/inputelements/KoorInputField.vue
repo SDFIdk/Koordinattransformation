@@ -295,7 +295,6 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useKtStore } from '../../../store/store.js'
 import { getGSearchCenterPoint } from '../../../helperfunctions.js'
-import { format } from 'ol/coordinate.js'
 
 const KtStore = useKtStore()
 const route = useRoute()

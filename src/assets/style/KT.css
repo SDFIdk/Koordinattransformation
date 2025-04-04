@@ -351,6 +351,8 @@ input[type="number"]::-ms-expand {
     min-width: 100%;
     width: 80%;
     margin-left: 0;
+    max-height: 87vh !important;
+    overflow-y: scroll;
   }
 
   .KT-borderline {

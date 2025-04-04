@@ -1,7 +1,10 @@
 <template>
   <!--
-    Note: lang="en"-attribute on input-fields is required for correct formating of numbers 
-    (with dot as seperator instead of ,)
+    Note: inputmode="numeric"-attribute on input-fields is required for correct formating of numbers 
+    (with dot as seperator instead of)
+
+    Each input field has a dynamically selected format with a specified amount of decimals it should have,
+    which is selected from the formats-ref.
   -->
   <div
     v-if="isMeter"
@@ -17,9 +20,10 @@
         id="c1"
         v-model="c1.cMeter"
         class="KT-input"
-        type="number"
-        step="0.0001"
-        lang="en"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="formats.meterformat"
         aria-label="Input Coordinate One"
         @input="debounceUpdate"
       >
@@ -42,9 +46,10 @@
         id="c2"
         v-model="c2.cMeter"
         class="KT-input"
-        type="number"
-        lang="en"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="formats.meterformat"
         aria-label="Input Coordinate Two"
         @input="debounceUpdate"
       >
@@ -67,9 +72,10 @@
         id="c3"
         v-model="c3.cMeter"
         class="KT-input"
-        type="number"
-        lang="en"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="formats.meterformat"
         aria-label="Input Coordinate Three"
         @input="debounceUpdate"
       >
@@ -96,9 +102,10 @@
       <input 
         id="c1D"
         v-model="c1.cDegree"
-        type="number"
-        lang="en"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="degreeFormat === 'D' ? formats.degreeformat: formats.noDecimal"
         aria-label="Input Coordinate One D.D° or D°"
         @input="debounceUpdate"
       >
@@ -110,9 +117,10 @@
         v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
         id="c1Dm"
         v-model="c1.cMinute"
-        type="number"
-        lang="en"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="degreeFormat === 'DM' ? formats.minutesformat: formats.noDecimal"
         aria-label="Input Coordinate Two M' or M.M'"
         @input="debounceUpdate"
       >
@@ -125,9 +133,10 @@
         v-if="degreeFormat === 'DMS'"
         id="c1Dms"
         v-model="c1.cSecond"
-        type="number"
-        lang="en"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="formats.secondsformat"
         aria-label="Input Coordinate Two S.S&quot;"
         @input="debounceUpdate"
       >
@@ -154,9 +163,10 @@
         id="c2D"
         v-model="c2.cDegree"
         class="KT-input"
-        type="number"
-        lang="en"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="degreeFormat==='D' ? formats.degreeformat : formats.noDecimal"
         @input="debounceUpdate"
       >
       <p
@@ -167,9 +177,10 @@
         v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
         id="c2Dm"
         v-model="c2.cMinute"
-        type="number"
-        lang="en"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="degreeFormat==='DM' ? formats.minutesformat : formats.noDecimal"
         @input="debounceUpdate"
       >
       <p
@@ -181,9 +192,10 @@
         v-if="degreeFormat === 'DMS'"
         id="c2Dms"
         v-model="c2.cSecond"
-        type="number"
-        lang="en"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="formats.secondsformat"
         @input="debounceUpdate"
       >
       <p
@@ -209,9 +221,10 @@
       <input 
         id="c3"
         v-model="c3.cMeter"
-        type="number"
-        lang="en"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="formats.meterformat"
         @input="debounceUpdate"
       >
       <p
@@ -282,9 +295,19 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useKtStore } from '../../../store/store.js'
 import { getGSearchCenterPoint } from '../../../helperfunctions.js'
+import { format } from 'ol/coordinate.js'
 
 const KtStore = useKtStore()
 const route = useRoute()
+
+const formats = ref({
+  meterformat:'^-?\d+\.\d{1,4}$',
+  degreeformat: '^-?\d+\.\d{1,8}$',
+  minutesformat:'^-?\d+\.\d{1,6}$',
+  secondsformat: '^-?\d+\.\d{1,4}$',
+  noDecimal: '^-?\d+\$'
+})
+
 
 const coorFrom = computed(() => KtStore.getCoordinatesFrom)
 const CRSInfo = computed(() => KtStore.getCRSFromDisplayInfo)
@@ -329,7 +352,7 @@ const isMeter = ref(true)
 const degreeFormat = ref('D')
 
 const toRepresentation = () => {
-  c3.value.cMeter = baseCoords.value.v3
+  c3.value.cMeter = baseCoords.value.v3.toFixed(4)
 
   let d1, d2, m1, m2, s1, s2
 
@@ -472,6 +495,7 @@ watch(CRSInfo, () => {
 })
 
 watch(coorFrom, (to) => {
+
 
   baseCoords.value = {
     v1: coorFrom.value.v1 || 0.0,

@@ -6,6 +6,7 @@ body {
 :root {
   --container-scale: 0.9em;
   font-size: var(--container-scale) !important;
+  --header-height: 10vh;
 }
 
 label {
@@ -18,6 +19,7 @@ label {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
+  min-height: var(--header-height);
 }
 #koor-hover-icon {
   margin-left: 3rem;
@@ -36,7 +38,7 @@ label {
 /* ========== Map Styling =========== */
 .olmap {
   cursor: crosshair;
-  height: calc(100vh - (12vh - 2rem) );
+  height: auto;
   position: relative;
 }
 #mousePin {

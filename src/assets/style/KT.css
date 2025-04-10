@@ -32,7 +32,25 @@ label {
   justify-self: space-around;
   margin: var(--space) !important;
   }
-
+  
+/* ========== Map Styling =========== */
+.olmap {
+  cursor: crosshair;
+  height: calc(100vh - (12vh - 2rem) );
+  position: relative;
+}
+#mousePin {
+  display: none;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+#placed-pin {
+  position: absolute;
+  transform: translate(-58%, -85%);
+  min-height:1rem;
+  min-width:1rem;
+}
 /* ========== Input & Form Elements ========== */
 select, input, p, label {
   text-size-adjust: none;

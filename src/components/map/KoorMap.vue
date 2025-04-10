@@ -135,7 +135,7 @@ const fetchGLMap = async () => {
 const createView = async() => {
   return new OlView({
     center: mapData.value[coverArea.value].center,
-    zoom: mapData.value[coverArea.value].zoom,
+    zoom: mapData.value[coverArea.value].zoom + Math.log2(1.2),
     minZoom: mapData.value[coverArea.value].minZoom,
     maxZoom: mapData.value[coverArea.value].maxZoom,
     showFullExtent: false,
@@ -226,6 +226,7 @@ onMounted(async() => {
     crs: mapData.value[coverArea.value].projection,
     coordinates: {v1: startCoor[0], v2: startCoor[1], v3: null, v4: null},
   })
+  document.querySelector('#map').focus()
 })
 
 //make call to api and set map marker where new coordinate is
@@ -252,20 +253,5 @@ watch(coorFrom, async (to, from) => {
 })
 </script>
 
-<style scoped>
-.olmap {
-  cursor: crosshair;
-  height: calc(100vh - (12vh - 2rem) );
-  position: relative;
-}
-#mousePin {
-  display: none;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-#placed-pin {
-  position: absolute;
-  transform: translateX(-50%) translateY(-85%);
-}
+<style>
 </style>

@@ -16,6 +16,7 @@
           id="KT-crs-out-select"
           v-model="selectedOption"
           name="crs-out-select"
+          aria-label="Select Output Coordinate Reference System"
         >
           <option
             v-for="option in outputOptions"
@@ -57,6 +58,9 @@ const isMinimized = ref(false)
 watch(selectedOption, (to, from) => {
   KtStore.setCRSTo(extractEPSGCode(to))
   KtStore.setCoordinatesTo()
+})
+watch(isMobile, () => {
+  isMinimized.value = false
 })
 onMounted(() => {
   KtStore.setCRSTo(extractEPSGCode(selectedOption.value)) 

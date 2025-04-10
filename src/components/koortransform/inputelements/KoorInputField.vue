@@ -1,4 +1,11 @@
 <template>
+  <!--
+    Note: inputmode="numeric"-attribute on input-fields is required for correct formating of numbers 
+    (with dot as seperator instead of)
+
+    Each input field has a dynamically selected format with a specified amount of decimals it should have,
+    which is selected from the formats-ref.
+  -->
   <div
     v-if="isMeter"
     class="KT-input-meter"
@@ -12,14 +19,22 @@
       <input 
         id="c1"
         v-model="c1.cMeter"
-        type="number"
-        step="0.0001"
+        class="KT-input"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="formats.meterformat"
+        aria-label="Input Coordinate One"
         @input="debounceUpdate"
       >
       <p
         id="c1Indicator"
         class="KT-idc"
       > {{ c1.dirIndicator }} </p>
+
+      <p class="KT-tooltip-dir">
+        {{ c1.dirText }}
+      </p>
     </span>
     <span 
       class="KT-input-row"
@@ -30,14 +45,21 @@
       <input 
         id="c2"
         v-model="c2.cMeter"
-        type="number"
-        step="0.0001"
+        class="KT-input"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="formats.meterformat"
+        aria-label="Input Coordinate Two"
         @input="debounceUpdate"
       >
       <p
         id="c2Indicator"
         class="KT-idc"
       > {{ c2.dirIndicator }} </p>
+      <p class="KT-tooltip-dir">
+        {{ c2.dirText }}
+      </p>
     </span>
     <span 
       v-if="c3.isHeight"
@@ -49,14 +71,21 @@
       <input 
         id="c3"
         v-model="c3.cMeter"
-        type="number"
-        step="0.0001"
+        class="KT-input"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="formats.meterformat"
+        aria-label="Input Coordinate Three"
         @input="debounceUpdate"
       >
       <p
         id="c3Indicator"
         class="KT-idc"
       > m </p>
+      <p class="KT-tooltip-dir">
+        {{ c3.dirText }}
+      </p>
     </span>
   </div>
 
@@ -73,8 +102,11 @@
       <input 
         id="c1D"
         v-model="c1.cDegree"
-        type="number"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="degreeFormat === 'D' ? formats.degreeformat: formats.noDecimal"
+        aria-label="Input Coordinate One D.D° or D°"
         @input="debounceUpdate"
       >
       <p
@@ -85,8 +117,11 @@
         v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
         id="c1Dm"
         v-model="c1.cMinute"
-        type="number"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="degreeFormat === 'DM' ? formats.minutesformat: formats.noDecimal"
+        aria-label="Input Coordinate Two M' or M.M'"
         @input="debounceUpdate"
       >
       <p
@@ -98,8 +133,11 @@
         v-if="degreeFormat === 'DMS'"
         id="c1Dms"
         v-model="c1.cSecond"
-        type="number"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="formats.secondsformat"
+        aria-label="Input Coordinate Two S.S&quot;"
         @input="debounceUpdate"
       >
       <p
@@ -111,6 +149,9 @@
         id="c1Indicator"
         class="KT-idc"
       > {{ c1.dirIndicator }} </p>
+      <p class="KT-tooltip-dir">
+        {{ c1.dirText }}
+      </p>
     </span>
     <span 
       class="KT-input-row"
@@ -121,8 +162,11 @@
       <input 
         id="c2D"
         v-model="c2.cDegree"
-        type="number"
-        step="0.0001"
+        class="KT-input"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="degreeFormat==='D' ? formats.degreeformat : formats.noDecimal"
         @input="debounceUpdate"
       >
       <p
@@ -133,8 +177,10 @@
         v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
         id="c2Dm"
         v-model="c2.cMinute"
-        type="number"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="degreeFormat==='DM' ? formats.minutesformat : formats.noDecimal"
         @input="debounceUpdate"
       >
       <p
@@ -146,8 +192,10 @@
         v-if="degreeFormat === 'DMS'"
         id="c2Dms"
         v-model="c2.cSecond"
-        type="number"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="formats.secondsformat"
         @input="debounceUpdate"
       >
       <p
@@ -159,6 +207,9 @@
         id="c2Indicator"
         class="KT-idc"
       > {{ c2.dirIndicator }} </p>
+      <p class="KT-tooltip-dir">
+        {{ c2.dirText }}
+      </p>
     </span>
     <span 
       v-if="c3.isHeight"
@@ -170,14 +221,19 @@
       <input 
         id="c3"
         v-model="c3.cMeter"
-        type="number"
-        step="0.0001"
+        type="text"
+        title=""
+        inputmode="numeric"
+        :pattern="formats.meterformat"
         @input="debounceUpdate"
       >
       <p
         id="c3Indicator"
         class="KT-p"
       > m </p>
+      <p class="KT-tooltip-dir">
+        {{ c3.dirText }}
+      </p>
     </span>
   </div>
   <span
@@ -225,7 +281,7 @@
     class="KT-gsearch"
   >
     <label for="gSearch">
-      <p class="KT-gsearch-el">Søg Koordinat via Adresse eller Stednavn</p>
+      <p class="KT-gsearch-el">Søg koordinat via adresse eller stednavn</p>
     </label>
     <g-search
       id="gSearch"
@@ -242,6 +298,15 @@ import { getGSearchCenterPoint } from '../../../helperfunctions.js'
 
 const KtStore = useKtStore()
 const route = useRoute()
+
+const formats = ref({
+  meterformat:'^-?\d+\.\d{1,4}$',
+  degreeformat: '^-?\d+\.\d{1,8}$',
+  minutesformat:'^-?\d+\.\d{1,6}$',
+  secondsformat: '^-?\d+\.\d{1,4}$',
+  noDecimal: '^-?\d+\$'
+})
+
 
 const coorFrom = computed(() => KtStore.getCoordinatesFrom)
 const CRSInfo = computed(() => KtStore.getCRSFromDisplayInfo)
@@ -263,6 +328,7 @@ const c1 = ref({
   cSecond: 0.0,
   dirIcon: '',
   dirIndicator: '',
+  dirText: ''
 })
 const c2 = ref({
   cMeter: 0.0,
@@ -271,11 +337,13 @@ const c2 = ref({
   cSecond: 0.0,
   dirIcon: '',
   dirIndicator: '',
+  dirText: ''
 })
 const c3 = ref({
   cMeter: 0.0,
   isHeight: false,
   upIcon: svgPath + 'arrow-up',
+  dirText: ''
 })
 
 const isVisible = ref(false)
@@ -283,7 +351,7 @@ const isMeter = ref(true)
 const degreeFormat = ref('D')
 
 const toRepresentation = () => {
-  c3.value.cMeter = baseCoords.value.v3
+  c3.value.cMeter = baseCoords.value.v3.toFixed(4)
 
   let d1, d2, m1, m2, s1, s2
 
@@ -397,6 +465,10 @@ const formatInputCoor = () => {
   default:
     c3.value.isHeight = false
   }
+
+  c1.value.dirText = CRSInfo.value.v1
+  c2.value.dirText = CRSInfo.value.v2
+  c3.value.dirText = CRSInfo.value.v3
 }
 
 
@@ -422,6 +494,7 @@ watch(CRSInfo, () => {
 })
 
 watch(coorFrom, (to) => {
+
 
   baseCoords.value = {
     v1: coorFrom.value.v1 || 0.0,

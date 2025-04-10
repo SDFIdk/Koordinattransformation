@@ -3,39 +3,60 @@ body {
   overflow: hidden;
   height: 100vh;
 }
+:root {
+  --container-scale: 0.9em;
+  font-size: var(--container-scale) !important;
+}
 
 label {
   margin-bottom: 0 !important;
 }
 
-/* ========== Typography ========== */
-h1, h2, h3, h4, h5, h6, ol {
-  margin: 1.25rem;
+/* ========== Header Styling =========== */
+.koor-header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
-
-h1 {
-  font-size: 1.875rem;
+#koor-hover-icon {
+  margin-left: 3rem;
+  margin-top: var(--space)
 }
-
-h3 {
-  margin: 1.5rem 1.25rem;
+.koor-nav {
+  margin: var(--space)
 }
-
-h4 {
-  font-weight: normal;
+.KT-logo {
+  display: flex;
+  align-self: center;
+  justify-self: space-around;
+  margin: var(--space) !important;
+  }
+  
+/* ========== Map Styling =========== */
+.olmap {
+  cursor: crosshair;
+  height: calc(100vh - (12vh - 2rem) );
+  position: relative;
 }
-
-h6 {
-  margin-top: 2rem;
+#mousePin {
+  display: none;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
-
+#placed-pin {
+  position: absolute;
+  transform: translate(-58%, -85%);
+  min-height:1rem;
+  min-width:1rem;
+}
 /* ========== Input & Form Elements ========== */
 select, input, p, label {
   text-size-adjust: none;
   -webkit-text-size-adjust: none;
   -moz-text-size-adjust: none;
   -ms-text-size-adjust: none;
-  font-size: 0.9em !important;
 }
 
 /* Remove number input spinners */
@@ -92,6 +113,7 @@ input[type="number"]::-ms-expand {
   position: absolute;
   top: 10%;
   z-index: 10;
+  transform-origin: center;
 }
 
 .KT-output-wrapper {
@@ -101,7 +123,7 @@ input[type="number"]::-ms-expand {
 }
 
 .KT-input-segment {
-  width: 46%;
+  width: 48%;
   margin: var(--space);
 }
 
@@ -119,6 +141,7 @@ input[type="number"]::-ms-expand {
   display: flex;
   align-self: center;
   min-width: 1rem;
+  margin: 0 !important;
 }
 
 .KT-input-column,
@@ -128,33 +151,30 @@ input[type="number"]::-ms-expand {
   gap: 1rem;
 }
 
-.KT-input-row,
-.KT-output-row {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  gap: 0.5rem;
-  max-width: 100%;
-  max-height: 2.5rem;
-  min-height: 2rem;
-  margin-top: 0.4rem;
-  justify-content: flex-start;
-}
-
 .KT-input-meter {
   display: flex;
-  flex: 1 1 auto;
   flex-direction: row;
   gap: 0.5rem;
   flex-wrap: wrap;
   justify-content: flex-start;
+  margin-bottom: 1rem;
+}
+.KT-input {
+  min-width: 8vw; 
 }
 
-.KT-input-meter span {
-  flex-grow: 1;
-  flex-shrink: 1;
-  min-width: 9vw;
-  max-width: 100%;
+.KT-input-row,
+.KT-output-row {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.3rem;
+  flex: 1 0 30%;
+  max-height: 2.5rem;
+  min-height: 2rem;
+  margin-top: 0.4rem;
+  justify-content: flex-start;
 }
 
 .KT-radio-row{
@@ -183,7 +203,7 @@ input[type="number"]::-ms-expand {
   display: inline-flex;
   align-items: center;
   background-color: var(--c7);
-  color: var(--grey1);
+  color: var(white);
   border-radius: 1.2rem;
   justify-content: space-between;
   margin: 1rem 0.2rem;
@@ -212,6 +232,7 @@ input[type="number"]::-ms-expand {
 .KT-output-p {
   margin-left: var(--space-md);
   color: white;
+  background-color: var(--c7);
 }
 
 /* ========== Menu & Borders ========== */
@@ -278,15 +299,41 @@ input[type="number"]::-ms-expand {
   min-width: 23vw;
 }
 
+.KT-tooltip-dir {
+  position:absolute;
+  visibility: hidden;
+  opacity: 0;
+  background-color: var(--bg2);
+  text-align: center;
+  border-radius: 1.2rem;
+  padding: var(--space);
+  top: 2rem;
+  left:10%;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 11;
+
+  /* Fade-in */
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  box-shadow: 0 var(--space-sm) var(--space-md) #00000054;
+}
 .KT-tooltip-icon {
   position:relative;
+}
+
+
+.KT-input-row:hover .KT-tooltip-dir {
+  visibility: visible;
+  opacity: 1;
 }
 .KT-tooltip-visible .KT-tooltip,
 .KT-tooltip-icon:hover .KT-tooltip {
   visibility: visible;
   opacity: 1;
 }
-/* ========== Responsive Styles ========== */
+/* ==== Responsive Styles ========== */
+
 @media only screen and (max-width: 66rem) {
   .KT-input-meter {
     flex-direction: column;
@@ -322,6 +369,8 @@ input[type="number"]::-ms-expand {
     min-width: 100%;
     width: 80%;
     margin-left: 0;
+    max-height: 87vh !important;
+    overflow-y: scroll;
   }
 
   .KT-borderline {

@@ -1,16 +1,24 @@
 /* ========== Global Styles ========== */
-body {
-  overflow: hidden;
+body, #app {
   height: 100vh;
+  width: 100vw;
 }
+
 :root {
   --container-scale: 0.9em;
   font-size: var(--container-scale) !important;
-  --header-height: 10vh;
+  --header-height: calc(6vh + 2rem);
 }
 
 label {
   margin-bottom: 0 !important;
+}
+main {
+  display: flex !important;
+  flex-grow: 1;
+  flex-shrink: 0;
+  min-height: calc(100vh - var(--header-height));
+  min-width: 100vw;
 }
 
 /* ========== Header Styling =========== */
@@ -36,11 +44,12 @@ label {
   }
   
 /* ========== Map Styling =========== */
-.olmap {
+#map {
   cursor: crosshair;
-  height: auto;
-  position: relative;
+  min-width: 100%;
+  min-height: 100%;
 }
+
 #mousePin {
   display: none;
   position: absolute;

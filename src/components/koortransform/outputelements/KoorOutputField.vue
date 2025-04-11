@@ -166,8 +166,8 @@ const toStringRepr = () => {
   else{
     switch(degreeFormat.value) {
     case 'D' :
-      coord1 = `${c1.value.cDegree}${c1.value.dirIndicator}`
-      coord2 = `${c2.value.cDegree}${c2.value.dirIndicator}`
+      coord1 = `${c1.value.cDegree}° ${c1.value.dirIndicator}`
+      coord2 = `${c2.value.cDegree}° ${c2.value.dirIndicator}`
       break
     case 'DM':
       coord1 = `${c1.value.cDegree}° ${c1.value.cMinute} \'${c1.value.dirIndicator}`

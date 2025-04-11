@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --mode production",
     "build:test": "vite build --mode test",
-    "preview": "vite preview",
-    "test": "npx playwright test",
+    "preview": "npm run build:test && vite preview",
+    "test": "npm run build:test && npx playwright test",
     "test:debug": "npx playwright test --headed --debug",
     "lint": "npx eslint ./src/",
     "lint:fix": "npx eslint ./src/ --fix"

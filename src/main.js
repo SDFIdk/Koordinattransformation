@@ -3,12 +3,14 @@ import { createPinia } from 'pinia'
 import router from './router/index.js'
 
 import App from './App.vue'
+import './utils/retryFetch.js'
 
 import '@dataforsyningen/designsystem/assets/designsystem.css'
 import { DSLogo, DSLogoTitle, DSNavResponsive } from '@dataforsyningen/designsystem'
 
 import { GSearchUI } from '@dataforsyningen/gsearch-ui'
 import { Spinner } from '@dataforsyningen/designsystem/assets/designsystem.js'   
+
 
 
 customElements.define('ds-spinner', Spinner)

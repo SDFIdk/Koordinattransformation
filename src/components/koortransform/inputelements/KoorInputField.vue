@@ -23,7 +23,7 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="formats.meterformat"
+        :pattern="format.meterformat"
         aria-label="Input Coordinate One"
         @input="debounceUpdate"
       >
@@ -49,7 +49,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="formats.meterformat"
         aria-label="Input Coordinate Two"
         @input="debounceUpdate"
       >
@@ -75,7 +74,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="formats.meterformat"
         aria-label="Input Coordinate Three"
         @input="debounceUpdate"
       >
@@ -105,7 +103,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="degreeFormat === 'D' ? formats.degreeformat: formats.noDecimal"
         aria-label="Input Coordinate One D.D° or D°"
         @input="debounceUpdate"
       >
@@ -120,7 +117,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="degreeFormat === 'DM' ? formats.minutesformat: formats.noDecimal"
         aria-label="Input Coordinate Two M' or M.M'"
         @input="debounceUpdate"
       >
@@ -136,7 +132,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="formats.secondsformat"
         aria-label="Input Coordinate Two S.S&quot;"
         @input="debounceUpdate"
       >
@@ -166,7 +161,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="degreeFormat==='D' ? formats.degreeformat : formats.noDecimal"
         @input="debounceUpdate"
       >
       <p
@@ -180,7 +174,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="degreeFormat==='DM' ? formats.minutesformat : formats.noDecimal"
         @input="debounceUpdate"
       >
       <p
@@ -195,7 +188,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="formats.secondsformat"
         @input="debounceUpdate"
       >
       <p
@@ -224,7 +216,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="formats.meterformat"
         @input="debounceUpdate"
       >
       <p
@@ -295,17 +286,18 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useKtStore } from '../../../store/store.js'
 import { getGSearchCenterPoint } from '../../../helperfunctions.js'
+import { format } from 'ol/coordinate.js'
 
 const KtStore = useKtStore()
 const route = useRoute()
 
-const formats = ref({
-  meterformat:'^-?\d+\.\d{1,4}$',
-  degreeformat: '^-?\d+\.\d{1,8}$',
-  minutesformat:'^-?\d+\.\d{1,6}$',
-  secondsformat: '^-?\d+\.\d{1,4}$',
-  noDecimal: '^-?\d+\$'
-})
+const formats = {
+  meterformat:/^-?\d+\.\d{1,4}$/,
+  degreeformat: /^-?\d+\.\d{1,8}$/,
+  minutesformat:/^-?\d+\.\d{1,6}$/,
+  secondsformat: /^-?\d+\.\d{1,4}$/,
+  noDecimal: /^-?\d+$/
+}
 
 
 const coorFrom = computed(() => KtStore.getCoordinatesFrom)
@@ -350,26 +342,33 @@ const isVisible = ref(false)
 const isMeter = ref(true)
 const degreeFormat = ref('D')
 
+const toFixedCoord = (str, maxDecimal) => {
+  const dotIndex = String(str).indexOf('.')
+  if(dotIndex === -1) return str
+  return parseFloat(String(str).substring(0, dotIndex + maxDecimal + 1))
+}
+
 const toRepresentation = () => {
+
   c3.value.cMeter = baseCoords.value.v3.toFixed(4)
 
   let d1, d2, m1, m2, s1, s2
 
   if (isMeter.value) {
-    c1.value.cMeter = parseFloat(baseCoords.value.v1).toFixed(4)
-    c2.value.cMeter = parseFloat(baseCoords.value.v2).toFixed(4)
+    c1.value.cMeter = toFixedCoord(baseCoords.value.v1, 4)
+    c2.value.cMeter = toFixedCoord(baseCoords.value.v2, 4)
   } else {
     switch (degreeFormat.value) {
     case 'D': 
-      c1.value.cDegree = parseFloat(baseCoords.value.v1).toFixed(8)
-      c2.value.cDegree = parseFloat(baseCoords.value.v2).toFixed(8)
+      c1.value.cDegree = toFixedCoord(baseCoords.value.v1, 8)
+      c2.value.cDegree = toFixedCoord(baseCoords.value.v2, 8)
       break
     case 'DM':
       d1 = Math.floor(baseCoords.value.v1)
       d2 = Math.floor(baseCoords.value.v2)
-
-      m1 = parseFloat(((baseCoords.value.v1 - d1) * 60)).toFixed(6)
-      m2 = parseFloat(((baseCoords.value.v2 - d2) * 60)).toFixed(6)
+    
+      m1 = toFixedCoord(((baseCoords.value.v1 - d1) * 60).toString(), 6)
+      m2 = toFixedCoord((((baseCoords.value.v2 - d2) * 60)).toString(), 6)
 
       c1.value.cDegree = d1
       c1.value.cMinute = m1
@@ -384,8 +383,8 @@ const toRepresentation = () => {
       m1 = Math.floor((baseCoords.value.v1 - d1) * 60)
       m2 = Math.floor((baseCoords.value.v2 - d2) * 60)
 
-      s1 = ((baseCoords.value.v1 - d1 - m1 / 60) * 3600).toFixed(4)
-      s2 = ((baseCoords.value.v2 - d2 - m2 / 60) * 3600).toFixed(4)
+      s1 = toFixedCoord(((baseCoords.value.v1 - d1 - m1 / 60) * 3600).toString(), 4)
+      s2 = toFixedCoord(((baseCoords.value.v2 - d2 - m2 / 60) * 3600).toString(), 4)
 
       c1.value.cDegree = d1
       c1.value.cMinute = m1
@@ -471,14 +470,80 @@ const formatInputCoor = () => {
   c3.value.dirText = CRSInfo.value.v3
 }
 
+const validateCoordinate = (pattern = '', coordinate) => {
+  let result
+  switch(pattern) {
+  case 'meterformat' :
+    result = formats.meterformat.test(coordinate)
+    break
+  case 'degreeformat': 
+    result = formats.degreeformat.test(coordinate)
+    break
+  case 'minutesformat':
+    result = formats.minutesformat.test(coordinate)
+    break
+  case 'secondsformat' :
+    result = formats.secondsformat.test(coordinate)
+    break
+  case 'noDecimal' :
+    result = formats.noDecimal.test(coordinate)
+    break
+  default :
+    result = false
+    break
+  }
+  
+  if (!result) {
+    console.log(`Validation failed - Pattern: ${pattern}, Coordinate: ${coordinate}`)
+  }
+  
+  return result
+}
+
+/**
+ * 
+ * @param pattern 
+ */
+const validateInput = () => {
+  
+  //first, we set up our cases
+  let match = true
+
+  if(isMeter.value) {
+    match = match ? validateCoordinate('meterformat',c1.value.cMeter) && validateCoordinate('meterformat', c1.value.cMeter) : match  
+  }
+  else {
+    switch (degreeFormat.value) {
+    case 'D': 
+      match = match ? validateCoordinate('degreeformat', c1.value.cDegree) && validateCoordinate('degreeformat', c2.value.cMeter) : match
+      break
+    case 'DM':
+      match = match ? validateCoordinate('nodecimal', c1.value.cDegree) && validateformat('minutesformat', c1.value.cMinute) && validateCoordinate('nodecimal', c2.value.cDegree) && validateformat('minutesformat', c2.value.cMinute) : match
+      break
+    case 'DMS':
+      match = match ? validateCoordinate('nodecimal', c1.value.cDegree) && validateformat('nodecimal', c1.value.cMinute) && validateCoordinate('secondsformat', c1.value.cSecond) && validateCoordinate('nodecimal', c2.value.cDegree) && validateformat('nodecimal', c2.value.cMinute) && validateformat('secondsformat', c2.value.cSecond) : match      
+      break
+    }
+
+  }
+  if(c3.value.isHeight.value) {
+    match = match ? validateCoordinate('meterformat', c3.value.cMeter) : match
+  }
+  return match
+
+}
 
 const debounceUpdate = () => {
-  console.log('update queued')
-  
+
   if (debounceTimeout.value) {
     clearTimeout(debounceTimeout.value)
   }
 
+  if(!validateInput()) {
+    console.log('format not accepted')
+    return
+  }
+  //basically, we only update coordinates in store if coordinate is valid input format
   debounceTimeout.value = setTimeout(() => {
     console.log('timeout function called')
     fromRepresentation()

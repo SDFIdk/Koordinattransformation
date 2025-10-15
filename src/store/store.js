@@ -171,6 +171,7 @@ export const useKtStore = defineStore('KtStore', {
         throw new Exception()
       }
       else if(crs === this.CRSFrom) {
+        console.log('we should trigger this change')
         this.CoordinatesFrom = coordinates
       }
       else{

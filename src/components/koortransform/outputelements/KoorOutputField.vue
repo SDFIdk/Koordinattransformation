@@ -190,12 +190,14 @@ watch(CRSFromInfo, () => {
   formatOutputCoor()
 })
 watch(coorFrom, () => {
+  console.log('we should set coordinates to')
   KtStore.setCoordinatesTo()
-})
+}, {deep : true})
 watch(coorTo, () => {
+  console.log('we should update torepresentation')
   toRepresentation()
   toStringRepr()
-})
+}, {deep : true})
 watch(degreeFormat, () => {
   toRepresentation()
   toStringRepr()

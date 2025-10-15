@@ -476,11 +476,12 @@ const toRepresentation = () => {
 }
 
 const fromRepresentation = () => {
+  console.log('fromrepresentation is called')
   
   if (isMeter.value) {
-    baseCoords.value.v1 = (c1.value.cMeter)
-    baseCoords.value.v2 = (c2.value.cMeter)
-    baseCoords.value.v3 = (c3.value.cMeter)
+    baseCoords.value.v1 = parseFloat(c1.value.cMeter)
+    baseCoords.value.v2 = parseFloat(c2.value.cMeter)
+    baseCoords.value.v3 = parseFloat(c3.value.cMeter)
   } else {
     switch (degreeFormat.value) {
     case 'D': 
@@ -577,65 +578,72 @@ const validateCoordinate = (pattern = '', coordinate) => {
   return result
 }
 
+
+const c1MeterValid = computed(() => 
+  isMeter.value ? validateCoordinate('meterformat', c1.value.cMeter) : true
+)
+
+const c1DegreeValid = computed(() => 
+  !isMeter.value ? degreeFormat.value === 'D'? validateCoordinate('degreeformat', c1.value.cDegree) : validateCoordinate('noDecimal', c1.value.cDegree) : true
+)
+
+const c1MinuteValid = computed(() => 
+  !isMeter.value ? degreeFormat.value === 'DM'? validateCoordinate('minutesformat', c1.value.cMinute) : validateCoordinate('noDecimal', c1.value.cMinute): true 
+)
+
+const c1SecondValid = computed(() => 
+  !isMeter.value && degreeFormat.value === 'DMS' ? validateCoordinate('secondsformat', c1.value.cSecond) : true
+)
+
+// Similar for c2...
+const c2MeterValid = computed(() => 
+  isMeter.value ? validateCoordinate('meterformat', c2.value.cMeter) : true
+)
+
+const c2DegreeValid = computed(() => 
+  !isMeter.value ? degreeFormat.value === 'D' ? validateCoordinate('degreeformat', c2.value.cDegree) : validateCoordinate('noDecimal', c2.value.cDegree) : true
+)
+
+const c2MinuteValid = computed(() => 
+  !isMeter.value ? degreeFormat.value === 'DM' ? validateCoordinate('minutesformat', c2.value.cMinute) : validateCoordinate('noDecimal', c2.value.cMinute) : true
+)
+
+const c2SecondValid = computed(() => 
+  !isMeter.value && degreeFormat.value === 'DMS' ? validateCoordinate('secondsformat', c2.value.cSecond) : true
+)
+
+const c3MeterValid = computed(() => 
+  c3.value.isHeight ? validateCoordinate('meterformat', c3.value.cMeter) : true
+)
+
+
 const validCoordinates = computed(() => {
-  const result = {
-    c1: { meter: true, degree: true, minute: true, second: true, overall: true },
-    c2: { meter: true, degree: true, minute: true, second: true, overall: true },
-    c3: { meter: true, overall: true },
-    allValid: true
+  return {
+    c1: { 
+      meter: c1MeterValid.value, 
+      degree: c1DegreeValid.value, 
+      minute: c1MinuteValid.value, 
+      second: c1SecondValid.value,
+      overall: c1MeterValid.value && c1DegreeValid.value && c1MinuteValid.value && c1SecondValid.value
+    },
+    c2: { 
+      meter: c2MeterValid.value, 
+      degree: c2DegreeValid.value, 
+      minute: c2MinuteValid.value, 
+      second: c2SecondValid.value,
+      overall: c2MeterValid.value && c2DegreeValid.value && c2MinuteValid.value && c2SecondValid.value
+    },
+    c3: { 
+      meter: c3MeterValid.value, 
+      overall: c3MeterValid.value
+    },
+    allValid: c1MeterValid.value && c1DegreeValid.value && c1MinuteValid.value && c1SecondValid.value &&
+              c2MeterValid.value && c2DegreeValid.value && c2MinuteValid.value && c2SecondValid.value &&
+              c3MeterValid.value
   }
+}
 
-  if (isMeter.value) {
-    // Validate meter inputs
-    result.c1.meter = validateCoordinate('meterformat', c1.value.cMeter)
-    result.c2.meter = validateCoordinate('meterformat', c2.value.cMeter)
-    
-    result.c1.overall = result.c1.meter
-    result.c2.overall = result.c2.meter
-  } else {
-    // Validate degree inputs based on format
-    switch (degreeFormat.value) {
-    case 'D': 
-      result.c1.degree = validateCoordinate('degreeformat', c1.value.cDegree)
-      result.c2.degree = validateCoordinate('degreeformat', c2.value.cDegree)
-      
-      result.c1.overall = result.c1.degree
-      result.c2.overall = result.c2.degree
-      break
-    case 'DM':
-      result.c1.degree = validateCoordinate('noDecimal', c1.value.cDegree)
-      result.c1.minute = validateCoordinate('minutesformat', c1.value.cMinute)
-      result.c2.degree = validateCoordinate('noDecimal', c2.value.cDegree)
-      result.c2.minute = validateCoordinate('minutesformat', c2.value.cMinute)
-      
-      result.c1.overall = result.c1.degree && result.c1.minute
-      result.c2.overall = result.c2.degree && result.c2.minute
-      break
-    case 'DMS':
-      result.c1.degree = validateCoordinate('noDecimal', c1.value.cDegree)
-      result.c1.minute = validateCoordinate('noDecimal', c1.value.cMinute)
-      result.c1.second = validateCoordinate('secondsformat', c1.value.cSecond)
-      result.c2.degree = validateCoordinate('noDecimal', c2.value.cDegree)
-      result.c2.minute = validateCoordinate('noDecimal', c2.value.cMinute)
-      result.c2.second = validateCoordinate('secondsformat', c2.value.cSecond)
-      
-      result.c1.overall = result.c1.degree && result.c1.minute && result.c1.second
-      result.c2.overall = result.c2.degree && result.c2.minute && result.c2.second
-      break
-    }
-  }
-
-  // Validate c3 if it's a height field
-  if (c3.value.isHeight) {
-    result.c3.meter = validateCoordinate('meterformat', c3.value.cMeter)
-    result.c3.overall = result.c3.meter
-  }
-
-  // Overall validation
-  result.allValid = result.c1.overall && result.c2.overall && result.c3.overall
-  return result
-})
-
+)
 
 const debounceUpdate = () => {
 
@@ -651,6 +659,8 @@ const debounceUpdate = () => {
   debounceTimeout.value = setTimeout(() => {
     console.log('timeout function called')
     fromRepresentation()
+    console.log('fromrepresentation set')
+    console.log(baseCoords.value)
     KtStore.setCoordinatesFrom({
       crs: KtStore.CRSFrom,
       coordinates: baseCoords.value,

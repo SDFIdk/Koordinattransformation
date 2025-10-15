@@ -20,10 +20,10 @@
         id="c1"
         v-model="c1.cMeter"
         class="KT-input"
+        :class="validCoordinates.c1.meter ? '' : 'KT-input-invalid'"
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="format.meterformat"
         aria-label="Input Coordinate One"
         @input="debounceUpdate"
       >
@@ -32,8 +32,11 @@
         class="KT-idc"
       > {{ c1.dirIndicator }} </p>
 
-      <p class="KT-tooltip-dir">
-        {{ c1.dirText }}
+      <p 
+        :class="validCoordinates.c1.meter ? '' : 'KT-tooltip-visible'"
+        class="KT-tooltip-dir"
+      >
+        {{ c1.dirText }}: {{ formatTexts.meterformat }}
       </p>
     </span>
     <span 
@@ -46,6 +49,7 @@
         id="c2"
         v-model="c2.cMeter"
         class="KT-input"
+        :class="validCoordinates.c2.meter ? '' : 'KT-input-invalid'"
         type="text"
         title=""
         inputmode="numeric"
@@ -56,8 +60,11 @@
         id="c2Indicator"
         class="KT-idc"
       > {{ c2.dirIndicator }} </p>
-      <p class="KT-tooltip-dir">
-        {{ c2.dirText }}
+      <p 
+        :class="validCoordinates.c2.meter ? '' : 'KT-tooltip-visible'"
+        class="KT-tooltip-dir"
+      >
+        {{ c2.dirText }} : {{ formatTexts.meterformat }}
       </p>
     </span>
     <span 
@@ -71,6 +78,7 @@
         id="c3"
         v-model="c3.cMeter"
         class="KT-input"
+        :class="validCoordinates.c3.meter ? '' : 'KT-input-invalid'"
         type="text"
         title=""
         inputmode="numeric"
@@ -81,8 +89,11 @@
         id="c3Indicator"
         class="KT-idc"
       > m </p>
-      <p class="KT-tooltip-dir">
-        {{ c3.dirText }}
+      <p 
+        :class="validCoordinates.c3.meter ? '' : 'KT-tooltip-visible'"
+        class="KT-tooltip-dir"
+      >
+        {{ c3.dirText }} : {{ formatTexts.meterformat }}
       </p>
     </span>
   </div>
@@ -94,114 +105,173 @@
     <span 
       class="KT-input-row"
     >
-      <svg class="KT-idc">
-        <use :href="c1.dirIcon" />
-      </svg>
-      <input 
-        id="c1D"
-        v-model="c1.cDegree"
-        type="text"
-        title=""
-        inputmode="numeric"
-        aria-label="Input Coordinate One D.D° or D°"
-        @input="debounceUpdate"
+      <div
+        class="KT-degree-input-field"
       >
-      <p
-        id="c1degreeIdc"
-        class="KT-p KT-push-right"
-      >°</p>
-      <input 
+        <svg class="KT-idc">
+          <use :href="c1.dirIcon" />
+        </svg>
+        <input 
+          id="c1D"
+          v-model="c1.cDegree"
+          :class="validCoordinates.c1.degree ? '' : 'KT-input-invalid'"
+          type="text"
+          title=""
+          inputmode="numeric"
+          aria-label="Input Coordinate One D.D° or D°"
+          @input="debounceUpdate"
+        >
+
+        <p
+          id="c1degreeIdc"
+          class="KT-p KT-push-right"
+        >°</p>
+        <p 
+          :class="validCoordinates.c1.degree ? '' : 'KT-tooltip-visible'"
+          class="KT-tooltip-dir"
+        >
+          {{ c1.dirText }} : {{ degreeFormat === 'D' ? formatTexts.degreeformat : formatTexts.noDecimal }}
+        </p>
+      </div>
+      <div
         v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
-        id="c1Dm"
-        v-model="c1.cMinute"
-        type="text"
-        title=""
-        inputmode="numeric"
-        aria-label="Input Coordinate Two M' or M.M'"
-        @input="debounceUpdate"
+        class="KT-degree-input-field"
       >
-      <p
-        v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
-        id="c1minuteIdc"
-        class="KT-p KT-push-right"
-      >'</p>
-      <input 
+        <input 
+          
+          id="c1Dm"
+          v-model="c1.cMinute"
+          :class="validCoordinates.c1.minute ? '' : 'KT-input-invalid'"        
+          type="text"
+          title=""
+          inputmode="numeric"
+          aria-label="Input Coordinate Two M' or M.M'"
+          @input="debounceUpdate"
+        >
+        <p
+          id="c1minuteIdc"
+          class="KT-p KT-push-right"
+        >'</p>
+        <p 
+          :class="validCoordinates.c1.minute ? '' : 'KT-tooltip-visible'"
+          class="KT-tooltip-dir"
+        >
+          {{ c1.dirText }} : {{ degreeFormat === 'DM' ? formatTexts.minutesformat : formatTexts.noDecimal }}
+        </p>
+      </div>
+      <div
         v-if="degreeFormat === 'DMS'"
-        id="c1Dms"
-        v-model="c1.cSecond"
-        type="text"
-        title=""
-        inputmode="numeric"
-        aria-label="Input Coordinate Two S.S&quot;"
-        @input="debounceUpdate"
+        class="KT-degree-input-field"
       >
-      <p
-        v-if="degreeFormat==='DMS'"
-        id="c1secondIdc"
-        class="KT-p"
-      >"</p>
-      <p
-        id="c1Indicator"
-        class="KT-idc"
-      > {{ c1.dirIndicator }} </p>
-      <p class="KT-tooltip-dir">
-        {{ c1.dirText }}
-      </p>
+        <input 
+          id="c1Dms"
+          v-model="c1.cSecond"
+          :class="validCoordinates.c1.second ? '' : 'KT-input-invalid'"     
+          type="text"
+          title=""
+          inputmode="numeric"
+          aria-label="Input Coordinate Two S.S&quot;"
+          @input="debounceUpdate"
+        >
+        <p
+          id="c1secondIdc"
+          class="KT-p"
+        >"</p>
+        <p
+          id="c1Indicator"
+          class="KT-idc"
+        > {{ c1.dirIndicator }} </p>
+        <p 
+          :class="validCoordinates.c1.second ? '' : 'KT-tooltip-visible'"
+          class="KT-tooltip-dir"
+        >
+          {{ c1.dirText }} : {{ formatTexts.secondsformat }}
+        </p>  
+      </div>
+
     </span>
     <span 
       class="KT-input-row"
     >
-      <svg class="KT-idc">
-        <use :href="c2.dirIcon" />
-      </svg>
-      <input 
-        id="c2D"
-        v-model="c2.cDegree"
-        class="KT-input"
-        type="text"
-        title=""
-        inputmode="numeric"
-        @input="debounceUpdate"
+      <div
+        class="KT-degree-input-field"
       >
-      <p
-        id="c2degreeIdc"
-        class="KT-p KT-push-right"
-      >°</p>
-      <input 
+        <svg class="KT-idc">
+          <use :href="c2.dirIcon" />
+        </svg>
+        <input 
+          id="c2D"
+          v-model="c2.cDegree"
+          :class="validCoordinates.c2.degree ? '' : 'KT-input-invalid'"       
+          type="text"
+          title=""
+          inputmode="numeric"
+          @input="debounceUpdate"
+        >
+        <p
+          id="c2degreeIdc"
+          class="KT-p KT-push-right"
+        >°</p>
+        <p 
+          :class="validCoordinates.c2.degree ? '' : 'KT-tooltip-visible'"
+          class="KT-tooltip-dir"
+        >
+          {{ c2.dirText }} : {{ degreeFormat === 'D' ? formatTexts.degreeformat : formatTexts.noDecimal }}
+        </p>
+      </div>
+      <div
         v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
-        id="c2Dm"
-        v-model="c2.cMinute"
-        type="text"
-        title=""
-        inputmode="numeric"
-        @input="debounceUpdate"
+        class="KT-degree-input-field"
       >
-      <p
-        v-if="degreeFormat==='DM' || degreeFormat === 'DMS'"
-        id="c2minuteIdc"
-        class="KT-p KT-push-right"
-      >'</p>
-      <input 
+        <input 
+          id="c2Dm"
+          v-model="c2.cMinute"
+          :class="validCoordinates.c2.minute ? '' : 'KT-input-invalid'"             
+          type="text"
+          title=""
+          inputmode="numeric"
+          @input="debounceUpdate"
+        >
+        <p
+          id="c2minuteIdc"
+          class="KT-p KT-push-right"
+        >'</p>
+        <p 
+          :class="validCoordinates.c2.minute ? '' : 'KT-tooltip-visible'"
+          class="KT-tooltip-dir"
+        >
+          {{ c2.dirText }} : {{ degreeFormat === 'DM' ? formatTexts.minutesformat : formatTexts.noDecimal }}
+        </p>
+      </div>
+      <div
         v-if="degreeFormat === 'DMS'"
-        id="c2Dms"
-        v-model="c2.cSecond"
-        type="text"
-        title=""
-        inputmode="numeric"
-        @input="debounceUpdate"
+        class="KT-degree-input-field"
       >
-      <p
-        v-if="degreeFormat==='DMS'"
-        id="c2secondIdc"
-        class="KT-p"
-      >"</p>
-      <p
-        id="c2Indicator"
-        class="KT-idc"
-      > {{ c2.dirIndicator }} </p>
-      <p class="KT-tooltip-dir">
-        {{ c2.dirText }}
-      </p>
+        <input 
+          id="c2Dms"
+          v-model="c2.cSecond"
+          :class="validCoordinates.c2.second ? '' : 'KT-input-invalid'"      
+          type="text"
+          title=""
+          inputmode="numeric"
+          @input="debounceUpdate"
+        >
+        <p
+          v-if="degreeFormat==='DMS'"
+          id="c2secondIdc"
+          class="KT-p"
+        >"</p>
+        <p
+          id="c2Indicator"
+          class="KT-idc"
+        > {{ c2.dirIndicator }} </p>
+        <p 
+          :class="validCoordinates.c2.second ? '' : 'KT-tooltip-visible'"
+          class="KT-tooltip-dir"
+        >
+          {{ c2.dirText }} : {{ formatTexts.secondsformat }}
+        </p>
+      </div>
     </span>
     <span 
       v-if="c3.isHeight"
@@ -213,6 +283,7 @@
       <input 
         id="c3"
         v-model="c3.cMeter"
+        :class="validCoordinates.c3.meter ? '' : 'KT-input-invalid'"
         type="text"
         title=""
         inputmode="numeric"
@@ -222,8 +293,11 @@
         id="c3Indicator"
         class="KT-p"
       > m </p>
-      <p class="KT-tooltip-dir">
-        {{ c3.dirText }}
+      <p 
+        :class="validCoordinates.c3.meter ? '' : 'KT-tooltip-visible'"
+        class="KT-tooltip-dir"
+      >
+        {{ c3.dirText }} : {{ formatTexts.meterformat }}
       </p>
     </span>
   </div>
@@ -286,7 +360,6 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useKtStore } from '../../../store/store.js'
 import { getGSearchCenterPoint } from '../../../helperfunctions.js'
-import { format } from 'ol/coordinate.js'
 
 const KtStore = useKtStore()
 const route = useRoute()
@@ -299,9 +372,18 @@ const formats = {
   noDecimal: /^-?\d+$/
 }
 
+const formatTexts = {
+  meterformat:'positive number with 1-4 digits',
+  degreeformat: 'positive number with 1-8 digits',
+  minutesformat:'positive number with 1-6 digits',
+  secondsformat: 'positive number with 4 digits',
+  noDecimal: 'positive whole number'
+}
 
 const coorFrom = computed(() => KtStore.getCoordinatesFrom)
 const CRSInfo = computed(() => KtStore.getCRSFromDisplayInfo)
+
+//validate input
 
 const svgPath = import.meta.env.VITE_NODE_ENV === 'production' || import.meta.env.VITE_NODE_ENV === 'test' ?  KtStore.getURL + '/icons.svg#' : '/src/assets/icons/icons.svg#' 
 const debounceTimeout = ref(null)
@@ -320,7 +402,7 @@ const c1 = ref({
   cSecond: 0.0,
   dirIcon: '',
   dirIndicator: '',
-  dirText: ''
+  dirText: '',
 })
 const c2 = ref({
   cMeter: 0.0,
@@ -329,24 +411,19 @@ const c2 = ref({
   cSecond: 0.0,
   dirIcon: '',
   dirIndicator: '',
-  dirText: ''
+  dirText: '',
 })
 const c3 = ref({
   cMeter: 0.0,
   isHeight: false,
   upIcon: svgPath + 'arrow-up',
-  dirText: ''
+  dirText: '',
 })
 
 const isVisible = ref(false)
 const isMeter = ref(true)
 const degreeFormat = ref('D')
-
-const toFixedCoord = (str, maxDecimal) => {
-  const dotIndex = String(str).indexOf('.')
-  if(dotIndex === -1) return str
-  return parseFloat(String(str).substring(0, dotIndex + maxDecimal + 1))
-}
+const isUserInput = ref(false)
 
 const toRepresentation = () => {
 
@@ -355,20 +432,20 @@ const toRepresentation = () => {
   let d1, d2, m1, m2, s1, s2
 
   if (isMeter.value) {
-    c1.value.cMeter = toFixedCoord(baseCoords.value.v1, 4)
-    c2.value.cMeter = toFixedCoord(baseCoords.value.v2, 4)
+    c1.value.cMeter = baseCoords.value.v1.toFixed(4)
+    c2.value.cMeter = baseCoords.value.v2.toFixed(4)
   } else {
     switch (degreeFormat.value) {
     case 'D': 
-      c1.value.cDegree = toFixedCoord(baseCoords.value.v1, 8)
-      c2.value.cDegree = toFixedCoord(baseCoords.value.v2, 8)
+      c1.value.cDegree = baseCoords.value.v1.toFixed(8)
+      c2.value.cDegree = baseCoords.value.v2.toFixed(8)
       break
     case 'DM':
       d1 = Math.floor(baseCoords.value.v1)
       d2 = Math.floor(baseCoords.value.v2)
     
-      m1 = toFixedCoord(((baseCoords.value.v1 - d1) * 60).toString(), 6)
-      m2 = toFixedCoord((((baseCoords.value.v2 - d2) * 60)).toString(), 6)
+      m1 = ((baseCoords.value.v1 - d1) * 60).toFixed(6)
+      m2 = ((baseCoords.value.v2 - d2) * 60).toFixed(6)
 
       c1.value.cDegree = d1
       c1.value.cMinute = m1
@@ -383,8 +460,8 @@ const toRepresentation = () => {
       m1 = Math.floor((baseCoords.value.v1 - d1) * 60)
       m2 = Math.floor((baseCoords.value.v2 - d2) * 60)
 
-      s1 = toFixedCoord(((baseCoords.value.v1 - d1 - m1 / 60) * 3600).toString(), 4)
-      s2 = toFixedCoord(((baseCoords.value.v2 - d2 - m2 / 60) * 3600).toString(), 4)
+      s1 = ((baseCoords.value.v1 - d1 - m1 / 60) * 3600).toFixed(4)
+      s2 = ((baseCoords.value.v2 - d2 - m2 / 60) * 3600).toFixed(4)
 
       c1.value.cDegree = d1
       c1.value.cMinute = m1
@@ -401,25 +478,25 @@ const toRepresentation = () => {
 const fromRepresentation = () => {
   
   if (isMeter.value) {
-    baseCoords.value.v1 = parseFloat(c1.value.cMeter)
-    baseCoords.value.v2 = parseFloat(c2.value.cMeter)
-    baseCoords.value.v3 = parseFloat(c3.value.cMeter)
+    baseCoords.value.v1 = (c1.value.cMeter)
+    baseCoords.value.v2 = (c2.value.cMeter)
+    baseCoords.value.v3 = (c3.value.cMeter)
   } else {
     switch (degreeFormat.value) {
     case 'D': 
-      baseCoords.value.v1 = parseFloat(c1.value.cDegree).toFixed(8)
-      baseCoords.value.v2 = parseFloat(c2.value.cDegree).toFixed(8)
-      baseCoords.value.v3 = parseFloat(c3.value.cMeter)
+      baseCoords.value.v1 = (c1.value.cDegree).toFixed(8)
+      baseCoords.value.v2 = (c2.value.cDegree).toFixed(8)
+      baseCoords.value.v3 = (c3.value.cMeter)
       break
     case 'DM':
-      baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60).toFixed(8)
-      baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60).toFixed(8)
-      baseCoords.value.v3 = parseFloat(c3.value.cMeter)
+      baseCoords.value.v1 = (c1.value.cDegree + c1.value.cMinute / 60).toFixed(8)
+      baseCoords.value.v2 = (c2.value.cDegree + c2.value.cMinute / 60).toFixed(8)
+      baseCoords.value.v3 = (c3.value.cMeter)
       break
     case 'DMS':
-      baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60 + c1.value.cSecond / 3600).toFixed(8)
-      baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60 + c2.value.cSecond / 3600).toFixed(8)
-      baseCoords.value.v3 = parseFloat(c3.value.cMeter)
+      baseCoords.value.v1 = (c1.value.cDegree + c1.value.cMinute / 60 + c1.value.cSecond / 3600).toFixed(8)
+      baseCoords.value.v2 = (c2.value.cDegree + c2.value.cMinute / 60 + c2.value.cSecond / 3600).toFixed(8)
+      baseCoords.value.v3 = (c3.value.cMeter)
       break
     }
   }
@@ -500,38 +577,65 @@ const validateCoordinate = (pattern = '', coordinate) => {
   return result
 }
 
-/**
- * 
- * @param pattern 
- */
-const validateInput = () => {
-  
-  //first, we set up our cases
-  let match = true
-
-  if(isMeter.value) {
-    match = match ? validateCoordinate('meterformat',c1.value.cMeter) && validateCoordinate('meterformat', c1.value.cMeter) : match  
+const validCoordinates = computed(() => {
+  const result = {
+    c1: { meter: true, degree: true, minute: true, second: true, overall: true },
+    c2: { meter: true, degree: true, minute: true, second: true, overall: true },
+    c3: { meter: true, overall: true },
+    allValid: true
   }
-  else {
+
+  if (isMeter.value) {
+    // Validate meter inputs
+    result.c1.meter = validateCoordinate('meterformat', c1.value.cMeter)
+    result.c2.meter = validateCoordinate('meterformat', c2.value.cMeter)
+    
+    result.c1.overall = result.c1.meter
+    result.c2.overall = result.c2.meter
+  } else {
+    // Validate degree inputs based on format
     switch (degreeFormat.value) {
     case 'D': 
-      match = match ? validateCoordinate('degreeformat', c1.value.cDegree) && validateCoordinate('degreeformat', c2.value.cMeter) : match
+      result.c1.degree = validateCoordinate('degreeformat', c1.value.cDegree)
+      result.c2.degree = validateCoordinate('degreeformat', c2.value.cDegree)
+      
+      result.c1.overall = result.c1.degree
+      result.c2.overall = result.c2.degree
       break
     case 'DM':
-      match = match ? validateCoordinate('nodecimal', c1.value.cDegree) && validateformat('minutesformat', c1.value.cMinute) && validateCoordinate('nodecimal', c2.value.cDegree) && validateformat('minutesformat', c2.value.cMinute) : match
+      result.c1.degree = validateCoordinate('noDecimal', c1.value.cDegree)
+      result.c1.minute = validateCoordinate('minutesformat', c1.value.cMinute)
+      result.c2.degree = validateCoordinate('noDecimal', c2.value.cDegree)
+      result.c2.minute = validateCoordinate('minutesformat', c2.value.cMinute)
+      
+      result.c1.overall = result.c1.degree && result.c1.minute
+      result.c2.overall = result.c2.degree && result.c2.minute
       break
     case 'DMS':
-      match = match ? validateCoordinate('nodecimal', c1.value.cDegree) && validateformat('nodecimal', c1.value.cMinute) && validateCoordinate('secondsformat', c1.value.cSecond) && validateCoordinate('nodecimal', c2.value.cDegree) && validateformat('nodecimal', c2.value.cMinute) && validateformat('secondsformat', c2.value.cSecond) : match      
+      result.c1.degree = validateCoordinate('noDecimal', c1.value.cDegree)
+      result.c1.minute = validateCoordinate('noDecimal', c1.value.cMinute)
+      result.c1.second = validateCoordinate('secondsformat', c1.value.cSecond)
+      result.c2.degree = validateCoordinate('noDecimal', c2.value.cDegree)
+      result.c2.minute = validateCoordinate('noDecimal', c2.value.cMinute)
+      result.c2.second = validateCoordinate('secondsformat', c2.value.cSecond)
+      
+      result.c1.overall = result.c1.degree && result.c1.minute && result.c1.second
+      result.c2.overall = result.c2.degree && result.c2.minute && result.c2.second
       break
     }
-
   }
-  if(c3.value.isHeight.value) {
-    match = match ? validateCoordinate('meterformat', c3.value.cMeter) : match
-  }
-  return match
 
-}
+  // Validate c3 if it's a height field
+  if (c3.value.isHeight) {
+    result.c3.meter = validateCoordinate('meterformat', c3.value.cMeter)
+    result.c3.overall = result.c3.meter
+  }
+
+  // Overall validation
+  result.allValid = result.c1.overall && result.c2.overall && result.c3.overall
+  return result
+})
+
 
 const debounceUpdate = () => {
 
@@ -539,10 +643,10 @@ const debounceUpdate = () => {
     clearTimeout(debounceTimeout.value)
   }
 
-  if(!validateInput()) {
-    console.log('format not accepted')
+  if(!validCoordinates.value.allValid) {
     return
   }
+  isUserInput.value = true
   //basically, we only update coordinates in store if coordinate is valid input format
   debounceTimeout.value = setTimeout(() => {
     console.log('timeout function called')
@@ -559,15 +663,16 @@ watch(CRSInfo, () => {
 })
 
 watch(coorFrom, (to) => {
-
-
-  baseCoords.value = {
-    v1: coorFrom.value.v1 || 0.0,
-    v2: coorFrom.value.v2 || 0.0,
-    v3: coorFrom.value.v3 || 0.0,
-    v4: coorFrom.value.v4 || 0.0,
+  if(!isUserInput.value) {
+    baseCoords.value = {
+      v1: coorFrom.value.v1 || 0.0,
+      v2: coorFrom.value.v2 || 0.0,
+      v3: coorFrom.value.v3 || 0.0,
+      v4: coorFrom.value.v4 || 0.0,
+    }
+    toRepresentation()
   }
-  toRepresentation()
+  isUserInput.value = false
 })
 
 watch(degreeFormat, () => {

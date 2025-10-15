@@ -173,7 +173,10 @@ input[type="number"]::-ms-expand {
 .KT-input {
   min-width: 8vw; 
 }
-
+.KT-input-invalid {
+  box-shadow: 0 0 0.4rem var(--r6);
+}
+.KT-degree-input-field,
 .KT-input-row,
 .KT-output-row {
   position: relative;
@@ -318,7 +321,7 @@ input[type="number"]::-ms-expand {
   text-align: center;
   border-radius: 1.2rem;
   padding: var(--space);
-  top: 2rem;
+  top: 2.5rem;
   left:10%;
 
   /* Position the tooltip */
@@ -334,7 +337,9 @@ input[type="number"]::-ms-expand {
 }
 
 
-.KT-input-row:hover .KT-tooltip-dir {
+.KT-tooltip-dir.KT-tooltip-visible,
+.KT-degree-input-field:hover .KT-tooltip-dir,
+.KT-input-row:hover > .KT-tooltip-dir {
   visibility: visible;
   opacity: 1;
 }

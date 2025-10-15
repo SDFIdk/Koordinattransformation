@@ -177,10 +177,6 @@
           id="c1secondIdc"
           class="KT-p"
         >"</p>
-        <p
-          id="c1Indicator"
-          class="KT-idc"
-        > {{ c1.dirIndicator }} </p>
         <p 
           :class="validCoordinates.c1.second ? '' : 'KT-tooltip-visible'"
           class="KT-tooltip-dir"
@@ -188,7 +184,10 @@
           {{ c1.dirText }} : {{ formatTexts.secondsformat }}
         </p>  
       </div>
-
+      <p
+        id="c1Indicator"
+        class="KT-idc"
+      > {{ c1.dirIndicator }} </p>
     </span>
     <span 
       class="KT-input-row"
@@ -261,10 +260,6 @@
           id="c2secondIdc"
           class="KT-p"
         >"</p>
-        <p
-          id="c2Indicator"
-          class="KT-idc"
-        > {{ c2.dirIndicator }} </p>
         <p 
           :class="validCoordinates.c2.second ? '' : 'KT-tooltip-visible'"
           class="KT-tooltip-dir"
@@ -272,6 +267,10 @@
           {{ c2.dirText }} : {{ formatTexts.secondsformat }}
         </p>
       </div>
+      <p
+        id="c2Indicator"
+        class="KT-idc"
+      > {{ c2.dirIndicator }} </p>
     </span>
     <span 
       v-if="c3.isHeight"

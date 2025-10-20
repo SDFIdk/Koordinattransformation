@@ -1,3 +1,4 @@
+
 export const epsg25832proj = (proj4object) => {
   proj4object.defs('EPSG:25832', '+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs')
   return proj4object
@@ -53,3 +54,4 @@ export const getGSearchCenterPoint = (detail) => {
   }
   return coord
 }
+

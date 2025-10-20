@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
 import { mapCoorToList } from '../helperfunctions'
+import { i18n } from '../i18n/i18n'
 
 export const useKtStore = defineStore('KtStore', {
   state: () => ({
     // Base URL and path for the web project, derived from environment variables
     webproj: `${import.meta.env.VITE_API_BASE_URL || ''}${import.meta.env.VITE_API_BASE_PATH || ''}`,
-    
+
     // Authentication token, default to null if not provided
     token: import.meta.env.VITE_TOKEN || null,
 
@@ -16,30 +17,36 @@ export const useKtStore = defineStore('KtStore', {
     CRSOptions: JSON.parse(localStorage.getItem('KoordinatTranformationCRSOptions')) || {},
 
     CoverArea: '',
-    
+
     // Selected CRS for transformation: From and To
     CRSFrom: '',
     CRSTo: '',
-    
+
     // Coordinates for transformation: Input and Output
-    CoordinatesFrom: {'v1': 0, 'v2': 0, 'v3': 0, 'v4': 0}, // Use a consistent structure for coordinate data, e.g., { v1: 0, v2: 0, v3: 0, v4: 0 }
-    CoordinatesTo: {'v1': 0, 'v2': 0, 'v3': 0, 'v4': 0},
+    CoordinatesFrom: { 'v1': 0, 'v2': 0, 'v3': 0, 'v4': 0 }, // Use a consistent structure for coordinate data, e.g., { v1: 0, v2: 0, v3: 0, v4: 0 }
+    CoordinatesTo: { 'v1': 0, 'v2': 0, 'v3': 0, 'v4': 0 },
+
+    ErrorState: {
+      active: false,
+      //translated error
+      errorMsg: ''
+    }
   }),
   getters: {
     getWebProj: (state) => state.webproj,
     getToken: (state) => state.token,
 
     getCoverArea: (state) => state.CoverArea,
-    
+
     getCRS: (state) => ({
       CRSFrom: state.CRSFrom,
       CRSTo: state.CRSTo,
     }),
-    
+
     getCRSTo: (state) => state.CRSTo,
     getCRSFrom: (state) => state.CRSFrom,
     getCRSOptions: (state) => state.CRSOptions,
-    
+
     getCRSDisplayOptionsDK: (state) => {
       if (state.CRSOptions) {
         const Options = []
@@ -53,7 +60,7 @@ export const useKtStore = defineStore('KtStore', {
       }
       return []
     },
-    
+
     getCRSDisplayOptionsGL: (state) => {
       if (state.CRSOptions) {
         const Options = []
@@ -67,7 +74,7 @@ export const useKtStore = defineStore('KtStore', {
       }
       return []
     },
-    
+
     getCoordinatesFrom: (state) => state.CoordinatesFrom,
     getCoordinatesTo: (state) => state.CoordinatesTo,
 
@@ -83,7 +90,13 @@ export const useKtStore = defineStore('KtStore', {
     },
     getURL: (state) => {
       return state.baseUrl
-    } 
+    },
+    isErrorState: (state) => {
+      return state.ErrorState.active || false
+    },
+    getErrorMsg: (state) => {
+      return state.ErrorState.errorMsg || 'Unknown Error'
+    }
   },
   actions: {
     setCoverArea(area) {
@@ -95,20 +108,20 @@ export const useKtStore = defineStore('KtStore', {
         if (!response.ok) {
           throw new Error(`Error fetching CRS-Options! status: ${response.status}`)
         }
-          
+
         const data = await response.json()
         //first, we preseed the CRSOptions to ensure the ordering
         const updatedCRSOptions = {}
 
         // Define cover areas
         const coverAreas = ['DK', 'GL', 'Global']
-    
+
         // Iterate over each cover area
         coverAreas.forEach(coverArea => {
           if (data[coverArea]) {
             // Initialize the cover area in updatedCRSOptions
             updatedCRSOptions[coverArea] = {}
-    
+
             // Iterate over each EPSG value in the cover area
             data[coverArea].forEach(epsgValue => {
               // Set the EPSG value as a key with null as its value
@@ -118,12 +131,12 @@ export const useKtStore = defineStore('KtStore', {
         })
 
         for (const coverArea of coverAreas) {
-          
+
           const crsOptions = data[coverArea] || []
 
           const fetchDetailsPromises = crsOptions.map(async (crsOption) => {
             //copy over values if they already exist (important to have optional tags as each could possible have been added)
-            if(this.CRSOptions?.[coverArea]?.[crsOption]){
+            if (this.CRSOptions?.[coverArea]?.[crsOption]) {
               updatedCRSOptions[coverArea][crsOption] = this.CRSOptions[coverArea][crsOption]
             }
             else {
@@ -139,10 +152,10 @@ export const useKtStore = defineStore('KtStore', {
               }
             }
           })
-          
+
           await Promise.all(fetchDetailsPromises)
         }
-        
+
         this.CRSOptions = updatedCRSOptions
         localStorage.setItem('KoordinatTranformationCRSOptions', JSON.stringify(updatedCRSOptions))
       } catch (error) {
@@ -160,66 +173,79 @@ export const useKtStore = defineStore('KtStore', {
         v3 = this.CRSOptions.Global[payload]
       }
       this.CRSFrom = payload
-      if(v3 == null){
+      if (v3 == null) {
         this.CoordinatesFrom.v3 = null
       }
     },
-    
+
     async setCoordinatesFrom({ crs, coordinates }) {
-      if(this.CRSFrom === '' ){
+      if (this.CRSFrom === '') {
         console.error('We should not set coordinate before CRS')
         throw new Exception()
       }
-      else if(crs === this.CRSFrom) {
-        console.log('we should trigger this change')
+      else if (crs === this.CRSFrom) {
         this.CoordinatesFrom = coordinates
       }
-      else{
+      else {
         try {
           const coordinateResponse = await fetch(
             `${this.webproj}${crs}/${this.CRSFrom}/${mapCoorToList(coordinates)}?token=${this.token}`,
           )
-          if(!coordinateResponse.ok){
-            throw new Error(`Error Fetching coordinatesFrom: ${coordinateResponse.statusText}`)
+          if (!coordinateResponse.ok) {
+            console.log('we fail in setting coordiantesto')
+            const errordata = await coordinateResponse.json()
+
+            this.ErrorState = {
+              active: true,  
+              errorMsg: i18n(errordata.detail, crs, this.CRSFrom)
+            }
+            throw new Error(errordata.detail)
           }
           const coordinatesData = await coordinateResponse.json()
           this.CoordinatesFrom = coordinatesData
         } catch (error) {
-          console.error('Failed to fetch and update coordinateFrom', error)
+          this.ErrorState = generateErrorState(error)
+          console.error('[CoordinatesFrom] Failed to fetch and update coordinateFrom', error)
         }
       }
     },
-    async setCoordinatesFrom_v3({ crs, coordinates }){
+    async setCoordinatesFrom_v3({ crs, coordinates }) {
       const v3 = this.CoordinatesFrom.v3 || 0
-      if(this.CRSFrom === '' ){
-        console.log('this should not happen')
-        throw new Error()
+      if (this.CRSFrom === '') {
+        throw new Error('[CoordinatesFrom] CRS is not defined: Invalid State')
       }
-      else if(crs === this.CRSFrom) {
+      else if (crs === this.CRSFrom) {
         coordinates.v3 = v3
         this.CoordinatesFrom = coordinates
       }
-      else{
+      else {
         try {
           const coordinateResponse = await fetch(
             `${this.webproj}${crs}/${this.CRSFrom}/${mapCoorToList(coordinates)}?token=${this.token}`,
           )
-          if(!coordinateResponse.ok){
-            throw new Error(`Error Fetching coordinatesFrom: ${coordinateResponse.statusText}`)
+          if (!coordinateResponse.ok) {
+            console.log('we fail in setting coordiantesto')
+            const errordata = await coordinateResponse.json()
+
+            this.ErrorState = {
+              active: true,  
+              errorMsg: i18n(errordata.detail, crs, this.CRSFrom)
+            }
+            throw new Error(errordata.detail)
           }
           const coordinatesData = await coordinateResponse.json()
           coordinatesData.v3 = v3
           this.CoordinatesFrom = coordinatesData
         } catch (error) {
-          console.error('Failed to fetch and update coordinateFrom', error)
+          console.error('[CoordinatesFrom] Failed to fetch and update coordinateFrom', error)
         }
       }
     },
     async setCoordinatesTo() {
-      if(this.CRSFrom === '' ){
-        console.log('this should not happen')
+      if (this.CRSFrom === '') {
+        throw new Error('[CoordinatesFrom] CRS is not defined: Invalid State')
       }
-      else if(this.CRSFrom === this.CRSTo) {
+      else if (this.CRSFrom === this.CRSTo) {
         this.CoordinatesTo = this.CoordinatesFrom
       }
       else {
@@ -227,17 +253,30 @@ export const useKtStore = defineStore('KtStore', {
           const coordinateResponse = await fetch(
             `${this.webproj}${this.CRSFrom}/${this.CRSTo}/${mapCoorToList(this.CoordinatesFrom)}?token=${this.token}`,
           )
-          if(!coordinateResponse.ok){
-            throw new Error(`Error Fetching coordinatesTo: ${coordinateResponse.statusText}`)
+          if (!coordinateResponse.ok) {
+            console.log('we fail in setting coordiantesto')
+            const errordata = await coordinateResponse.json()
+
+            this.ErrorState = {
+              active: true,  
+              errorMsg: i18n(errordata.detail, crs, this.CRSTo)
+            }
+            throw new Error(errordata.detail)
           }
           const coordinatesData = await coordinateResponse.json()
           this.CoordinatesTo = coordinatesData
         } catch (error) {
-          console.error('Failed to fetch and update coordinateTo', error)
+          console.error('[CoordinatesTo] Failed to fetch and update coordinateTo', error)
         }
       }
     },
-    
+    resetErrorState() {
+      this.ErrorState = {
+        active: false,
+        //translated error
+        errorMsg: ''
+      }
+    },
     clearState() {
       this.CRSFrom = ''
       this.CRSTo = ''

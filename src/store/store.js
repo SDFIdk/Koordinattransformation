@@ -95,7 +95,7 @@ export const useKtStore = defineStore('KtStore', {
       return state.ErrorState.active || false
     },
     getErrorMsg: (state) => {
-      return state.ErrorState.errorMsg || 'Unknown Error'
+      return state.ErrorState.errorMsg || 'Ukendt Fejl'
     }
   },
   actions: {

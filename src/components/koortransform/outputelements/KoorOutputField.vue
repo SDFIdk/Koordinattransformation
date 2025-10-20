@@ -186,7 +186,7 @@ const toStringRepr = () => {
 
 watch(coorFrom, (to, from) => {
   KtStore.setCoordinatesTo()
-})
+}, {deep: true})
 watch(coorTo, () => {
   toRepresentation()
   formatOutputCoor()

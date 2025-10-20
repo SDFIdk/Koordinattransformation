@@ -371,6 +371,8 @@ const coorFrom = computed(() => KtStore.getCoordinatesFrom)
 const CRSInfo = computed(() => KtStore.getCRSFromDisplayInfo)
 
 
+const isUserInput = ref(false)
+
 const baseCoords  = ref({
   v1: 0.0,
   v2: 0.0,
@@ -459,149 +461,85 @@ const validateCoordinate = (pattern = '', coordinate) => {
   }
   return result
 }
-
 const isMeterValidHelper = (coord) => {
-  if(!isMeter.value) {
-    return true
+  if (!isMeter.value) return true
+  switch (coord) {
+  case 'c1': return validateCoordinate('meterformat', c1.value.cMeter)
+  case 'c2': return validateCoordinate('meterformat', c2.value.cMeter)
+  case 'c3': return c3.value.isHeight ? validateCoordinate('meterformat', c3.value.cMeter) : true
+  default: return false
   }
-
-  let coorRef = null
-  switch(coord) {
-  case 'c1':
-    coorRef = c1.value.cMeter
-  case 'c2':
-    coorRef = c2.value.cMeter
-  case 'c3':
-    coorRef = c3.value.cMeter
-    break  
-  }
-  return validateCoordinate('meterformat', coorRef)
 }
-const c1MeterValid = computed(() => 
-  isMeterValidHelper('c1')
-)
 
-const c1DegreeValid = computed(() =>  {
-  if (isMeter.value) {
-    return true
+const isDegreeValidHelper = (coord) => {
+  if (isMeter.value) return true
+  switch (coord) {
+  case 'c1':
+    return degreeFormat.value === 'D'
+      ? validateCoordinate('degreeformat', c1.value.cDegree)
+      : validateCoordinate('noDecimal', c1.value.cDegree)
+  case 'c2':
+    return degreeFormat.value === 'D'
+      ? validateCoordinate('degreeformat', c2.value.cDegree)
+      : validateCoordinate('noDecimal', c2.value.cDegree)
+  default: return false
   }
+}
 
-  if(degreeFormat.value === 'D') {
-    return validateCoordinate('degreeformat', c1.value.cDegree)
+const isMinuteValidHelper = (coord) => {
+  if (isMeter.value || degreeFormat.value === 'D') return true
+  switch (coord) {
+  case 'c1':
+    return degreeFormat.value === 'DM'
+      ? validateCoordinate('minutesformat', c1.value.cMinute)
+      : validateCoordinate('pNoDecimal', c1.value.cMinute)
+  case 'c2':
+    return degreeFormat.value === 'DM'
+      ? validateCoordinate('minutesformat', c2.value.cMinute)
+      : validateCoordinate('pNoDecimal', c2.value.cMinute)
+  default: return false
   }
+}
 
-  if(degreeFormat.value === 'DM' || degreeFormat.value ==='DMS') {
-    return validateCoordinate('noDecimal', c1.value.cDegree)
+const isSecondValidHelper = (coord) => {
+  if (isMeter.value || degreeFormat.value === 'D' || degreeFormat.value === 'DM') return true
+  switch (coord) {
+  case 'c1': return validateCoordinate('secondsformat', c1.value.cSecond)
+  case 'c2': return validateCoordinate('secondsformat', c2.value.cSecond)
+  default: return false
   }
-  console.error('c1Degree in invalid State')
-  return false
-})
+}
 
-const c1MinuteValid = computed(() => {
-  
-  if(isMeter.value || degreeFormat.value === 'D') {
-    return true
-  }
+// computed properties (delegate to helpers)
+const c1MeterValid = computed(() => isMeterValidHelper('c1'))
+const c1DegreeValid = computed(() => isDegreeValidHelper('c1'))
+const c1MinuteValid = computed(() => isMinuteValidHelper('c1'))
+const c1SecondValid = computed(() => isSecondValidHelper('c1'))
 
-  if(degreeFormat.value === 'DM') {
-    return validateCoordinate('minutesformat', c1.value.cMinute)
-  }
-  
-  if(degreeFormat.value === 'DMS') {
-    return validateCoordinate('pNoDecimal', c1.value.cMinute)
-  }
+const c2MeterValid = computed(() => isMeterValidHelper('c2'))
+const c2DegreeValid = computed(() => isDegreeValidHelper('c2'))
+const c2MinuteValid = computed(() => isMinuteValidHelper('c2'))
+const c2SecondValid = computed(() => isSecondValidHelper('c2'))
 
-  console.error('c1Minute in Illegal State')
-  return false
-
-})
-
-const c1SecondValid = computed(() => {
-  if(isMeter.value || degreeFormat.value === 'D' || degreeFormat.value === 'DMS') {
-    return true
-  }
-
-  if(degreeFormat.value === 'DMS') {
-    return validateCoordinate('secondsformat', c1.value.cMinute)
-  }
-
-  console.error('c1Second in Illegal State')
-  return false
-})
-
-// Similar for c2...
-
-const c2MeterValid = computed(() => 
-  isMeter.value ? validateCoordinate('meterformat', c1.value.cMeter) : true
-)
-const c2DegreeValid = computed(() =>  {
-  if (isMeter.value) {
-    return true
-  }
-
-  if(degreeFormat.value === 'D') {
-    return validateCoordinate('degreeformat', c2.value.cDegree)
-  }
-
-  if(degreeFormat.value === 'DM' || degreeFormat.value ==='DMS') {
-    return validateCoordinate('noDecimal', c2.value.cDegree)
-  }
-  console.error('c1Degree in invalid State')
-  return false
-})
-
-const c2MinuteValid = computed(() => {
-  
-  if(isMeter.value || degreeFormat.value === 'D') {
-    return true
-  }
-
-  if(degreeFormat.value === 'DM') {
-    return validateCoordinate('minutesformat', c2.value.cMinute)
-  }
-  
-  if(degreeFormat.value === 'DMS') {
-    return validateCoordinate('pNoDecimal', c2.value.cMinute)
-  }
-
-  console.error('c1Minute in Illegal State')
-  return false
-
-})
-
-const c2SecondValid = computed(() => {
-  if(isMeter.value || degreeFormat.value === 'D' || degreeFormat.value === 'DMS') {
-    return true
-  }
-
-  if(degreeFormat.value === 'DMS') {
-    return validateCoordinate('secondsformat', c2.value.cMinute)
-  }
-
-  console.error('c1Second in Illegal State')
-  return false
-})
-
-const c3MeterValid = computed(() => 
-  c3.value.isHeight ? validateCoordinate('meterformat', c3.value.cMeter) : true
-)
+const c3MeterValid = computed(() => isMeterValidHelper('c3'))
 
 
 const areAllCoordinatesValid = () => {
-  return c1MeterValid.value && c1DegreeValid.value && c1MinuteValid.value && c1SecondValid.value &&
-              c2MeterValid.value && c2DegreeValid.value && c2MinuteValid.value && c2SecondValid.value &&
-              c3MeterValid.value
+  return (
+    isMeterValidHelper('c1') && isDegreeValidHelper('c1') && isMinuteValidHelper('c1') && isSecondValidHelper('c1')
+    && isMeterValidHelper('c2') && isDegreeValidHelper('c2') && isMinuteValidHelper('c2') && isSecondValidHelper('c2')
+    && isMeterValidHelper('c3')
+  )
 }
 
 
 const toFixedCoordinateFormat = (value, limit) => {
-  console.log(value)
   const valueString = String(value)
-  console.log(valueString)
   const [first, second] = valueString.split('.')
   if(!second) {
     return first
   }
+  console.log(first, second)
   return `${first}.${second.slice(0, Math.min(limit, second.length))}`
 }
 
@@ -668,13 +606,14 @@ const fromRepresentation = () => {
       baseCoords.value.v3 = parseFloat(c3.value.cMeter)
       break
     case 'DM':
-      baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60)
-      baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60)
+      
+      baseCoords.value.v1 = parseFloat(c1.value.cDegree) + parseFloat(c1.value.cMinute) / 60
+      baseCoords.value.v2 = parseFloat(c2.value.cDegree) + parseFloat(c2.value.cMinute) / 60
       baseCoords.value.v3 = parseFloat(c3.value.cMeter)
       break
     case 'DMS':
-      baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60 + c1.value.cSecond / 3600)
-      baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60 + c2.value.cSecond / 3600)
+      baseCoords.value.v1 = parseFloat(c1.value.cDegree) + parseFloat(c1.value.cMinute) / 60 + parseFloat(c1.value.cSecond) / 3600
+      baseCoords.value.v2 = parseFloat(c2.value.cDegree) + parseFloat(c2.value.cMinute) / 60 + parseFloat(c2.value.cSecond) / 3600
       baseCoords.value.v3 = parseFloat(c3.value.cMeter)
       break
     }
@@ -734,10 +673,10 @@ const debounceUpdate = () => {
   }
 
   const valid = areAllCoordinatesValid()
-  console.log(valid)
   if(valid) {
+    isUserInput.value = true
+    console.log('userinput is now true')
     debounceTimeout.value = setTimeout(() => {
-      console.log('timeout function called')
       fromRepresentation()
       KtStore.setCoordinatesFrom({
         crs: KtStore.CRSFrom,
@@ -754,14 +693,17 @@ watch(CRSInfo, () => {
 })
 
 watch(coorFrom, (to) => {
-
   baseCoords.value = {
     v1: coorFrom.value.v1 || 0.0,
     v2: coorFrom.value.v2 || 0.0,
     v3: coorFrom.value.v3 || 0.0,
     v4: coorFrom.value.v4 || 0.0,
   }
-  toRepresentation()
+  if(!isUserInput.value) {
+    toRepresentation()
+  }
+  isUserInput.value = false
+  console.log('userinput is now false')
 })
 
 watch(degreeFormat, () => {

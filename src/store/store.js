@@ -171,6 +171,7 @@ export const useKtStore = defineStore('KtStore', {
         throw new Exception()
       }
       else if(crs === this.CRSFrom) {
+        console.log('coordinatefrom set to', coordinates)
         this.CoordinatesFrom = coordinates
       }
       else{
@@ -182,6 +183,7 @@ export const useKtStore = defineStore('KtStore', {
             throw new Error(`Error Fetching coordinatesFrom: ${coordinateResponse.statusText}`)
           }
           const coordinatesData = await coordinateResponse.json()
+          console.log('coordinatefrom set to', coordinatesData)
           this.CoordinatesFrom = coordinatesData
         } catch (error) {
           console.error('Failed to fetch and update coordinateFrom', error)

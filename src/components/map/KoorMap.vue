@@ -233,7 +233,7 @@ onMounted(async() => {
 
 //make call to api and set map marker where new coordinate is
 watch(coorFrom, async (to, from) => {
-  
+  console.log('do we trigger this')
   //case that it is same epsg
   const crsFrom = KtStore.CRSFrom
   if(crsFrom === mapData.value[coverArea.value].projection) {
@@ -255,7 +255,7 @@ watch(coorFrom, async (to, from) => {
       console.error('[KoorMap]: failed to update pinpointer on map', error)
     }
   }
-})
+}, {deep: true})
 </script>
 
 <style>

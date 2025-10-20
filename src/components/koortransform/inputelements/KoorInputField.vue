@@ -364,19 +364,19 @@ const KtStore = useKtStore()
 const route = useRoute()
 
 const formats = {
-  meterformat:/^-?\d+\.\d{1,4}$/,
-  degreeformat: /^-?\d+\.\d{1,8}$/,
-  minutesformat:/^-?\d+\.\d{1,6}$/,
-  secondsformat: /^-?\d+\.\d{1,4}$/,
+  meterformat:/^-?\d+(\.\d{1,4})?$/,
+  degreeformat: /^-?\d+(\.\d{1,8})?$/,
+  minutesformat:/^\d+(\.\d{1,6})?$/,
+  secondsformat: /^\d+(\.\d{1,4})?$/,
   noDecimal: /^-?\d+$/
 }
 
 const formatTexts = {
-  meterformat:'positive number with 1-4 digits',
-  degreeformat: 'positive number with 1-8 digits',
-  minutesformat:'positive number with 1-6 digits',
-  secondsformat: 'positive number with 4 digits',
-  noDecimal: 'positive whole number'
+  meterformat:'tal med [0,4] decimaler',
+  degreeformat: 'tal med [0.8] decimaler',
+  minutesformat:'positivt tal med [0,6] decimaler',
+  secondsformat: 'positivt tal med [0-4] decimaler',
+  noDecimal: 'tal uden decimaler'
 }
 
 const coorFrom = computed(() => KtStore.getCoordinatesFrom)

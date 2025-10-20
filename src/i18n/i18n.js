@@ -1,6 +1,9 @@
 const i18nObj = {
-  'Input coordinate outside area of use of either source or destination CRS': (source, dest) => 
-    `Input Koordinater udenfor gyldighedsområde af CRS: ${source}, ${dest}`
+  'Input coordinate outside area of use of either source or destination CRS': (source, dest) =>
+    `Input Koordinater udenfor gyldighedsområde af CRS: ${source}, ${dest}`,
+  'Kort: Input coordinate outside area of use of either source or destination CRS': (source, dest) => {
+    `Input Koordinater udenfor gyldighedsområde af Kortviserens CRS: ${source}, ${dest}`
+  }
 }
 
 export const i18n = (key, source, dest) => {

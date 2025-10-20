@@ -183,21 +183,18 @@ const toStringRepr = () => {
   outputCoor.value = `${coord1}, ${coord2}${height}`
 }
 // Watchers for changes in input/output coordinates
-watch(CRSToInfo, () => {
-  formatOutputCoor()
-})
-watch(CRSFromInfo, () => {
-  formatOutputCoor()
-})
-watch(coorFrom, () => {
+
+watch(coorFrom, (to, from) => {
   KtStore.setCoordinatesTo()
-}, {deep : true})
+})
 watch(coorTo, () => {
   toRepresentation()
+  formatOutputCoor()
   toStringRepr()
 }, {deep : true})
 watch(degreeFormat, () => {
   toRepresentation()
+  formatOutputCoor()
   toStringRepr()
 })
 </script>

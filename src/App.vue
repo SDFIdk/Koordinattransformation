@@ -31,12 +31,6 @@ onMounted(() => {
   }
   window.addEventListener('resize', handleResize)
 
-
-  showToast({
-    message: KtStore.getErrorMsg,
-    duration: 3000
-  })
-
 })
 onBeforeUnmount(() => {
   window.removeEventListener('resize', handleResize)
@@ -44,14 +38,13 @@ onBeforeUnmount(() => {
 
 
 watch(errorActive, (to) => {
-  console.log('we trigger this correctly', to)
   if(to) {
     showToast({
       message: KtStore.getErrorMsg,
       duration: 3000
     })
+    KtStore.resetErrorState()
   }
-  KtStore.resetErrorState()
-})
+}, {deep: true})
 
 </script>

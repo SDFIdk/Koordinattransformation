@@ -52,9 +52,9 @@ const selectedOption = ref(props.inputOptions[0] || '')
 const isMobile = inject('isMobile')
 const isMinimized = ref(false)
 
-watch(selectedOption, (to, from) => {
+watch(selectedOption, async (to, from) => {
   KtStore.setCRSFrom(extractEPSGCode(to))
-  KtStore.setCoordinatesFrom({crs: extractEPSGCode(from), coordinates: KtStore.CoordinatesFrom})
+  await KtStore.setCoordinatesFrom({crs: extractEPSGCode(from), coordinates: KtStore.CoordinatesFrom})
 })
 watch(isMobile, () => {
   isMinimized.value = false

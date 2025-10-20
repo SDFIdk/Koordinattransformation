@@ -192,9 +192,7 @@ export const useKtStore = defineStore('KtStore', {
             `${this.webproj}${crs}/${this.CRSFrom}/${mapCoorToList(coordinates)}?token=${this.token}`,
           )
           if (!coordinateResponse.ok) {
-            console.log('we fail in setting coordiantesto')
             const errordata = await coordinateResponse.json()
-
             this.ErrorState = {
               active: true,  
               errorMsg: i18n(errordata.detail, crs, this.CRSFrom)
@@ -224,7 +222,6 @@ export const useKtStore = defineStore('KtStore', {
             `${this.webproj}${crs}/${this.CRSFrom}/${mapCoorToList(coordinates)}?token=${this.token}`,
           )
           if (!coordinateResponse.ok) {
-            console.log('we fail in setting coordiantesto')
             const errordata = await coordinateResponse.json()
 
             this.ErrorState = {
@@ -254,12 +251,10 @@ export const useKtStore = defineStore('KtStore', {
             `${this.webproj}${this.CRSFrom}/${this.CRSTo}/${mapCoorToList(this.CoordinatesFrom)}?token=${this.token}`,
           )
           if (!coordinateResponse.ok) {
-            console.log('we fail in setting coordiantesto')
             const errordata = await coordinateResponse.json()
-
             this.ErrorState = {
               active: true,  
-              errorMsg: i18n(errordata.detail, crs, this.CRSTo)
+              errorMsg: i18n(errordata.detail, this.CRSFrom, this.CRSTo)
             }
             throw new Error(errordata.detail)
           }
@@ -275,6 +270,12 @@ export const useKtStore = defineStore('KtStore', {
         active: false,
         //translated error
         errorMsg: ''
+      }
+    },
+    activateErrorState(errormsg) {
+      this.ErrorState = {
+        active: true,
+        errorMsg: errormsg
       }
     },
     clearState() {

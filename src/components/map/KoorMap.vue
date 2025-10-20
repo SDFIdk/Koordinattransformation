@@ -42,6 +42,8 @@ import { onMounted, ref, computed, watch} from 'vue'
 import { useKtStore } from '../../store/store.js'
 
 
+import { i18n } from '../../i18n/i18n.js'
+
 const KtStore = useKtStore()
 
 //setting up projections for Skærmkortet / Åbent Land Grønland
@@ -231,6 +233,7 @@ onMounted(async() => {
 
 //make call to api and set map marker where new coordinate is
 watch(coorFrom, async (to, from) => {
+  
   //case that it is same epsg
   const crsFrom = KtStore.CRSFrom
   if(crsFrom === mapData.value[coverArea.value].projection) {
@@ -241,13 +244,15 @@ watch(coorFrom, async (to, from) => {
     try {
       const response = await fetch(`${KtStore.webproj}${KtStore.CRSFrom}/${mapData.value[coverArea.value].projection}/${mapCoorToList(to)}?token=${KtStore.token}`)
       if(!response.ok){
-        throw new Error(`Error fetching coordinates for map: ${response.statusText}`)
+        const errordata = await response.json()
+        KtStore.activateErrorState(i18n(`Kort: ${errordata.detail}`, KtStore.CRSFrom, mapData.value[coverArea.value].projection))
+        throw new Error(errordata.detail)
       }
       const data = await response.json()
       overlay.value.setPosition(mapCoorToList(data))
 
     } catch (error) {
-      console.error('Failed to fetch and update coordinates:', error)
+      console.error('[KoorMap]: failed to update pinpointer on map', error)
     }
   }
 })

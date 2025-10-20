@@ -65,7 +65,6 @@ watch(isMobile, () => {
 onMounted(() => {
   KtStore.setCRSTo(extractEPSGCode(selectedOption.value)) 
 })
-
 </script>
 
 <style>

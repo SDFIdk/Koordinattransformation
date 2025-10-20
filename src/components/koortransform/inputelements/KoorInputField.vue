@@ -23,7 +23,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="formats.meterformat"
         aria-label="Input Coordinate One"
         @input="debounceUpdate"
       >
@@ -49,7 +48,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="formats.meterformat"
         aria-label="Input Coordinate Two"
         @input="debounceUpdate"
       >
@@ -75,7 +73,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="formats.meterformat"
         aria-label="Input Coordinate Three"
         @input="debounceUpdate"
       >
@@ -105,7 +102,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="degreeFormat === 'D' ? formats.degreeformat: formats.noDecimal"
         aria-label="Input Coordinate One D.D° or D°"
         @input="debounceUpdate"
       >
@@ -120,7 +116,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="degreeFormat === 'DM' ? formats.minutesformat: formats.noDecimal"
         aria-label="Input Coordinate Two M' or M.M'"
         @input="debounceUpdate"
       >
@@ -136,7 +131,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="formats.secondsformat"
         aria-label="Input Coordinate Two S.S&quot;"
         @input="debounceUpdate"
       >
@@ -166,7 +160,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="degreeFormat==='D' ? formats.degreeformat : formats.noDecimal"
         @input="debounceUpdate"
       >
       <p
@@ -180,7 +173,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="degreeFormat==='DM' ? formats.minutesformat : formats.noDecimal"
         @input="debounceUpdate"
       >
       <p
@@ -195,7 +187,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="formats.secondsformat"
         @input="debounceUpdate"
       >
       <p
@@ -224,7 +215,6 @@
         type="text"
         title=""
         inputmode="numeric"
-        :pattern="formats.meterformat"
         @input="debounceUpdate"
       >
       <p
@@ -322,25 +312,25 @@ const baseCoords  = ref({
 })
 
 const c1 = ref({
-  cMeter: 0.0,
-  cDegree: 0.0,
-  cMinute: 0.0,
-  cSecond: 0.0,
+  cMeter: '0.0',
+  cDegree: '0.0',
+  cMinute: '0.0',
+  cSecond: '0.0',
   dirIcon: '',
   dirIndicator: '',
   dirText: ''
 })
 const c2 = ref({
-  cMeter: 0.0,
-  cDegree: 0.0,
-  cMinute: 0.0,
-  cSecond: 0.0,
+  cMeter: '0.0',
+  cDegree: '0.0',
+  cMinute: '0.0',
+  cSecond: '0.0',
   dirIcon: '',
   dirIndicator: '',
   dirText: ''
 })
 const c3 = ref({
-  cMeter: 0.0,
+  cMeter: '0.0',
   isHeight: false,
   upIcon: svgPath + 'arrow-up',
   dirText: ''
@@ -350,26 +340,39 @@ const isVisible = ref(false)
 const isMeter = ref(true)
 const degreeFormat = ref('D')
 
+const userTyping = ref(false)
+
+const toFixedCoordinateFormat = (value, limit) => {
+  console.log(value)
+  const valueString = String(value)
+  console.log(valueString)
+  const [first, second] = valueString.split('.')
+  if(!second) {
+    return first
+  }
+  return `${first}.${second.slice(0, Math.min(limit, second.length))}`
+}
+
 const toRepresentation = () => {
-  c3.value.cMeter = baseCoords.value.v3.toFixed(4)
+  c3.value.cMeter = toFixedCoordinateFormat(baseCoords.value.v3, 4)
 
   let d1, d2, m1, m2, s1, s2
 
   if (isMeter.value) {
-    c1.value.cMeter = parseFloat(baseCoords.value.v1).toFixed(4)
-    c2.value.cMeter = parseFloat(baseCoords.value.v2).toFixed(4)
+    c1.value.cMeter = toFixedCoordinateFormat(baseCoords.value.v1, 4)
+    c2.value.cMeter = toFixedCoordinateFormat(baseCoords.value.v2, 4)
   } else {
     switch (degreeFormat.value) {
     case 'D': 
-      c1.value.cDegree = parseFloat(baseCoords.value.v1).toFixed(8)
-      c2.value.cDegree = parseFloat(baseCoords.value.v2).toFixed(8)
+      c1.value.cDegree = toFixedCoordinateFormat(baseCoords.value.v1, 8)
+      c2.value.cDegree = toFixedCoordinateFormat(baseCoords.value.v2, 8)
       break
     case 'DM':
       d1 = Math.floor(baseCoords.value.v1)
       d2 = Math.floor(baseCoords.value.v2)
 
-      m1 = parseFloat(((baseCoords.value.v1 - d1) * 60)).toFixed(6)
-      m2 = parseFloat(((baseCoords.value.v2 - d2) * 60)).toFixed(6)
+      m1 = toFixedCoordinateFormat(((baseCoords.value.v1 - d1) * 60), 6)
+      m2 = toFixedCoordinateFormat(((baseCoords.value.v2 - d2) * 60), 6)
 
       c1.value.cDegree = d1
       c1.value.cMinute = m1
@@ -384,8 +387,8 @@ const toRepresentation = () => {
       m1 = Math.floor((baseCoords.value.v1 - d1) * 60)
       m2 = Math.floor((baseCoords.value.v2 - d2) * 60)
 
-      s1 = ((baseCoords.value.v1 - d1 - m1 / 60) * 3600).toFixed(4)
-      s2 = ((baseCoords.value.v2 - d2 - m2 / 60) * 3600).toFixed(4)
+      s1 = toFixedCoordinateFormat(((baseCoords.value.v1 - d1 - m1 / 60) * 3600), 4)
+      s2 = toFixedCoordinateFormat(((baseCoords.value.v2 - d2 - m2 / 60) * 3600), 4)
 
       c1.value.cDegree = d1
       c1.value.cMinute = m1
@@ -398,7 +401,7 @@ const toRepresentation = () => {
     }
   }
 }
-
+//should not modify any of the input (if)
 const fromRepresentation = () => {
   
   if (isMeter.value) {
@@ -408,18 +411,18 @@ const fromRepresentation = () => {
   } else {
     switch (degreeFormat.value) {
     case 'D': 
-      baseCoords.value.v1 = parseFloat(c1.value.cDegree).toFixed(8)
-      baseCoords.value.v2 = parseFloat(c2.value.cDegree).toFixed(8)
+      baseCoords.value.v1 = parseFloat(c1.value.cDegree)
+      baseCoords.value.v2 = parseFloat(c2.value.cDegree)
       baseCoords.value.v3 = parseFloat(c3.value.cMeter)
       break
     case 'DM':
-      baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60).toFixed(8)
-      baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60).toFixed(8)
+      baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60)
+      baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60)
       baseCoords.value.v3 = parseFloat(c3.value.cMeter)
       break
     case 'DMS':
-      baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60 + c1.value.cSecond / 3600).toFixed(8)
-      baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60 + c2.value.cSecond / 3600).toFixed(8)
+      baseCoords.value.v1 = parseFloat(c1.value.cDegree + c1.value.cMinute / 60 + c1.value.cSecond / 3600)
+      baseCoords.value.v2 = parseFloat(c2.value.cDegree + c2.value.cMinute / 60 + c2.value.cSecond / 3600)
       baseCoords.value.v3 = parseFloat(c3.value.cMeter)
       break
     }
@@ -473,6 +476,7 @@ const formatInputCoor = () => {
 
 
 const debounceUpdate = () => {
+  userTyping.value = true
   console.log('update queued')
   
   if (debounceTimeout.value) {
@@ -486,6 +490,7 @@ const debounceUpdate = () => {
       crs: KtStore.CRSFrom,
       coordinates: baseCoords.value,
     })
+
   }, 700)
 }
 
@@ -494,7 +499,7 @@ watch(CRSInfo, () => {
 })
 
 watch(coorFrom, (to) => {
-
+  console.log(userTyping.value)
 
   baseCoords.value = {
     v1: coorFrom.value.v1 || 0.0,
@@ -503,6 +508,7 @@ watch(coorFrom, (to) => {
     v4: coorFrom.value.v4 || 0.0,
   }
   toRepresentation()
+  console.log(typeof c1.value.cMeter)
 })
 
 watch(degreeFormat, () => {

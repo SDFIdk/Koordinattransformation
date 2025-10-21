@@ -539,7 +539,6 @@ const toFixedCoordinateFormat = (value, limit) => {
   if(!second) {
     return first
   }
-  console.log(first, second)
   return `${first}.${second.slice(0, Math.min(limit, second.length))}`
 }
 
@@ -675,7 +674,6 @@ const debounceUpdate = () => {
   const valid = areAllCoordinatesValid()
   if(valid) {
     isUserInput.value = true
-    console.log('userinput is now true')
     debounceTimeout.value = setTimeout(() => {
       fromRepresentation()
       KtStore.setCoordinatesFrom({
@@ -703,7 +701,6 @@ watch(coorFrom, (to) => {
     toRepresentation()
   }
   isUserInput.value = false
-  console.log('userinput is now false')
 })
 
 watch(degreeFormat, () => {

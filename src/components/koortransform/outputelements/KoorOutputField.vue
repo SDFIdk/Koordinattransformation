@@ -190,7 +190,6 @@ watch(CRSFromInfo, () => {
   formatOutputCoor()
 })
 watch(coorFrom, () => {
-  console.log('updated coorto')
   KtStore.setCoordinatesTo()
 }, {deep: true})
 watch(coorTo, () => {

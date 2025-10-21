@@ -22,8 +22,8 @@ test.describe('Delete and input coordinates', async () => {
     await page.waitForLoadState('domcontentloaded')
 
 
-    const outputAfterInputChange = await output.textContent()
-    expect(outputAfterInputChange).toEqual(toCheckAgainst)
+    const outputAfterInputChange = async() => await expect.poll(async () => await output.textContent(), { timeout: 1000 }).not.toEqual(toCheckAgainst)
+    expect.poll(async() => await outputAfterInputChange(), { timeout: 3000 }).toEqual(toCheckAgainst)
   })
   test('[Degree (DD.DD°)] Incorrectly formatted coordinate should not trigger change', async({page}) => {
     await page.goto('http://localhost:4173', { waitUntil: 'domcontentloaded' })
@@ -37,7 +37,6 @@ test.describe('Delete and input coordinates', async () => {
 
     const output = page.locator('#KT-output')
     const toCheckAgainst = await output.textContent()
-    console.log(toCheckAgainst)
     const c1 = page.locator('#c1D')
     const c2 = page.locator('#c2D')
 

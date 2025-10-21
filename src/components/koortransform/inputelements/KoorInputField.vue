@@ -683,7 +683,7 @@ const debounceUpdate = () => {
         coordinates: baseCoords.value,
       })
 
-    }, 900)
+    }, 700)
   }
 
 }

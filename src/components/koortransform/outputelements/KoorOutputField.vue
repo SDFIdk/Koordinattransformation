@@ -191,7 +191,7 @@ watch(CRSFromInfo, () => {
 })
 watch(coorFrom, () => {
   KtStore.setCoordinatesTo()
-})
+}, {deep: true})
 watch(coorTo, () => {
   toRepresentation()
   toStringRepr()

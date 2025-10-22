@@ -121,13 +121,13 @@ test.describe('Map Tests', () => {
 
     const outputSelector = '#KT-output'
 
-    const outputText = await page.evaluate(selector => {
+    const evaluatePage = async() =>  await page.evaluate(selector => {
       const element = document.querySelector(selector)
       return element ? element.innerHTML.trim() : ''
     }, outputSelector)
     
-    expect(outputText).toBe('723910.4400m, 6179652.8900m, 0 m')
-
+    expect.poll(async () => await evaluatePage(), { timeout: 3000 }).toBe('723910.4400m, 6179652.8900m, 0 m')
+    const outputText = await evaluatePage()
     //allows for multiple attempts
     const c1Expected= await page.waitForFunction(
       async (selector) => {
@@ -151,14 +151,13 @@ test.describe('Map Tests', () => {
     expect(c1Expected.jsonValue()).toBeTruthy()
     expect(c2Expected.jsonValue()).toBeTruthy()
 
-
-    const changedOutputText = await page.evaluate(selector => {
+    const changedOutputText = async() =>  await page.evaluate(selector => {
       const element = document.querySelector(selector)
       return element ? element.innerHTML.trim() : ''
     }, outputSelector)
     
     // We expect the output value to be unchanged (as we only change the input CRS)
-    expect(outputText).toBe(changedOutputText)
+    expect.poll(async () => await changedOutputText(), {timeout: 3000}).toBe(outputText)
   })
 
 
@@ -175,13 +174,13 @@ test.describe('Map Tests', () => {
     ]
 
     for(const indicator of dirIndicators) {
-      const indicatorText = await page.evaluate(selector => {
+      const indicatorText = async () => await page.evaluate(selector => {
         const element = document.querySelector(selector)
         return element? element.innerHTML.trim() : ''
       }, indicator)
         
       //default state when application is opened
-      expect(indicatorText).toBe('m')
+      expect.poll(async () => await indicatorText, { timeout: 3000 } ).toBe('m')
     }
 
   

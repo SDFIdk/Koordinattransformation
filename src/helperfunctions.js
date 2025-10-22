@@ -49,7 +49,7 @@ export const getGSearchCenterPoint = (detail) => {
     coord = {v1: detail.coordinates[0][0], v2: detail.coordinates[0][1], v3: 0.0, v4: 0.0}
   }
   else {
-    console.error(`Error: handling for input geometry of type ${detail.type} missing. Please contact developers.`)
+    console.error(`[GsearchHandler] Missing Implementation: handling of ${detail.type} missing. Please contact developers.`)
   }
   return coord
 }

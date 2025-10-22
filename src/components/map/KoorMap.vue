@@ -247,7 +247,7 @@ watch(coorFrom, async (to, from) => {
       overlay.value.setPosition(mapCoorToList(data))
 
     } catch (error) {
-      console.error('Failed to fetch and update coordinates:', error)
+      console.error('[KoorMap] State Error: failed to fetch and update coordinates:', error)
     }
   }
 })

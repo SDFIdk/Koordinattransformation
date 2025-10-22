@@ -453,12 +453,6 @@ const validateCoordinate = (pattern = '', coordinate) => {
     break
   }
   
-  if (!result) {
-    console.log(`Validation failed - Pattern: ${pattern}, Coordinate: ${coordinate}`)
-  }
-  else {
-    console.log(`Validation succeeded - Pattern: ${pattern}, Coordinate: ${coordinate}`)
-  }
   return result
 }
 const isMeterValidHelper = (coord) => {

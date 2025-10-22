@@ -298,7 +298,7 @@ export const useKtStore = defineStore('KtStore', {
                 const crsDetails = await detailsResponse.json()
                 updatedCRSOptions[coverArea][crsOption] = crsDetails
               } catch (detailsError) {
-                console.error(`Error fetching CRS details for: ${crsOption}`, detailsError)
+                console.error(`[CRSOptions] Fetch Error: failed fetching CRS details for ${crsOption}`, detailsError)
               }
             }
           })
@@ -309,7 +309,7 @@ export const useKtStore = defineStore('KtStore', {
         this.CRSOptions = updatedCRSOptions
         localStorage.setItem('KoordinatTranformationCRSOptions', JSON.stringify(updatedCRSOptions))
       } catch (error) {
-        console.error('Error fetching CRS Options: ', error)
+        console.error('[CRSOptions] Fetch Error: failed fetching CRS options', error)
       }
     },
     /**
@@ -354,11 +354,9 @@ export const useKtStore = defineStore('KtStore', {
      */
     async setCoordinatesFrom({ crs, coordinates }) {
       if(this.CRSFrom === '' ){
-        console.error('We should not set coordinate before CRS')
-        throw new Exception()
+        console.error('[CoordinatesFrom] Illegal State: CRSFrom is undefined')
       }
       else if(crs === this.CRSFrom) {
-        console.log('coordinatefrom set to', coordinates)
         this.CoordinatesFrom = coordinates
       }
       else{
@@ -370,10 +368,9 @@ export const useKtStore = defineStore('KtStore', {
             throw new Error(`Error Fetching coordinatesFrom: ${coordinateResponse.statusText}`)
           }
           const coordinatesData = await coordinateResponse.json()
-          console.log('coordinatefrom set to', coordinatesData)
           this.CoordinatesFrom = coordinatesData
         } catch (error) {
-          console.error('Failed to fetch and update coordinateFrom', error)
+          console.error('[CoordinatesFrom] Fetch Error: failed fetching coordinatesfrom, update aborted', error)
         }
       }
     },
@@ -393,8 +390,7 @@ export const useKtStore = defineStore('KtStore', {
     async setCoordinatesFrom_v3({ crs, coordinates }){
       const v3 = this.CoordinatesFrom.v3 || 0
       if(this.CRSFrom === '' ){
-        console.log('this should not happen')
-        throw new Error()
+        console.error('[CoordinatesFrom] Illegal State: CRSFrom is undefined')
       }
       else if(crs === this.CRSFrom) {
         coordinates.v3 = v3
@@ -412,7 +408,7 @@ export const useKtStore = defineStore('KtStore', {
           coordinatesData.v3 = v3
           this.CoordinatesFrom = coordinatesData
         } catch (error) {
-          console.error('Failed to fetch and update coordinateFrom', error)
+          console.error('[CoordinatesFrom] Fetch Error: failed fetching coordinatesfrom, update aborted', error)
         }
       }
     },
@@ -425,7 +421,7 @@ export const useKtStore = defineStore('KtStore', {
      */   
     async setCoordinatesTo() {
       if(this.CRSFrom === '' ){
-        console.log('this should not happen')
+        console.error('[CoordinatesTo] Illegal State: CRSFrom is undefined')
       }
       else if(this.CRSFrom === this.CRSTo) {
         this.CoordinatesTo = this.CoordinatesFrom
@@ -441,7 +437,7 @@ export const useKtStore = defineStore('KtStore', {
           const coordinatesData = await coordinateResponse.json()
           this.CoordinatesTo = coordinatesData
         } catch (error) {
-          console.error('Failed to fetch and update coordinateTo', error)
+          console.error('[CoordinatesTo] Fetch Error: failed fetching coordinatesTo, update aborted', error)
         }
       }
     },

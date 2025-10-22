@@ -411,7 +411,7 @@ const degreeFormat = ref('D')
 
 const formats = {
   meterformat:/^-?\d+(\.\d{1,4})?$/,
-  degreeformat: /^-?\d+(\.\d{1,8})?$/,
+  degreeformat: /^-?\d+(\.\d{1,9})?$/,
   minutesformat:/^\d+(\.\d{1,6})?$/,
   secondsformat: /^\d+(\.\d{1,4})?$/,
   pNoDecimal: /^\d+$/,
@@ -419,10 +419,10 @@ const formats = {
 }
 
 const formatTexts = {
-  meterformat:'tal med [0,4] decimaler',
-  degreeformat: 'tal med [0.8] decimaler',
-  minutesformat:'positivt tal med [0,6] decimaler',
-  secondsformat: 'positivt tal med [0-4] decimaler',
+  meterformat:'tal med 0-4 decimaler',
+  degreeformat: 'tal med 0-9 decimaler',
+  minutesformat:'positivt tal med 0-6 decimaler',
+  secondsformat: 'positivt tal med 0-4 decimaler',
   pNoDecimal: 'positivt tal uden decimaler',
   noDecimal: 'tal uden decimaler'
 }

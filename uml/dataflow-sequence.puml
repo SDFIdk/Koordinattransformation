@@ -1,0 +1,97 @@
+@startuml InputOutputSequence
+
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontSize 12
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 5
+skinparam sequenceParticipantBorderColor #888888
+skinparam sequenceParticipantBackgroundColor #FFFFFF
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+
+title Input → Store → Output Sequence
+
+participant "InputKoor\n.vue" as InputKoor
+participant "KoorInput\nField.vue" as InputField
+participant "KoorMap\n.vue" as Map
+participant "KtStore" as Store
+participant "KoorOutput\nField.vue" as OutputField
+participant "OutputKoor\n.vue" as OutputKoor
+
+== Initialisation ==
+
+InputKoor -> Store : setCRSFrom(selectedOption[0])
+OutputKoor -> Store : setCRSTo(selectedOption[0])
+
+Store --> InputField : getCRSFromDisplayInfo [computed]
+note right : formatInputCoor()
+
+Store --> OutputField : getCRSToDisplayInfo [computed]
+Store --> OutputField : getCRSFromDisplayInfo [computed]
+note right : formatOutputCoor()
+
+Map -> Store : setCoordinatesFrom_v3(defaultCoord)
+note left : places default\nmap marker
+
+== User changes Input CRS ==
+
+InputKoor -> Store : setCRSFrom(newSelection)
+InputKoor -> Store : setCoordinatesFrom({ crs: oldCRS, coordinates })
+note right of Store : transforms coordinates\nfrom old CRS → new CRS
+
+Store --> InputField : getCRSFromDisplayInfo [watch]
+note right : formatInputCoor()
+
+Store --> OutputField : getCRSFromDisplayInfo [watch]
+note right : formatOutputCoor()
+
+Store --> OutputField : getCoordinatesFrom [watch]
+OutputField -> Store : setCoordinatesTo()
+Store --> OutputField : getCoordinatesTo [watch]
+note right : toRepresentation()\ntoStringRepr()
+
+Store --> Map : getCoordinatesFrom [watch]
+note left : update overlay\nposition on map
+
+== User types coordinate / selects address ==
+
+InputField -> Store : setCoordinatesFrom({ crs, coordinates })
+
+Store --> InputField : getCoordinatesFrom [watch]
+note right : toRepresentation()
+
+Store --> OutputField : getCoordinatesFrom [watch]
+OutputField -> Store : setCoordinatesTo()
+Store --> OutputField : getCoordinatesTo [watch]
+note right : toRepresentation()\ntoStringRepr()
+
+Store --> Map : getCoordinatesFrom [watch]
+note left : update overlay\nposition on map
+
+== User clicks map ==
+
+Map -> Store : setCoordinatesFrom_v3(clickedCoord)
+
+Store --> InputField : getCoordinatesFrom [watch]
+note right : toRepresentation()
+
+Store --> OutputField : getCoordinatesFrom [watch]
+OutputField -> Store : setCoordinatesTo()
+Store --> OutputField : getCoordinatesTo [watch]
+note right : toRepresentation()\ntoStringRepr()
+
+Store --> Map : getCoordinatesFrom [watch]
+note left : update overlay\nposition on map
+
+== User changes Output CRS ==
+
+OutputKoor -> Store : setCRSTo(newSelection)
+OutputKoor -> Store : setCoordinatesTo()
+
+Store --> OutputField : getCRSToDisplayInfo [watch]
+note right : formatOutputCoor()
+
+Store --> OutputField : getCoordinatesTo [watch]
+note right : toRepresentation()\ntoStringRepr()
+
+@enduml

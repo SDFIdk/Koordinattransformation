@@ -116,6 +116,15 @@ const fetchGLMap = async () => {
       let found = false
       for (const [key, value] of urlToPatch.searchParams.entries()) {
         if(key.toLowerCase() === 'service'){
+          /*
+          * Honestly, I have no clue what went through my mind when I wrote this 0: 
+          * the gl_aabent_land wms had an issue where it didn't accept parameters in the format provided by openlayers
+          * Specifically, openlayers provided two service attributes in the form 'service=[someservice]' and SERVICE=[someservice]
+          * 
+          * So, this essentially filters out the 'SERVICE=[someservice]' parameter in the weirdest way possible.
+          * Essentially, if we find as service argument, we skip the next case of the service argument by using continue 0:
+          * 
+          */
           if(found) {
             continue
           }
@@ -177,23 +186,24 @@ const createMap = async() => {
     }),
     view: mapView,
     layers:
-            [
-              new TileLayer({
-                opacity: 1,
-                title: mapTitle,
-                type: 'base',
-                visible: true,
-                source: mapSource,
-              }),
-            ],
+      [
+        new TileLayer({
+          opacity: 1,
+          title: mapTitle,
+          type: 'base',
+          visible: true,
+          source: mapSource,
+        }),
+      ],
   })
 }
 
 onMounted(async() => {
   //map cannot set values in store before crs has been set elsewhere !
-  //the function yields for 70 milliseconds to allow continuation of other threads before checking again
+  //the function yields for 70 milliseconds to allow continuation of other scripts before checking again
   const waitForCRS = async() => {
     while(KtStore.CRSFrom === ''){
+      // awaiting promise resolution in event loop allows other scripts to run in this timeframe
       await new Promise(resolve => setTimeout(resolve, 70))
     }
   }

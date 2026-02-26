@@ -1,0 +1,69 @@
+@startuml Component_Diagram
+
+!define RECTANGLE component
+
+skinparam component {
+    BackgroundColor<<frontend>> LightBlue
+    BackgroundColor<<backend>> LightGreen
+    BackgroundColor<<external>> LightYellow
+    BorderColor Black
+}
+
+skinparam node {
+    BackgroundColor LightGray
+    BorderColor Black
+}
+
+' Infrastructure Layer
+node "Nginx Proxy" as nginx {
+}
+
+package "Vue.js SPA" <<frontend>> {
+
+    [View Component] as view
+    [Container Component] as container
+    [Map Component] as map
+
+    component "Input Pipeline" as inputPipe {
+    }
+
+    component "Output Pipeline" as outputPipe {
+    }
+
+    [KtStore] as store
+}
+
+cloud "External Services" {
+    database "WEBPROJ\nREST API" as webproj <<external>>
+}
+
+' Infrastructure
+nginx --> view    : serves static SPA
+nginx --> webproj : proxies API requests
+
+' View ↔ Store
+view --> store : setCoverArea()
+
+' Container ↔ Store
+store --> container : CoverArea\nCRSOptions
+
+' Container → Pipelines
+container --> inputPipe  : :input-options prop
+container --> outputPipe : :output-options prop
+
+' Input Pipeline ↔ Store
+inputPipe --> store : setCRSFrom()\nsetCoordinatesFrom()
+store --> inputPipe : CRSFromDisplayInfo\nCoordinatesFrom
+
+' Output Pipeline ↔ Store
+outputPipe --> store : setCRSTo()\nsetCoordinatesTo()
+store --> outputPipe : CRSToDisplayInfo\nCRSFromDisplayInfo\nCoordinatesFrom\nCoordinatesTo
+
+' Map ↔ Store
+map --> store : setCoordinatesFrom_v3()
+store --> map : CoordinatesFrom\nCoverArea
+
+' Store ↔ API
+store --> webproj : fetchCRSOptions()\ntransform coordinates
+
+@enduml

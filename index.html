@@ -6,6 +6,16 @@
     <link rel="stylesheet" href="./src/assets/style/KT.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Koordinattransformation</title>
+    <script>
+      // runtime config. envsubst fills these in prod; vite dev plugin in dev.
+      window.__CONFIG__ = {
+        VITE_API_BASE_URL: "${VITE_API_BASE_URL}",
+        VITE_API_BASE_PATH: "${VITE_API_BASE_PATH}",
+        VITE_TOKEN: "${VITE_TOKEN}",
+        VITE_DAF_TOKEN_A: "${VITE_DAF_TOKEN_A}",
+        VITE_DAF_TOKEN_B: "${VITE_DAF_TOKEN_B}"
+      }
+    </script>
   </head>
   <body>
     <div id="app"></div>

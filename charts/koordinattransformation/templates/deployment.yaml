@@ -59,10 +59,10 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            # entrypoint substitutes the baked bundle into here, nginx serves from here
+            # entrypoint copies the baked bundle here, nginx serves from here
             - name: html
               mountPath: /usr/share/nginx/html
-            # nginx pid + temp paths (nginx.conf points all *_temp_path here)
+            # pid + all *_temp_path from nginx.conf
             - name: tmp
               mountPath: /tmp
       volumes:

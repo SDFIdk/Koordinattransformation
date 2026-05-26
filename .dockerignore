@@ -1,0 +1,13 @@
+.git
+.github
+node_modules
+dist
+playwright-report
+test-results
+tests
+.vscode
+.idea
+*.swp
+.DS_Store
+.env*
+charts

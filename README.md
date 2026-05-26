@@ -12,38 +12,25 @@ For at udvikle og bygge projektet anbefales følgende setup
 
 ## Setup a projektet
 
-### Setup af Miljø
-For at kunne køre projektet, er der nogle miljøvariable, der skal føres ind i root directory i projeket.
+### Setup af miljø
 
-`.env.development` til development miljøet og
-`.env.production` til produktionsmiljøet.
-Et eksempel på en miljøfil er:
+Opret `.env.development` (til `npm run dev`) og `.env.test` (til Playwright)
+i root af projektet. Et eksempel:
 
 ```
-  VITE_NODE_ENV = development
-  VITE_VUE_APP_SHOW_UNPUBLISHED = true
-  VITE_NODE_OPTIONS = --openssl-legacy-provider
-  VITE_TOKEN = <token>
-  VITE_DAF_TOKEN_A = <datafordeler tjenestebruger brugernavn>
-  VITE_DAF_TOKEN_B = <datafordeler tjenestebruger password>
-  VITE_API_BASE_URL = https://api.dataforsyningen.dk/rest/webproj_test
-  VITE_API_BASE_PATH = /v1.2/trans/
+VITE_TOKEN = <token>
+VITE_DAF_TOKEN_A = <datafordeler brugernavn>
+VITE_DAF_TOKEN_B = <datafordeler password>
+VITE_API_BASE_URL = https://api.dataforsyningen.dk/rest/webproj_test
+VITE_API_BASE_PATH = /v1.2/trans/
 ```
 
-`VITE_TOKEN` er en adgangstoken, som kan oprettes på https://dataforsyningen.dk/
+`VITE_TOKEN` kan oprettes på https://dataforsyningen.dk/.
 
-`VITE_DAF_TOKEN_A` og `VITE_DAF_TOKEN_B` er hhv. brugernavn/password for en Datafordeler-tjenestebruger. 
-En tjenestebruger kan oprettes her: https://datafordeler.dk/konto/dine-tjenestebrugere/
+`VITE_DAF_TOKEN_A` / `VITE_DAF_TOKEN_B` er brugernavn/password for en
+Datafordeler-tjenestebruger (https://datafordeler.dk/konto/dine-tjenestebrugere/).
 
-Vær opmærksom på at projektet skældner mellem tre konfigurationer,
-'production', 'development' og 'test'
-
-
-***Kopier disse filer fra config repoet ind i root directory af projektet.***
-
-Disse refereres efterfølgende med `import.meta.env.[field]` <br> i sidens Store og KoorMap komponentet.
-Læs mere om Vite og miljøvariable [her](https://vitejs.dev/guide/env-and-mode.html)
-
+Læs mere om Vite-env [her](https://vitejs.dev/guide/env-and-mode.html).
 
 - Naviger til projektet i terminalen <br>
 

@@ -192,3 +192,51 @@ Ikoner skal opdateres manuelt fra designsystemets repo i src/assets/icons
 
 ## Baggrundskort
 Danmarkskortet anvender [Skærmkortet](https://dataforsyningen.dk/data/962) mens Grønlandskortet anvender [Åbent Land Grønland](https://dataforsyningen.dk/data/4771).
+
+## Container / Kubernetes
+
+CI bygger et rootless nginx-image og deployer via Helm-chartet i `charts/koordinattransformation/`. 
+
+### Runtime-config
+
+Secrets må ikke bygges ind i vores image, hvorfor `import.meta.env.VITE_*` ikke er en mulighed.
+I stedet:
+
+- `index.html` har en `window.__CONFIG__`-blok med `${VITE_*}`-placeholders.
+- Kildekoden læser via `src/runtimeConfig.js` (tynd accessor over `window.__CONFIG__`).
+- I containeren fylder `docker/40-envsubst-config.sh` placeholders ud med `envsubst` ved start.
+- I `npm run dev` gør et lille `apply: 'serve'`-plugin i `vite.config.js` det samme fra `.env.<mode>`.
+
+Vi faar et enkelt image pr. release, ingen secrets i repo/CI/image, og kan vaere sikre paa at `import.meta.env.*` altid betyder build-time, mens `window.__CONFIG__.*` altid betyder runtime.
+
+Har du brug for at tilfoeje en ny runtime-var, skal det goeres tre steder: [index.html](/index.html), [src/runtimeConfig.js](src/runtimeConfig.js), [docker/40-envsubst-config.sh](docker/40-envsubst-config.sh) (`$VARS`).
+
+### Lokalt build
+
+For at bygge lokalt med env-vars fra en .env.test:
+
+```bash
+docker build -t koordinattransformation:dev .
+docker run --rm -p 8080:8080 \
+  --env-file .env.test
+  --mount type=tmpfs,destination=/usr/share/nginx/html \
+  --mount type=tmpfs,destination=/tmp \
+  --read-only \
+  koordinattransformation:dev
+```
+
+### Release
+
+> [!NOTE]
+> Gælder pt. kun `k8s`-branchen. `main` deployes fortsat via Jenkins indtil cutover.
+
+1. Bump version, commit og tag:
+
+```bash
+npm version patch    # eller minor / major
+git push --follow-tags
+```
+
+2. CI checker at package.json matcher, og bygger + pusher det nye image og chart.
+
+3. Downstream k8s og eventuelt andre forbrugere henter den nyeste version, enten automatisk eller naar en operatoer bestemmer sig for at bumpe versionsnummeret. 

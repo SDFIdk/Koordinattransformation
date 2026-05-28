@@ -32,6 +32,10 @@ jobs:
         with:
           ref: ${{ steps.tag.outputs.value }}
 
+      # gate the publish: chart.yml and release.yml run independently on a tag
+      # push, so this is the only thing that blocks a broken chart reaching ghcr
+      - uses: ./.github/actions/validate-chart
+
       - name: Assert package.json version matches tag
         run: |
           v=$(node -p "require('./package.json').version")

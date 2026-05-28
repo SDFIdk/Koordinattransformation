@@ -18,6 +18,13 @@ env:
 # VITE_* vars (VITE_TOKEN, VITE_DAF_TOKEN_A, VITE_DAF_TOKEN_B)
 envFromSecret: ""
 
+# spread replicas across nodes; ScheduleAnyway is soft, DoNotSchedule for strict spread
+topologySpreadConstraints:
+  enabled: true
+  maxSkew: 1
+  topologyKey: kubernetes.io/hostname
+  whenUnsatisfiable: ScheduleAnyway
+
 service:
   type: ClusterIP
   port: 80

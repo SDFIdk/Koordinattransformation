@@ -25,6 +25,11 @@ topologySpreadConstraints:
   topologyKey: kubernetes.io/hostname
   whenUnsatisfiable: ScheduleAnyway
 
+# keep at least one replica up during voluntary disruptions (node drains)
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
 service:
   type: ClusterIP
   port: 80

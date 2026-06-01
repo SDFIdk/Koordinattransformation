@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { mapCoorToList } from '../helperfunctions'
+import { config } from '../runtimeConfig.js'
 /**
  * @module KtStore
  * @description
@@ -39,10 +40,10 @@ export const useKtStore = defineStore('KtStore', {
    * @property {Object} CoordinatesTo - Output coordinates after transformation.
    */
   state: () => ({
-    webproj: `${import.meta.env.VITE_API_BASE_URL || ''}${import.meta.env.VITE_API_BASE_PATH || ''}`,
-    
+    webproj: `${config.apiBaseUrl}${config.apiBasePath}`,
+
     // Authentication token, default to null if not provided
-    token: import.meta.env.VITE_TOKEN || null,
+    token: config.token || null,
 
     //baseUrl to find statically copied members
     baseUrl: new URL(import.meta.url).origin || null,

@@ -1,0 +1,9 @@
+apiVersion: v2
+name: koordinattransformation
+description: Static SPA for the Koordinattransformation site
+type: application
+
+# placeholders - the release workflow overrides both, 
+# sourcing from package.json
+version: 0.0.0
+appVersion: "0.0.0"

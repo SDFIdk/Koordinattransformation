@@ -1,0 +1,21 @@
+# full permutation: exercises every "on" branch - ingress (className/host/path/tls),
+# envFromSecret, imagePullSecrets
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: koordinattransformation.example.dk
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: koordinattransformation-tls
+      hosts:
+        - koordinattransformation.example.dk
+
+envFromSecret: koordinattransformation-secrets
+
+imagePullSecrets:
+  - name: ghcr-cred

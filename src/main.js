@@ -24,7 +24,7 @@ app.config.compilerOptions = {
 }
 
 app.config.globalProperties.append = (path, pathToAppend) => path + (path.endsWith('/') ? '' : '/') + pathToAppend
-app.config.performance = (import.meta.env.VITE_NODE_ENV !== 'production')
+app.config.performance = !import.meta.env.PROD
 
 app.use(router)
   .use(createPinia())

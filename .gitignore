@@ -5,12 +5,6 @@ public/
 dist/
 playwright-report/
 test-results/
-.vscode/
 
-#config files
-nginx*
+# local env files - real values never live in this repo
 .env*
-Dockerfile*
-Jenkinsfile*
-swarm*
-SecHeaders.conf

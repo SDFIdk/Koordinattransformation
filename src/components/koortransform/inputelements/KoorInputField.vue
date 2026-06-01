@@ -359,11 +359,13 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useKtStore } from '../../../store/store.js'
 import { getGSearchCenterPoint } from '../../../helperfunctions.js'
+import { config } from '../../../runtimeConfig.js'
 
 const KtStore = useKtStore()
 const route = useRoute()
 
-const svgPath = import.meta.env.VITE_NODE_ENV === 'production' || import.meta.env.VITE_NODE_ENV === 'test' ?  KtStore.getURL + '/icons.svg#' : '/src/assets/icons/icons.svg#' 
+// PROD is any build, !PROD is the vite dev server
+const svgPath = import.meta.env.PROD ? KtStore.getURL + '/icons.svg#' : '/src/assets/icons/icons.svg#'
 const debounceTimeout = ref(null)
 
 
@@ -715,7 +717,7 @@ onMounted(async() => {
 
   const gSearch = document.querySelector('g-search')
   if (gSearch) {
-    gSearch.setAttribute('data-token', import.meta.env.VITE_TOKEN)
+    gSearch.setAttribute('data-token', config.token)
     document.querySelector('g-search').addEventListener('gsearch:select', (event) => {
       KtStore.setCoordinatesFrom({
         crs: 'EPSG:25832',

@@ -40,6 +40,7 @@ import proj4 from 'proj4'
 //vue
 import { onMounted, ref, computed, watch} from 'vue'
 import { useKtStore } from '../../store/store.js'
+import { config } from '../../runtimeConfig.js'
 
 
 const KtStore = useKtStore()
@@ -61,7 +62,7 @@ const mapData = ref({
     title: 'Åbent Land',
     attributionText: 'Klimadatastyrelsen',
     attributionLink: 'https://www.klimadatastyrelsen.dk/',
-    mapURL:`https://api.dataforsyningen.dk/wms/gl_aabent_land?token=${import.meta.env.VITE_TOKEN}&service=WMS&request=GetCapabilities`,
+    mapURL:`https://api.dataforsyningen.dk/wms/gl_aabent_land?token=${config.token}&service=WMS&request=GetCapabilities`,
     source: null,
     center:   [-116987.80903933897, 7178544.1041003745],
     extent:  [-420000, 6.45e+06, 1.21e+06, 16.0382, 9.5e+06],
@@ -74,7 +75,7 @@ const mapData = ref({
     title: 'Skærmkortet',
     attributionText: 'Klimadatastyrelsen',
     attributionLink: 'https://www.klimadatastyrelsen.dk/',
-    mapURL: `https://services.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts?username=${import.meta.env.VITE_DAF_TOKEN_A}&password=${import.meta.env.VITE_DAF_TOKEN_B}&service=WMTS&request=GetCapabilities`,
+    mapURL: `https://services.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts?username=${config.dafTokenA}&password=${config.dafTokenB}&service=WMTS&request=GetCapabilities`,
     source: null,
     view: null,
     center: [587135, 6140617 + 80000],

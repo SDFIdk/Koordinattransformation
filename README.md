@@ -12,38 +12,25 @@ For at udvikle og bygge projektet anbefales følgende setup
 
 ## Setup a projektet
 
-### Setup af Miljø
-For at kunne køre projektet, er der nogle miljøvariable, der skal føres ind i root directory i projeket.
+### Setup af miljø
 
-`.env.development` til development miljøet og
-`.env.production` til produktionsmiljøet.
-Et eksempel på en miljøfil er:
+Opret `.env.development` (til `npm run dev`) og `.env.test` (til Playwright)
+i root af projektet. Et eksempel:
 
 ```
-  VITE_NODE_ENV = development
-  VITE_VUE_APP_SHOW_UNPUBLISHED = true
-  VITE_NODE_OPTIONS = --openssl-legacy-provider
-  VITE_TOKEN = <token>
-  VITE_DAF_TOKEN_A = <datafordeler tjenestebruger brugernavn>
-  VITE_DAF_TOKEN_B = <datafordeler tjenestebruger password>
-  VITE_API_BASE_URL = https://api.dataforsyningen.dk/rest/webproj_test
-  VITE_API_BASE_PATH = /v1.2/trans/
+VITE_TOKEN = <token>
+VITE_DAF_TOKEN_A = <datafordeler brugernavn>
+VITE_DAF_TOKEN_B = <datafordeler password>
+VITE_API_BASE_URL = https://api.dataforsyningen.dk/rest/webproj_test
+VITE_API_BASE_PATH = /v1.2/trans/
 ```
 
-`VITE_TOKEN` er en adgangstoken, som kan oprettes på https://dataforsyningen.dk/
+`VITE_TOKEN` kan oprettes på https://dataforsyningen.dk/.
 
-`VITE_DAF_TOKEN_A` og `VITE_DAF_TOKEN_B` er hhv. brugernavn/password for en Datafordeler-tjenestebruger. 
-En tjenestebruger kan oprettes her: https://datafordeler.dk/konto/dine-tjenestebrugere/
+`VITE_DAF_TOKEN_A` / `VITE_DAF_TOKEN_B` er brugernavn/password for en
+Datafordeler-tjenestebruger (https://datafordeler.dk/konto/dine-tjenestebrugere/).
 
-Vær opmærksom på at projektet skældner mellem tre konfigurationer,
-'production', 'development' og 'test'
-
-
-***Kopier disse filer fra config repoet ind i root directory af projektet.***
-
-Disse refereres efterfølgende med `import.meta.env.[field]` <br> i sidens Store og KoorMap komponentet.
-Læs mere om Vite og miljøvariable [her](https://vitejs.dev/guide/env-and-mode.html)
-
+Læs mere om Vite-env [her](https://vitejs.dev/guide/env-and-mode.html).
 
 - Naviger til projektet i terminalen <br>
 
@@ -192,3 +179,51 @@ Ikoner skal opdateres manuelt fra designsystemets repo i src/assets/icons
 
 ## Baggrundskort
 Danmarkskortet anvender [Skærmkortet](https://dataforsyningen.dk/data/962) mens Grønlandskortet anvender [Åbent Land Grønland](https://dataforsyningen.dk/data/4771).
+
+## Container / Kubernetes
+
+CI bygger et rootless nginx-image og deployer via Helm-chartet i `charts/koordinattransformation/`. 
+
+### Runtime-config
+
+Secrets må ikke bygges ind i vores image, hvorfor `import.meta.env.VITE_*` ikke er en mulighed.
+I stedet:
+
+- `index.html` har en `window.__CONFIG__`-blok med `${VITE_*}`-placeholders.
+- Kildekoden læser via `src/runtimeConfig.js` (tynd accessor over `window.__CONFIG__`).
+- I containeren fylder `docker/40-envsubst-config.sh` placeholders ud med `envsubst` ved start.
+- I `npm run dev` gør et lille `apply: 'serve'`-plugin i `vite.config.js` det samme fra `.env.<mode>`.
+
+Vi faar et enkelt image pr. release, ingen secrets i repo/CI/image, og kan vaere sikre paa at `import.meta.env.*` altid betyder build-time, mens `window.__CONFIG__.*` altid betyder runtime.
+
+Har du brug for at tilfoeje en ny runtime-var, skal det goeres tre steder: [index.html](/index.html), [src/runtimeConfig.js](src/runtimeConfig.js), [docker/40-envsubst-config.sh](docker/40-envsubst-config.sh) (`$VARS`).
+
+### Lokalt build
+
+For at bygge lokalt med env-vars fra en .env.test:
+
+```bash
+docker build -t koordinattransformation:dev .
+docker run --rm -p 8080:8080 \
+  --env-file .env.test
+  --mount type=tmpfs,destination=/usr/share/nginx/html \
+  --mount type=tmpfs,destination=/tmp \
+  --read-only \
+  koordinattransformation:dev
+```
+
+### Release
+
+> [!NOTE]
+> Gælder pt. kun `k8s`-branchen. `main` deployes fortsat via Jenkins indtil cutover.
+
+1. Bump version, commit og tag:
+
+```bash
+npm version patch    # eller minor / major
+git push --follow-tags
+```
+
+2. CI checker at package.json matcher, og bygger + pusher det nye image og chart.
+
+3. Downstream k8s og eventuelt andre forbrugere henter den nyeste version, enten automatisk eller naar en operatoer bestemmer sig for at bumpe versionsnummeret. 

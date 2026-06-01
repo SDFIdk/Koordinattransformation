@@ -1,0 +1,8 @@
+# minimal permutation: exercises the "off" branches - pdb and topology disabled
+replicaCount: 1
+podDisruptionBudget:
+  enabled: false
+topologySpreadConstraints:
+  enabled: false
+ingress:
+  enabled: false

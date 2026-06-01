@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to publish'
+        required: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Resolve tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "value=${{ inputs.tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.tag.outputs.value }}
+
+      # gate the publish: chart.yml and release.yml run independently on a tag
+      # push, so this is the only thing that blocks a broken chart reaching ghcr
+      - uses: ./.github/actions/validate-chart
+
+      - name: Assert package.json version matches tag
+        run: |
+          v=$(node -p "require('./package.json').version")
+          if [ "$v" != "${{ steps.tag.outputs.value }}" ]; then
+            echo "::error::package.json version ($v) does not match tag (${{ steps.tag.outputs.value }})"
+            exit 1
+          fi
+
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build and push image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/klimadatastyrelsen/koordinattransformation:${{ steps.tag.outputs.value }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Helm registry login
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Package and push chart
+        run: |
+          TAG="${{ steps.tag.outputs.value }}"
+          helm package charts/koordinattransformation --version "$TAG" --app-version "$TAG" -d /tmp
+          helm push "/tmp/koordinattransformation-${TAG}.tgz" oci://ghcr.io/klimadatastyrelsen/charts

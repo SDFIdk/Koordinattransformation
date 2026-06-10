@@ -4,7 +4,7 @@ test.describe('Page Load', () => {
   test('Store Setup Denmark', async ({ page }) => {
     // Wait until the DOM content is loaded, not all resources
     await page.goto('http://localhost:4173/Denmark', { waitUntil: 'domcontentloaded' })
-    
+
     try {
       // The #c1 element only loads then the store has been set up succesfully
       await page.waitForSelector('#c1', { timeout: 5000 })
@@ -16,7 +16,7 @@ test.describe('Page Load', () => {
     // Wait until the DOM content is loaded, not all resources
     //is important to wait for domcontentloaded, as default will wait forever if one call to WMS hangs
     await page.goto('http://localhost:4173/Greenland', { waitUntil: 'domcontentloaded' })
-    
+
     try {
       // Now wait for your map element, but with a shorter timeout
       await page.waitForSelector('#c1', { timeout: 5000 })
@@ -24,7 +24,7 @@ test.describe('Page Load', () => {
       console.warn('Map did not fully load within 5 seconds. Continuing the test...')
     }
   })
-  
+
 })
 
 test.describe('Map Tests', () => {
@@ -40,13 +40,13 @@ test.describe('Map Tests', () => {
 
   test('Map Connect Greenland', async({page}) => {
     await page.goto('http://localhost:4173/Greenland', { waitUntil: 'domcontentloaded' })
-    const response = await page.waitForResponse( response => 
+    const response = await page.waitForResponse( response =>
       response.url().includes('https://api.dataforsyningen.dk/wms/gl_aabent_land') &&
       response.status() === 200
     )
     expect(response.ok()).toBeTruthy()
   })
-  
+
   test('Map Click', async ({page}) => {
     let error_msg = []
     page.on('console', msg => {
@@ -54,13 +54,13 @@ test.describe('Map Tests', () => {
         error_msg.push(msg.text())
       }
     })
-    
+
     try {
       await page.goto('http://localhost:4173', { waitUntil: 'domcontentloaded' })
       await page.waitForSelector('#map', { state: 'visible' })
 
       await page.waitForSelector('.ol-overlaycontainer', {state: 'visible'})
-      
+
       await page.waitForLoadState('networkidle')
 
       const mapElement = page.locator('#map')
@@ -69,7 +69,7 @@ test.describe('Map Tests', () => {
       const clickX = box.x + box.width / 2
       const clickY = box.y + box.height / 1.5
 
-      //Have tried to make this work for so long, but the only way is to wait... 
+      //Have tried to make this work for so long, but the only way is to wait...
       await page.waitForLoadState('load')
 
       await page.mouse.click(clickX, clickY)
@@ -111,7 +111,7 @@ test.describe('Map Tests', () => {
     await page.waitForSelector('#map', { state: 'visible' })
 
     await page.waitForSelector('.ol-overlaycontainer', {state: 'visible'})
-    
+
     await page.waitForLoadState('load')
     page.locator('#KT-crs-in-select').selectOption('WGS84 (EPSG:4326)')
     await page.waitForLoadState('networkidle')
@@ -125,7 +125,7 @@ test.describe('Map Tests', () => {
       const element = document.querySelector(selector)
       return element ? element.innerHTML.trim() : ''
     }, outputSelector)
-    
+
     expect.poll(async () => await evaluatePage(), { timeout: 3000 }).toBe('723910.4400m, 6179652.8900m, 0 m')
     const outputText = await evaluatePage()
     //allows for multiple attempts
@@ -155,7 +155,7 @@ test.describe('Map Tests', () => {
       const element = document.querySelector(selector)
       return element ? element.innerHTML.trim() : ''
     }, outputSelector)
-    
+
     // We expect the output value to be unchanged (as we only change the input CRS)
     expect.poll(async () => await changedOutputText(), {timeout: 3000}).toBe(outputText)
   })
@@ -178,12 +178,12 @@ test.describe('Map Tests', () => {
         const element = document.querySelector(selector)
         return element? element.innerHTML.trim() : ''
       }, indicator)
-        
+
       //default state when application is opened
       expect.poll(async () => await indicatorText, { timeout: 3000 } ).toBe('m')
     }
 
-  
+
     page.locator('#KT-crs-in-select').selectOption('WGS84 (EPSG:4326)')
     await page.waitForLoadState('networkidle')
 
@@ -198,7 +198,7 @@ test.describe('Map Tests', () => {
         const element = document.querySelector(selector)
         return element? element.innerHTML.trim() : ''
       }, dirIndicators.at(i))
-        
+
       //default state when application is opened
       expect(indicatorText).toBe(expectedDirIndicator.at(i))
     }
@@ -305,7 +305,7 @@ test.describe('Map Tests', () => {
       '\'',
       '\"'
     ]
-  
+
     for(let i = 0; i < measureIndicators.length; i++) {
       const evalText = await page.evaluate(selector => {
         const element = document.querySelector(selector)

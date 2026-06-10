@@ -41,17 +41,13 @@ import proj4 from 'proj4'
 import { onMounted, ref, computed, watch} from 'vue'
 import { useKtStore } from '../../store/store.js'
 
-
 const KtStore = useKtStore()
 
-//setting up projections for Skærmkortet / Åbent Land Grønland
-
+// setting up projections for Skærmkortet / Åbent Land Grønland
 epsg25832proj(proj4)
 epsg32624proj(proj4)
 epsg3184proj(proj4)
 register(proj4)
-
-
 
 const olMap = ref({})
 const overlay = ref({})
@@ -74,7 +70,7 @@ const mapData = ref({
     title: 'Skærmkortet',
     attributionText: 'Klimadatastyrelsen',
     attributionLink: 'https://www.klimadatastyrelsen.dk/',
-    mapURL: `https://services.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts?username=${import.meta.env.VITE_DAF_TOKEN_A}&password=${import.meta.env.VITE_DAF_TOKEN_B}&service=WMTS&request=GetCapabilities`,
+    mapURL: `https://wmts.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts?username=${import.meta.env.VITE_DAF_TOKEN_A}&password=${import.meta.env.VITE_DAF_TOKEN_B}&service=WMTS&request=GetCapabilities`,
     source: null,
     view: null,
     center: [587135, 6140617 + 80000],
@@ -99,6 +95,7 @@ const fetchDKMap = async () => {
     matrixSet: 'View1',
   }))
 }
+
 const fetchGLMap = async () => {
   const groenlandTopoSource = await new TileWMS({
     attributions: '',
@@ -125,13 +122,13 @@ const fetchGLMap = async () => {
       }
       newUrl += queryParams.join('&')
 
-      
       imageTile.getImage().src = newUrl
     }
   })
 
   return groenlandTopoSource
 }
+
 const createView = async() => {
   return new OlView({
     center: mapData.value[coverArea.value].center,
@@ -143,14 +140,24 @@ const createView = async() => {
   })
 }
 
-const createMap = async() => {
+// add username and password parameters to wmts url if not present.
+const addUsernameAndPassword = (mapSource) => {
+  var userPass = `username=${import.meta.env.VITE_DAF_TOKEN_A}&password=${import.meta.env.VITE_DAF_TOKEN_B}`
+  var url = mapSource.urls[0]
+  if (!url.includes(userPass)) {
+    var new_url = url + `?${userPass}`
+    mapSource.setUrl(new_url)
+  }
+}
 
+const createMap = async() => {
   var mapSource
   var mapView
   var mapTitle
 
   if(coverArea.value === 'DK') {
     mapSource = await fetchDKMap()
+    addUsernameAndPassword(mapSource)
     mapView = await createView()
     mapTitle = mapData.value.DK.title
 
@@ -166,8 +173,6 @@ const createMap = async() => {
     mapData.value.GL.view = mapView
   }
 
-  
-
   return new OlMap({
     target: 'map',
     controls: defaultControls({
@@ -177,30 +182,31 @@ const createMap = async() => {
     }),
     view: mapView,
     layers:
-            [
-              new TileLayer({
-                opacity: 1,
-                title: mapTitle,
-                type: 'base',
-                visible: true,
-                source: mapSource,
-              }),
-            ],
+      [
+        new TileLayer({
+          opacity: 1,
+          title: mapTitle,
+          type: 'base',
+          visible: true,
+          source: mapSource,
+        }),
+      ],
   })
 }
 
 onMounted(async() => {
   //map cannot set values in store before crs has been set elsewhere !
-  //the function yields for 70 milliseconds to allow continuation of other threads before checking again
+  //the function yields for 70 milliseconds to allow continuation of other scripts before checking again
   const waitForCRS = async() => {
     while(KtStore.CRSFrom === ''){
+      // awaiting promise resolution in event loop allows other scripts to run in this timeframe
       await new Promise(resolve => setTimeout(resolve, 70))
     }
   }
   olMap.value = await createMap()
 
   olMap.value.addControl(new ScaleLine())
-    
+
   const placedPin = document.getElementById('placed-pin')
   overlay.value = new Overlay({
     element: placedPin,
@@ -211,7 +217,7 @@ onMounted(async() => {
   olMap.value.on('click', (event) => {
     pinPointer.value = true
     const coordinate = event.coordinate
-    overlay.value.setPosition(coordinate) 
+    overlay.value.setPosition(coordinate)
     KtStore.setCoordinatesFrom_v3({
       crs: mapData.value[coverArea.value].projection,
       coordinates: {v1: event.coordinate[0], v2: event.coordinate[1], v3: null, v4: null},
@@ -219,7 +225,7 @@ onMounted(async() => {
   })
   await waitForCRS()
   const startCoor = coverArea.value === 'DK' ? [723910.4400, 6179652.8900] : mapData.value.GL.center
-  olMap.value.addOverlay(overlay.value) 
+  olMap.value.addOverlay(overlay.value)
   overlay.value.setPosition(startCoor)
   pinPointer.value = true
   KtStore.setCoordinatesFrom_v3({
@@ -235,9 +241,7 @@ watch(coorFrom, async (to, from) => {
   const crsFrom = KtStore.CRSFrom
   if(crsFrom === mapData.value[coverArea.value].projection) {
     overlay.value.setPosition(mapCoorToList(to))
-  }
-
-  else{
+  } else{
     try {
       const response = await fetch(`${KtStore.webproj}${KtStore.CRSFrom}/${mapData.value[coverArea.value].projection}/${mapCoorToList(to)}?token=${KtStore.token}`)
       if(!response.ok){

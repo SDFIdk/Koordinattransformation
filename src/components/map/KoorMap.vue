@@ -143,14 +143,24 @@ const createView = async() => {
   })
 }
 
-const createMap = async() => {
+// add username and password parameters to wmts url if not present.
+const addUsernameAndPassword = (mapSource) => {
+  var userPass = `username=${import.meta.env.VITE_DAF_TOKEN_A}&password=${import.meta.env.VITE_DAF_TOKEN_B}`
+  var url = mapSource.urls[0]
+  if (!url.includes(userPass)) {
+    var new_url = url + `?${userPass}`
+    mapSource.setUrl(new_url)
+  }
+}
 
+const createMap = async() => {
   var mapSource
   var mapView
   var mapTitle
 
   if(coverArea.value === 'DK') {
     mapSource = await fetchDKMap()
+    addUsernameAndPassword(mapSource)
     mapView = await createView()
     mapTitle = mapData.value.DK.title
 

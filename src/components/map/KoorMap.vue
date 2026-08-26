@@ -75,7 +75,7 @@ const mapData = ref({
     title: 'Skærmkortet',
     attributionText: 'Klimadatastyrelsen',
     attributionLink: 'https://www.klimadatastyrelsen.dk/',
-    mapURL: `https://services.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts?username=${config.dafTokenA}&password=${config.dafTokenB}&service=WMTS&request=GetCapabilities`,
+    mapURL: `https://wmts.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/WMTS?apikey=${config.dafToken}&service=WMTS&request=GetCapabilities`,
     source: null,
     view: null,
     center: [587135, 6140617 + 80000],

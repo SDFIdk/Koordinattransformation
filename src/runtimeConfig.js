@@ -7,6 +7,5 @@ export const config = {
   apiBaseUrl: cfg.VITE_API_BASE_URL || '',
   apiBasePath: cfg.VITE_API_BASE_PATH || '',
   token: cfg.VITE_TOKEN || '',
-  dafTokenA: cfg.VITE_DAF_TOKEN_A || '',
-  dafTokenB: cfg.VITE_DAF_TOKEN_B || '',
+  dafToken: cfg.VITE_DAF_TOKEN || '',
 }

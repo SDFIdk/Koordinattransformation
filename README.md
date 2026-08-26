@@ -19,16 +19,16 @@ i root af projektet. Et eksempel:
 
 ```
 VITE_TOKEN = <token>
-VITE_DAF_TOKEN_A = <datafordeler brugernavn>
-VITE_DAF_TOKEN_B = <datafordeler password>
+VITE_DAF_TOKEN = <datafordeler api-nøgle>
 VITE_API_BASE_URL = https://api.dataforsyningen.dk/rest/webproj_test
 VITE_API_BASE_PATH = /v1.2/trans/
 ```
 
 `VITE_TOKEN` kan oprettes på https://dataforsyningen.dk/.
 
-`VITE_DAF_TOKEN_A` / `VITE_DAF_TOKEN_B` er brugernavn/password for en
-Datafordeler-tjenestebruger (https://datafordeler.dk/konto/dine-tjenestebrugere/).
+`VITE_DAF_TOKEN` er en Datafordeler API-nøgle, som oprettes under
+Autentifikationsmetoder på https://datafordeler.dk/. Brugernavn/password
+udfases 15. januar 2027.
 
 Læs mere om Vite-env [her](https://vitejs.dev/guide/env-and-mode.html).
 

@@ -32,7 +32,7 @@ test.describe('Map Tests', () => {
   test('Map Connect Denmark', async({page}) => {
     await page.goto('http://localhost:4173', { waitUntil: 'domcontentloaded' })
     const response = await page.waitForResponse( response => 
-      response.url().includes('https://services.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/wmts') &&
+      response.url().includes('https://wmts.datafordeler.dk/DKskaermkort/topo_skaermkort_daempet/1.0.0/WMTS') &&
       response.status() === 200
     )
     expect(response.ok()).toBeTruthy()

@@ -18,15 +18,15 @@ Opret `.env.development` (til `npm run dev`) og `.env.test` (til Playwright)
 i root af projektet. Et eksempel:
 
 ```
-VITE_TOKEN = <token>
-VITE_DAF_TOKEN = <datafordeler api-nøgle>
+VITE_DATAFORSYNING_TOKEN = <dataforsyningen token>
+VITE_DATAFORDELER_TOKEN = <datafordeler api-nøgle>
 VITE_API_BASE_URL = https://api.dataforsyningen.dk/rest/webproj_test
 VITE_API_BASE_PATH = /v1.2/trans/
 ```
 
-`VITE_TOKEN` kan oprettes på https://dataforsyningen.dk/.
+`VITE_DATAFORSYNING_TOKEN` kan oprettes på https://dataforsyningen.dk/.
 
-`VITE_DAF_TOKEN` er en Datafordeler API-nøgle, som oprettes under
+`VITE_DATAFORDELER_TOKEN` er en Datafordeler API-nøgle, som oprettes under
 Autentifikationsmetoder på https://datafordeler.dk/. Brugernavn/password
 udfases 15. januar 2027.
 

@@ -717,7 +717,7 @@ onMounted(async() => {
 
   const gSearch = document.querySelector('g-search')
   if (gSearch) {
-    gSearch.setAttribute('data-token', config.token)
+    gSearch.setAttribute('data-token', config.dataforsyningToken)
     document.querySelector('g-search').addEventListener('gsearch:select', (event) => {
       KtStore.setCoordinatesFrom({
         crs: 'EPSG:25832',

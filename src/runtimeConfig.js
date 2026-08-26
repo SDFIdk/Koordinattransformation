@@ -6,6 +6,6 @@ const cfg = (typeof window !== 'undefined' && window.__CONFIG__) || {}
 export const config = {
   apiBaseUrl: cfg.VITE_API_BASE_URL || '',
   apiBasePath: cfg.VITE_API_BASE_PATH || '',
-  token: cfg.VITE_TOKEN || '',
-  dafToken: cfg.VITE_DAF_TOKEN || '',
+  dataforsyningToken: cfg.VITE_DATAFORSYNING_TOKEN || '',
+  datafordelerToken: cfg.VITE_DATAFORDELER_TOKEN || '',
 }

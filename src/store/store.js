@@ -43,7 +43,7 @@ export const useKtStore = defineStore('KtStore', {
     webproj: `${config.apiBaseUrl}${config.apiBasePath}`,
 
     // Authentication token, default to null if not provided
-    token: config.token || null,
+    token: config.dataforsyningToken || null,
 
     //baseUrl to find statically copied members
     baseUrl: new URL(import.meta.url).origin || null,
